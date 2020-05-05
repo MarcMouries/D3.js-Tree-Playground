@@ -176,14 +176,14 @@ var vehicles = { "name": "Vehicles", "parent": "Person"};
 var charges =  { "name": "Charges", "parent": "Person"};
 // the flat data
 var flat_tree = [];
-flatData.push(person);
-flatData.push(known_addresses);
-flatData.push(family_members);
-flatData.push(vehicles);
-flatData.push(charges);
+flat_tree.push(person);
+flat_tree.push(known_addresses);
+flat_tree.push(family_members);
+flat_tree.push(vehicles);
+flat_tree.push(charges);
 
 
-console.log(flatData);
+console.log(flat_tree);
 
 /////  TREE
 
@@ -208,7 +208,7 @@ var svg = d3.select("body").append("svg")
 var treeData = d3.stratify()
     .id(function(d) { return d.name; })
     .parentId(function(d) { return d.parent; })
-  (flatData);
+  (flat_tree);
 
 // assign the name to each node
 treeData.each(function(d) {
@@ -274,15 +274,28 @@ var link_curved = function(d) {
 var connector_type = {
   "curved": link_curved,
   "elbow": link_elbow,
-  "straight": link_elbow};
+  "straight": link_elbow
+};
 
 update(root, 'straight');
 
 
 
-
-
 function update (node, link_connector_type) {
+
+    //console.log(connector_type[link_connector_type]);
+    //console.log(connector_type["curved"]);
+    //console.log(connector_type["elbow"]);
+    //console.log(connector_type["straight"]);
+
+
+// adds the links between the nodes
+var link = g.selectAll(".link")
+      .data(tree(root).links())
+      .enter().append("path")
+      .attr("class", "link")
+      .attr("d", connector_type[link_connector_type]);
+
 
     // adds each node as a group
     var node = g.selectAll(".node")
@@ -323,19 +336,6 @@ function update (node, link_connector_type) {
         );
 
  
-  
-    //console.log(connector_type[link_connector_type]);
-    //console.log(connector_type["curved"]);
-    //console.log(connector_type["elbow"]);
-    //console.log(connector_type["straight"]);
-
-
-// adds the links between the nodes
-    var link = g.selectAll(".link")
-      .data(tree(root).links())
-      .enter().append("path")
-      .attr("class", "link")
-      .attr("d", connector_type[link_connector_type]);
 
 } // update
 
@@ -396,8 +396,10 @@ feMerge.append("feMergeNode")
   function createRootElement(d) {
   var boxWidth = 230;
   var boxHeigth = 160;
-   var g = document.createElementNS("http://www.w3.org/2000/svg", "g");
-   var rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+
+  
+   var g = svgToolkit.createElement("g");
+   var rect = svgToolkit.createElement("rect");
    rect.setAttribute("height", boxHeigth);
    rect.setAttribute("width", boxWidth);
    rect.setAttribute("x", - 70 ); // d.x 
@@ -415,27 +417,14 @@ feMerge.append("feMergeNode")
    //g.appendChild(filter);
 
 
-
-
-/*
-  var tspanElement1;
-  for(i=1;i<6;i++){
-    tspanElement = document.createElementNS("http://www.w3.org/2000/svg", "tspan");
-    tspanElement.textContent= "line " + i;
-    tspanElement.setAttribute("id",i);
-    tspanElement.setAttribute("dy","1.2em");
-    tspanElement.setAttribute("x","10");
-    text1.appendChild(tspanElement);
-  } 
-  
-  g.appendChild(text1);
-
-  */
   g.appendChild(rect);
   g.appendChild(createTable());
     return g;
 
 }
+
+
+
   function createSvgEl(name) {
     return document.createElementNS('http://www.w3.org/2000/svg', name);
 }
