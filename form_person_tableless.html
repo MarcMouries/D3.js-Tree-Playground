@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  </head>
+
+  <body>
+
+    <h2>As a table</h2>
+    <table class="table person">
+        <thead>
+          <tr>
+            <th colspan="4">Eric Fox</th>
+          </tr>
+        </thead>
+      <tbody>
+      <tr>
+      <td>DoB:</td>
+      <td>06/13/1964</td>
+      <td>Race</td>
+      <td>White</td>
+      </tr>
+      <tr>
+      <td>Sex</td>
+      <td>Male</td>
+      <td>Hair</td>
+      <td>Black</td>
+      </tr>
+      <tr>
+      <td>Eyes</td>
+      <td>Brown</td>
+      <td>Build</td>
+      <td>Medium</td>
+      </tr>
+      <tr>
+      <td>Height</td>
+      <td>5'8"</td>
+      <td>Weight</td>
+      <td>150 lbs</td>
+      </tr>
+      <tr>
+      <td>Scars & Marks</td>
+      <td colspan="4">has a mole on his right cheek below the eye.</td>
+      </tr>
+      </tbody>
+      </table>
+
+
+    <table border=1>
+      <tr>
+        <td>some content</td>
+        <td>some more content</td>
+        <td rowspan="2">THIS is A COLUMN</td>
+      </tr>
+      <tr>
+        <td colspan="2">SINGLE CELL ROW</td>
+      </tr>
+    </table>
+    
+    <h2>Tableless</h2>
+
+
+
+    <div>
+      <div>
+        <div>Eric Fox</div>
+        <div>
+          <div>DoB: content</div>
+          <div>Race</div>
+        </div>
+        <div>single row</div>
+      </div>
+    </div>
+  </body>
+  <style>
+    body div { border: 1px solid #999; margin: 0; }
+    body > div { display: flex; flex-flow: row nowrap; margin-top: 10px; }
+    body > div > div { display: flex; flex-flow: column nowrap; flex: 1 1 0; }
+    body > div > div > div { display: flex; flex-flow: row nowrap; flex: 1 1 1;}
+    body > div > div > div > div { flex: 1 1 0; }
+  </style>
+</html>
