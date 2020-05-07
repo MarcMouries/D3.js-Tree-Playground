@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200;300;400;469;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@200;300;400;469;500;600;700&display=swap" rel="stylesheet">
+  
+</head>
+
+
+<style type="text/css">
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+  
+  th {
+    background-color: #f1f1f1;
+    _background-color: #A9A9A9;
+    color: #000000;
+    font-family: 'Oswald',Helvetica,sans-serif;
+    font-weight: bold;
+    font-size: 1.25em;
+  }
+  
+  td:nth-child(odd) {
+    font-weight: bold;
+    width: 25%;
+    text-align: left;
+  }
+  td {
+    color: #000000;
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.75em;
+  }
+
+</style>
+    <script type="text/javascript" src="tableToolkit.js"></script>
+    <body>
+<script>
+//////////////////////////////////
+// DATA
+//////////////////////////////////
+
+var fields_header = ["name"];
+var fields_content = ["Age", "Race", "Sex", "Hair", "Eyes", "Build", "Height"]; //"Weight"
+//var fields_content = ["Age", "Race", "Sex", "Hair", "Eyes", "Build", "Height", "Weight"]; //
+var fields_footer = ["Scars & Marks"];
+var person = {
+        "parent"       : null,
+        "name"         : "Eric Fox",
+        "Age"          : "44",
+        "Race"         : "White",
+        "Sex"          : "Male",
+        "Hair"         : "Black",
+        "Eyes"         : "Brown",
+        "Build"        : "Medium",
+        "Height"       : "5'8",
+        "Weight"       : "180 lbs",
+        "Scars & Marks": "has a mole on his right cheek below the eye"
+      };
+
+
+var tableless_html = tableToolkit.createTable(person, fields_header, fields_content, fields_footer);
+var tablelessDiv = document.createElement("table");
+tablelessDiv.innerHTML = tableless_html;
+document.body.appendChild(tablelessDiv);
+
+
+
+</script>
+
+</body>
+  </html>

@@ -1,131 +1,140 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 <style>
+  .node circle {
+    fill: #fff;
+    stroke: steelblue;
+    stroke-width: 3px;
+  }
 
-.node circle {
-  fill: #fff;
-  stroke: steelblue;
-  stroke-width: 3px;
-}
+  .node text {
+    font: 12px sans-serif;
+  }
 
-.node text { font: 12px sans-serif; }
-text { font: 12px sans-serif; }
+  text {
+    font: 12px sans-serif;
+  }
 
-.root rect {
+  .root rect {
     stroke: #ccc;
     fill: #f1f1f1;
     stroke-width: 2;
-}
-.node--internal text {
-  text-shadow: 0 1px 0 #fff, 0 -1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff;
-}
+  }
 
-.link {
-  fill: none;
-  stroke: #ccc;
-  stroke-width: 2px;
-}
+  .node--internal text {
+    text-shadow: 0 1px 0 #fff, 0 -1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff;
+  }
 
-
-
-tr:nth-child(even) {background-color: #f2f2f2;}
-td:nth-child(odd) {
-  font-weight: bold;
-  width: 25%;
-  text-align: left;
-}
-
-th {
-  background-color: #f1f1f1;
-  _background-color: #A9A9A9;
-  _color: #FFF;
-  font-weight: bold;
-  font-size: 18px;
-  text-align: center;
-}
-
-.fugitive  {
-  font-size: 11px;
-  font-family: 'Open Sans', sans-serif;
-
-}
-
-_.shadow {
-  -webkit-filter: drop-shadow( 3px 3px 2px rgba(0, 0, 0, .7));
-  filter: drop-shadow( 3px 3px 2px rgba(0, 0, 0, .7));
-  /* Similar syntax to box-shadow */
-}
+  .link {
+    fill: none;
+    stroke: #ccc;
+    stroke-width: 2px;
+  }
 
 
-.tree_toolbar {
-  _border-style: solid;
-  _border-color: #A9A9A9;
-  _border-width: 2px;
-  padding-left: 10px;
-  margin-top: 0px;
 
-}
+  tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
 
-.tree_menu .option {
-  padding-top: 0px;
-  margin-top: 0px;
+  td:nth-child(odd) {
+    font-weight: bold;
+    width: 25%;
+    text-align: left;
+  }
 
-}
+  th {
+    background-color: #f1f1f1;
+    _background-color: #A9A9A9;
+    _color: #FFF;
+    font-weight: bold;
+    font-size: 18px;
+    text-align: center;
+  }
 
-.flex-container {
-  padding: 0;
-  margin: 0;
-  list-style: none;
-  display: flex;
-  justify-content: space-between;
-}
+  .fugitive {
+    font-size: 11px;
+    font-family: 'Open Sans', sans-serif;
 
-.longhand {
-  flex-flow: wrap row;
-}
+  }
 
-.flex-item {
-  _color: #C3D0D9;
-  border: 1px solid #C3D0D9;
-  width: 150px;
-  height: 50px;
-  font-size: 1em;
-  text-align: left;
-  padding: 10px;
-  display: flex;
-  flex-direction: column ;
-}
+  _.shadow {
+    -webkit-filter: drop-shadow(3px 3px 2px rgba(0, 0, 0, .7));
+    filter: drop-shadow(3px 3px 2px rgba(0, 0, 0, .7));
+    /* Similar syntax to box-shadow */
+  }
 
 
-.flex-item label {
-  font-size: 11px;
-  font-family: 'Open Sans', sans-serif;
-}
-.flex-item  label.title{
-font-weight: bold;
-}
+  .tree_toolbar {
+    _border-style: solid;
+    _border-color: #A9A9A9;
+    _border-width: 2px;
+    padding-left: 10px;
+    margin-top: 0px;
 
-.tree_toolbar fieldset {
-  font-size: 0.8em;
-  border: 2px solid #000;
-  _padding: 2em;
-  border-radius: 0.5em;
-  _margin-bottom: 20px;
-}
-.tree_toolbar legend {
-  color: #fff;
-  background: #000;
-  padding: 0.25em 1em;
-  border-radius: 1em;
-}
+  }
 
+  .tree_menu .option {
+    padding-top: 0px;
+    margin-top: 0px;
+
+  }
+
+  .flex-container {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .longhand {
+    flex-flow: wrap row;
+  }
+
+  .flex-item {
+    _color: #C3D0D9;
+    border: 1px solid #C3D0D9;
+    width: 150px;
+    height: 50px;
+    font-size: 1em;
+    text-align: left;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+  }
+
+
+  .flex-item label {
+    font-size: 11px;
+    font-family: 'Open Sans', sans-serif;
+  }
+
+  .flex-item label.title {
+    font-weight: bold;
+  }
+
+  .tree_toolbar fieldset {
+    font-size: 0.8em;
+    border: 2px solid #000;
+    _padding: 2em;
+    border-radius: 0.5em;
+    _margin-bottom: 20px;
+  }
+
+  .tree_toolbar legend {
+    color: #fff;
+    background: #000;
+    padding: 0.25em 1em;
+    border-radius: 1em;
+  }
 </style>
 
 <body>
 
   <!---------------------------->
-  <!-- TREE TOOLBAR -->    	
-  <!---------------------------->    	
+  <!-- TREE TOOLBAR -->
+  <!---------------------------->
   <div class="tree_toolbar">
     <fieldset>
       <legend>Tree Options</legend>
@@ -133,12 +142,12 @@ font-weight: bold;
         <div class="flex-item">
           <label class="title">Connector:</label>
           <div>
-            <input type="radio"  name="connector" value="curved" checked onclick="setConnector('curved')">
+            <input type="radio" name="connector" value="curved" checked onclick="setConnector('curved')">
             <label for="curved">curved</label>
-        </div>
+          </div>
           <div>
-              <input type="radio" name="connector" value="elbow"  onclick="setConnector('elbow')">
-              <label for="elbow">elbow</label>
+            <input type="radio" name="connector" value="elbow" onclick="setConnector('elbow')">
+            <label for="elbow">elbow</label>
           </div>
 
         </div>
@@ -149,312 +158,329 @@ font-weight: bold;
   <script src="https://d3js.org/d3.v5.min.js"></script>
   <script src="svgToolkit.js"></script>
 
-<script>
-
-function setConnector(link_connector_type){
-   update(root, link_connector_type);
-};
-
+  <script>
+    function setConnector(link_connector_type) {
+      update(root, link_connector_type);
+    };
 
 
 
 
-// DATA
-//////////////////////////////////
-var person = {
-  "parent": null,
-  "name": "Person",
-  "first_name" : "John",
-  "last_name" : "Doe",
-  age:50,
-  eye_color:"blue"
-};
 
-var known_addresses = { "name": "Known Addresses", "parent": "Person"};
-var family_members = {  "name": "Family",  "parent": "Person"};
-var vehicles = { "name": "Vehicles", "parent": "Person"};
-var charges =  { "name": "Charges", "parent": "Person"};
-// the flat data
-var flat_tree = [];
-flat_tree.push(person);
-flat_tree.push(known_addresses);
-flat_tree.push(family_members);
-flat_tree.push(vehicles);
-flat_tree.push(charges);
+    // DATA
+    //////////////////////////////////
+    var person = {
+      "parent": null,
+      "name": "Person",
+      "first_name": "John",
+      "last_name": "Doe",
+      age: 50,
+      eye_color: "blue"
+    };
+
+    var known_addresses = {
+      "name": "Known Addresses",
+      "parent": "Person"
+    };
+    var family_members = {
+      "name": "Family",
+      "parent": "Person"
+    };
+    var vehicles = {
+      "name": "Vehicles",
+      "parent": "Person"
+    };
+    var charges = {
+      "name": "Charges",
+      "parent": "Person"
+    };
+    // the flat data
+    var flat_tree = [];
+    flat_tree.push(person);
+    flat_tree.push(known_addresses);
+    flat_tree.push(family_members);
+    flat_tree.push(vehicles);
+    flat_tree.push(charges);
 
 
-console.log(flat_tree);
+    console.log(flat_tree);
 
-/////  TREE
+    /////  TREE
 
 
-// set the dimensions and margins of the diagram
-var margin = {top: 20, right: 90, bottom: 30, left: 90},
-    width = 1000 - margin.left - margin.right,
-    height = 600 - margin.top - margin.bottom;
+    // set the dimensions and margins of the diagram
+    var margin = {
+        top: 20,
+        right: 90,
+        bottom: 30,
+        left: 90
+      },
+      width = 1000 - margin.left - margin.right,
+      height = 600 - margin.top - margin.bottom;
 
-// append the svg object to the body of the page
-// appends a 'group' element to 'svg'
-// moves the 'group' element to the top left margin
-var svg = d3.select("body").append("svg")
+    // append the svg object to the body of the page
+    // appends a 'group' element to 'svg'
+    // moves the 'group' element to the top left margin
+    var svg = d3.select("body").append("svg")
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom),
-    g = svg.append("g")
+      g = svg.append("g")
       .attr("transform",
-            "translate(" + margin.left + "," + margin.top + ")");
+        "translate(" + margin.left + "," + margin.top + ")");
 
 
-// convert the flat data into a hierarchy 
-var treeData = d3.stratify()
-    .id(function(d) { return d.name; })
-    .parentId(function(d) { return d.parent; })
-  (flat_tree);
+    // convert the flat data into a hierarchy 
+    var treeData = d3.stratify()
+      .id(function (d) {
+        return d.name;
+      })
+      .parentId(function (d) {
+        return d.parent;
+      })
+      (flat_tree);
 
-// assign the name to each node
-treeData.each(function(d) {
-    d.name = d.id;
-  });
-
-
-
-// declares a tree layout and assigns the size
-var tree = d3.tree().size([height, width]);
-
-//  assigns the data to a hierarchy using parent-child relationships
-//var nodes = d3.hierarchy(treeData, function(d) {
-//    return d.children;
-//  });
-
-//=> changed to
-var root = d3.hierarchy(treeData);
+    // assign the name to each node
+    treeData.each(function (d) {
+      d.name = d.id;
+    });
 
 
-// maps the node data to the tree layout
-nodes = tree(root);
+
+    // declares a tree layout and assigns the size
+    var tree = d3.tree().size([height, width]);
+
+    //  assigns the data to a hierarchy using parent-child relationships
+    //var nodes = d3.hierarchy(treeData, function(d) {
+    //    return d.children;
+    //  });
+
+    //=> changed to
+    var root = d3.hierarchy(treeData);
 
 
-/**  LINK FUNCTIONS  **/
-
-var link_curved = function(d) {
-    var source = calcLeft(d.source);
-    var target = calcLeft(d.target);
-       return "M" + source.y + "," + source.x
-         + "C" + (source.y + target.y) / 2 + "," + source.x
-         + " " + (source.y + target.y) / 2 + "," + target.x
-         + " " + target.y + "," + target.x;
-       };
+    // maps the node data to the tree layout
+    nodes = tree(root);
 
 
-  var calcLeft = function(d){
-        var l = d.y;
-        if(d.position==='left'){
-          l = (d.y)-w/2;
-          l = (w/2) + l;
-        }
-        return {x : d.x, y : l};
+    /**  LINK FUNCTIONS  **/
+
+    var link_curved = function (d) {
+      var source = calcLeft(d.source);
+      var target = calcLeft(d.target);
+      return "M" + source.y + "," + source.x +
+        "C" + (source.y + target.y) / 2 + "," + source.x +
+        " " + (source.y + target.y) / 2 + "," + target.x +
+        " " + target.y + "," + target.x;
+    };
+
+
+    var calcLeft = function (d) {
+      var l = d.y;
+      if (d.position === 'left') {
+        l = (d.y) - w / 2;
+        l = (w / 2) + l;
+      }
+      return {
+        x: d.x,
+        y: l
       };
+    };
 
-  var link_elbow = function (d){
-            var source = calcLeft(d.source);
-            var target = calcLeft(d.target);
-            var hy = (target.y-source.y)/2;
-            return "M" + source.y + "," + source.x
-                   + "H" + (source.y+hy)
-                   + "V" + target.x + "H" + target.y;
-          };
+    var link_elbow = function (d) {
+      var source = calcLeft(d.source);
+      var target = calcLeft(d.target);
+      var hy = (target.y - source.y) / 2;
+      return "M" + source.y + "," + source.x +
+        "H" + (source.y + hy) +
+        "V" + target.x + "H" + target.y;
+    };
 
-  var link_straight = function(d) {
-    return 
-    "M" + d.x + "," + d.y
-  + "L" + d.parent.x + "," + d.parent.y;
-  };
-
-
-
-var connector_type = {
-  "curved": link_curved,
-  "elbow": link_elbow,
-  "straight": link_elbow
-};
-
-update(root, 'straight');
+    var link_straight = function (d) {
+      return "M" + d.x + "," + d.y +
+        "L" + d.parent.x + "," + d.parent.y;
+    };
 
 
 
-function update (node, link_connector_type) {
+    var connector_type = {
+      "curved": link_curved,
+      "elbow": link_elbow,
+      "straight": link_elbow
+    };
 
-    //console.log(connector_type[link_connector_type]);
-    //console.log(connector_type["curved"]);
-    //console.log(connector_type["elbow"]);
-    //console.log(connector_type["straight"]);
-
-
-// adds the links between the nodes
-var link = g.selectAll(".link")
-      .data(tree(root).links())
-      .enter().append("path")
-      .attr("class", "link")
-      .attr("d", connector_type[link_connector_type]);
+    update(root, 'straight');
 
 
-    // adds each node as a group
-    var node = g.selectAll(".node")
+
+    function update(node, link_connector_type) {
+
+      //console.log(connector_type[link_connector_type]);
+      //console.log(connector_type["curved"]);
+      //console.log(connector_type["elbow"]);
+      //console.log(connector_type["straight"]);
+
+
+      // adds the links between the nodes
+      var link = g.selectAll(".link")
+        .data(tree(root).links())
+        .enter().append("path")
+        .attr("class", "link")
+        .attr("d", connector_type[link_connector_type]);
+
+
+      // adds each node as a group
+      var node = g.selectAll(".node")
         .data(nodes.descendants())
         .enter()
         .append("g")
-        .attr("class", function(d) {
+        .attr("class", function (d) {
           if (d.parent == null) {
-            return  "root";
+            return "root";
+          } else {
+            return "node" + (d.children ? " node--internal" : " node--leaf");
           }
-          else {
-              return  "node" + (d.children ? " node--internal" : " node--leaf");
+        })
+        .attr("transform", function (d) {
+          return "translate(" + d.y + "," + d.x + ")";
+        })
+        .append(function (d, i) {
+          //console.log("node " + i + d.data);
+          if (d.data.name == "Person") {
+            return createRootElement(d);
+          } else {
+            return createSvgEl("g");
           }
-      })
-        .attr("transform", function(d) {
-            return "translate(" + d.y + "," + d.x + ")";
-          })
-          .append(function(d,i) {
-            //console.log("node " + i + d.data);
-            if (d.data.name == "Person") {
-              return createRootElement(d);
-            } else {
-                return createSvgEl("g");
-            }
         });
 
 
 
-    // adds the text to the node
-    node.append("text")
-      .attr("dy", ".35em")
-      .attr("x", function(d) { return d.children ? -13 : 13; })
-      .style("text-anchor", function(d) {
-        return d.children ? "end" : "start"; })
-      .text(function(d) { 
-        if (d.data.name == "Person") {return ""; }
-        return d.data.name; }
-        );
-
- 
-
-} // update
-
-
-/**
- FILTERS FOR BOX SHADOW 
- **/
-
-// filters go in defs element
-var defs = svg.append("defs");
-
-// create filter with id #drop-shadow
-// height=130% so that the shadow is not clipped
-var filter = defs.append("filter")
-    .attr("id", "drop-shadow")
-    .attr("height", "130%");
-
-// SourceAlpha refers to opacity of graphic that this filter will be applied to
-// convolve that with a Gaussian with standard deviation 3 and store result
-// in blur
-filter.append("feGaussianBlur")
-    .attr("in", "SourceAlpha")
-    .attr("stdDeviation", 2)
-    .attr("result", "blur");
-
-// translate output of Gaussian blur to the right and downwards with 2px
-// store result in offsetBlur
-filter.append("feOffset")
-    .attr("in", "blur")
-    .attr("dx", 2)
-    .attr("dy", 2)
-    .attr("result", "offsetBlur");
-
-// overlay original SourceGraphic over translated blurred opacity by using
-// feMerge filter. Order of specifying inputs is important!
-var feMerge = filter.append("feMerge");
-
-feMerge.append("feMergeNode")
-    .attr("in", "offsetBlur")
-feMerge.append("feMergeNode")
-    .attr("in", "SourceGraphic");
-
-
-/** ROOT **/
-
-  function createSomething(){
-  return function(){
-    var group = d3.select(document.createElementNS(d3.ns.prefix.svg, 'g'));
-    // Add stuff...
-    group.append("rect")
-   .attr("height", 50)
-   .attr("width", 50)
-   .style("fill", "lightgreen");
-    return group.node();
-  }
-}
-
-  function createRootElement(d) {
-  var boxWidth = 230;
-  var boxHeigth = 160;
-
-  
-   var g = svgToolkit.createElement("g");
-   var rect = svgToolkit.createElement("rect");
-   rect.setAttribute("height", boxHeigth);
-   rect.setAttribute("width", boxWidth);
-   rect.setAttribute("x", - 70 ); // d.x 
-   rect.setAttribute("y", - 50); //d.y - boxHeigth / 2);
-   rect.setAttribute("rx", 10);
-   rect.setAttribute("ry", 10);
-
-   var filterId = "drop-shadow";
-   svgToolkit.applyFilter(rect, filterId);
-   //var blur = 5;
-   //filter = svgToolkit.createFilter("feGaussianBlur",  filterId, {stdDeviation: blur});
-
-   //rect.parentNode.append(filter);
-
-   //g.appendChild(filter);
-
-
-  g.appendChild(rect);
-  g.appendChild(createTable());
-    return g;
-
-}
+      // adds the text to the node
+      node.append("text")
+        .attr("dy", ".35em")
+        .attr("x", function (d) {
+          return d.children ? -13 : 13;
+        })
+        .style("text-anchor", function (d) {
+          return d.children ? "end" : "start";
+        })
+        .text(function (d) {
+          if (d.data.name == "Person") {
+            return "";
+          }
+          return d.data.name;
+        });
 
 
 
-  function createSvgEl(name) {
-    return document.createElementNS('http://www.w3.org/2000/svg', name);
-}
+    } // update
 
 
-function createTable() {
-  var ns = 'http://www.w3.org/2000/svg';
+    /**
+     FILTERS FOR BOX SHADOW 
+     **/
 
-var foreignObject = document.createElementNS( ns, 'foreignObject');
-foreignObject.setAttribute('height', "220px");
-foreignObject.setAttribute('width', "220px");
-foreignObject.setAttribute("x", - 65); // d.x 
-foreignObject.setAttribute("y", - 50); //d.y - boxHeigth / 2);
-//foreignObject.setAttribute('max-width', "150px");
+    // filters go in defs element
+    var defs = svg.append("defs");
+
+    // create filter with id #drop-shadow
+    // height=130% so that the shadow is not clipped
+    var filter = defs.append("filter")
+      .attr("id", "drop-shadow")
+      .attr("height", "130%");
+
+    // SourceAlpha refers to opacity of graphic that this filter will be applied to
+    // convolve that with a Gaussian with standard deviation 3 and store result
+    // in blur
+    filter.append("feGaussianBlur")
+      .attr("in", "SourceAlpha")
+      .attr("stdDeviation", 2)
+      .attr("result", "blur");
+
+    // translate output of Gaussian blur to the right and downwards with 2px
+    // store result in offsetBlur
+    filter.append("feOffset")
+      .attr("in", "blur")
+      .attr("dx", 2)
+      .attr("dy", 2)
+      .attr("result", "offsetBlur");
+
+    // overlay original SourceGraphic over translated blurred opacity by using
+    // feMerge filter. Order of specifying inputs is important!
+    var feMerge = filter.append("feMerge");
+
+    feMerge.append("feMergeNode")
+      .attr("in", "offsetBlur")
+    feMerge.append("feMergeNode")
+      .attr("in", "SourceGraphic");
 
 
-var div = document.createElement('div');
+    /** ROOT **/
 
-var fields = ["name", "DoB", "Race", "Sex", "Hair", "Build", "Height", "Weight", "Scars & Marks"];
-var person = {
-  "parent": null,
-  "name": "Eric Fox",
-  "first_name" : "John",
-  "last_name" : "Doe",
-  "age" : "50",
-  "eye_color" : "blue",
+    function createSomething() {
+      return function () {
+        var group = d3.select(document.createElementNS(d3.ns.prefix.svg, 'g'));
+        // Add stuff...
+        group.append("rect")
+          .attr("height", 50)
+          .attr("width", 50)
+          .style("fill", "lightgreen");
+        return group.node();
+      }
+    }
 
-};
-//var html = createTable
-var html = `
+    function createRootElement(d) {
+      var boxWidth = 230;
+      var boxHeigth = 160;
+
+
+      var g = svgToolkit.createElement("g");
+      var rect = svgToolkit.createElement("rect");
+      rect.setAttribute("height", boxHeigth);
+      rect.setAttribute("width", boxWidth);
+      rect.setAttribute("x", -70); // d.x 
+      rect.setAttribute("y", -50); //d.y - boxHeigth / 2);
+      rect.setAttribute("rx", 10);
+      rect.setAttribute("ry", 10);
+
+      var filterId = "drop-shadow";
+      svgToolkit.applyFilter(rect, filterId);
+      //var blur = 5;
+      //filter = svgToolkit.createFilter("feGaussianBlur",  filterId, {stdDeviation: blur});
+
+      //rect.parentNode.append(filter);
+
+      //g.appendChild(filter);
+
+
+      g.appendChild(rect);
+      g.appendChild(createTable());
+      return g;
+
+    }
+
+
+
+    function createSvgEl(name) {
+      return document.createElementNS('http://www.w3.org/2000/svg', name);
+    }
+
+
+    function createTable() {
+      var ns = 'http://www.w3.org/2000/svg';
+
+      var foreignObject = document.createElementNS(ns, 'foreignObject');
+      foreignObject.setAttribute('height', "220px");
+      foreignObject.setAttribute('width', "220px");
+      foreignObject.setAttribute("x", -65); // d.x 
+      foreignObject.setAttribute("y", -50); //d.y - boxHeigth / 2);
+      //foreignObject.setAttribute('max-width', "150px");
+
+
+      var div = document.createElement('div');
+
+
+      //var html = createTable
+      var html = `
 <table class="table fugitive">
         <thead>
           <tr>
@@ -494,12 +520,10 @@ var html = `
       </table>
 `;
 
-div.innerHTML = html;
-foreignObject.appendChild( div ); 
-return foreignObject;
-}
-
-
-</script>
-<svg id="chart"></svg>
+      div.innerHTML = html;
+      foreignObject.appendChild(div);
+      return foreignObject;
+    }
+  </script>
+  <svg id="chart"></svg>
 </body>

@@ -1,88 +1,292 @@
 <!DOCTYPE html>
 <html>
 
-  <head>
-  </head>
+<head>
+</head>
 
-  <style type="text/css">
+<style type="text/css">
+  .tableless {
+    border: 1px solid #999;
+    margin: 0;
+  }
 
-  </style>
-  <body>
+  tableless>row {
+    display: flex;
+    flex-flow: row nowrap;
+    border: 1px solid #999;
+    margin: 0;
+  }
 
-    <h2>As a table</h2>
-    <table class="table person">
-        <thead>
-          <tr>
-            <th colspan="4">Eric Fox</th>
-          </tr>
-        </thead>
-      <tbody>
+  tableless>row>div {
+    display: flex;
+    flex-flow: column nowrap;
+    flex: 1 1 0;
+  }
+
+  tableless>row>div>div {
+    display: flex;
+    flex-flow: row nowrap;
+    flex: 1 1 1;
+  }
+
+  tableless>row>div>div>div {
+    flex: 1 1 0;
+  }
+
+
+
+
+  tableless_  > div{
+    border: 2px solid #999;
+    margin: 0;
+  }
+  tableless_>div >header {
+    display: flex;
+    flex-flow: row nowrap;
+    margin: 0;
+  }
+
+  tableless_>header>row {
+    display: flex;
+    justify-content: space-between ;
+  }
+
+  tableless_> div >fields {
+    display: flex;
+    flex-flow: column nowrap;
+    margin: 0;
+    border: 2px solid #999;
+  }
+
+  tableless_>footer {
+    display: flex;
+    flex-flow: row nowrap;
+    margin: 0;
+  }
+
+  tableless_>div > fields>row {
+    display: flex;
+    justify-content: space-between ;
+  }
+
+
+  tableless_>div > fields>row>column {
+    border: 2px solid red;
+    width: 15em;
+  }
+  tableless_>div > footer>row>column {
+    border: 2px solid red;
+    width: 25em;
+  }
+   
+
+
+
+
+</style>
+
+
+<body>
+
+  <h2>As a table</h2>
+  <table class="table person">
+    <thead>
       <tr>
-      <td>DoB:</td>
-      <td>06/13/1964</td>
-      <td>Race</td>
-      <td>White</td>
+        <th colspan="4">Eric Fox</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>DoB:</td>
+        <td>06/13/1964</td>
+        <td>Race</td>
+        <td>White</td>
       </tr>
       <tr>
-      <td>Sex</td>
-      <td>Male</td>
-      <td>Hair</td>
-      <td>Black</td>
+        <td>Sex</td>
+        <td>Male</td>
+        <td>Hair</td>
+        <td>Black</td>
       </tr>
       <tr>
-      <td>Eyes</td>
-      <td>Brown</td>
-      <td>Build</td>
-      <td>Medium</td>
+        <td>Eyes</td>
+        <td>Brown</td>
+        <td>Build</td>
+        <td>Medium</td>
       </tr>
       <tr>
-      <td>Height</td>
-      <td>5'8"</td>
-      <td>Weight</td>
-      <td>150 lbs</td>
+        <td>Height</td>
+        <td>5'8"</td>
+        <td>Weight</td>
+        <td>150 lbs</td>
       </tr>
       <tr>
-      <td>Scars & Marks</td>
-      <td colspan="4">has a mole on his right cheek below the eye.</td>
+        <td>Scars & Marks: </td>
+        <td colspan="4">has a mole on his right cheek below the eye.</td>
       </tr>
-      </tbody>
-      </table>
+    </tbody>
+  </table>
 
 
-    <table border=1>
-      <tr>
-        <td>some content</td>
-        <td>some more content</td>
-        <td rowspan="2">THIS is A COLUMN</td>
-      </tr>
-      <tr>
-        <td colspan="2">SINGLE CELL ROW</td>
-      </tr>
-    </table>
-    
-    <h2>Tableless</h2>
+  <table border=1>
+    <tr>
+      <td>some content</td>
+      <td>some more content</td>
+      <td rowspan="2">THIS is A COLUMN</td>
+    </tr>
+    <tr>
+      <td colspan="2">SINGLE CELL ROW</td>
+    </tr>
+  </table>
 
 
+  // createTable
+  <h2>Tableless COLUMNS</h2>
 
+  
+  <tableless_>
     <div>
+    <header>
+      <row>
+        <column>name: </column>
+        <column>Eric Fox</column>
+      </row>
+    </header>
+    <fields>
+      <row>
+        <column>Age: </column>
+        <column>44</column>
+        <column>Race: </column>
+        <column>White</column>
+      </row>
+      <row>
+        <column>Sex: </column>
+        <column>Male</column>
+        <column>Hair: </column>
+        <column>Black</column>
+      </row>
+      <row>
+        <column>Eyes: </column>
+        <column>Brown</column>
+        <column>Build: </column>
+        <column>Medium</column>
+      </row>
+      <row>
+        <column>Height: </column>
+        <column>5'8</column>
+        <column>Weight: </column>
+        <column>blue</column>
+      </row>
+      <row>
+        <column>Scars &amp; Marks: </column>
+        <column>has a mole on his right cheek below the eye</column>
+      </row>
+    </fields>
+    <footer>
+      <row>
+        <column>Scars &amp; Marks: </column>
+        <column>has a mole on his right cheek below the eye</column>
+      </row>
+    </footer>
+  </div>
+  </tableless_>
+
+
+
+
+  <tableless>
+    <row>Eric Fox</row>
+    <row>
+      <div>element 1</div>
+      <div>element 2</div>
+      <div>element 2</div>
+      <div>element 2</div>
+    </row>
+    <row>
       <div>
-        <div>Eric Fox</div>
-        <div>
-          <div>element 1</div>
-          <div>element 2</div>
-        </div>
-        <div>single row</div>
-        <div>
-        <div>single row</div>
+        <field>
+          <name>name: </name>
+          <value>Eric Fox: </value>
+        </field>
       </div>
+      <div>
+        <field>
+          <name>name: </name>
+          <value>Eric Fox: </value>
+        </field>
       </div>
-    </div>
-  </body>
-  <style>
-    body div { border: 1px solid #999; margin: 0; }
-    body > div { display: flex; flex-flow: row nowrap; margin-top: 10px; }
-    body > div > div { display: flex; flex-flow: column nowrap; flex: 1 1 0; }
-    body > div > div > div { display: flex; flex-flow: row nowrap; flex: 1 1 1;}
-    body > div > div > div > div { flex: 1 1 0; }
-  </style>
+    </row>
+    <row>single element</row>
+    <row>
+    </row>
+  </tableless>
+
+  <h2>Tableless 2</h2>
+
+  <tableless_>
+    <header>
+      <row>
+        <field>
+          <name>name: </name>
+          <value>Eric Fox: </value>
+        </field>
+      </row>
+    </header>
+    <fields>
+      <row>
+        <field>
+          <name>Age: </name>
+          <value>44: </value>
+        </field>
+        <field>
+          <name>Race: </name>
+          <value>White: </value>
+        </field>
+      </row>
+      <row>
+        <name>Sex: </name>
+        <value>Male: </value>
+        <name>Hair: </name>
+        <value>Black: </value>
+      </row>
+      <row>
+        <div>Sex: </div>
+        <div>Male: </div>
+        <div>Hair: </div>
+        <div>Black: </div>
+      </row>
+      <row>
+        <field>
+          <name>Eyes: </name>
+          <value>Brown: </value>
+        </field>
+        <field>
+          <name>Build: </name>
+          <value>Medium: </value>
+        </field>
+      </row>
+      <row>
+        <field>
+          <name>Height: </name>
+          <value>5'8: </value>
+        </field>
+        <field>
+          <name>Weight: </name>
+          <value>blue: </value>
+        </field>
+      </row>
+    </fields>
+    <footer>
+      <row>
+        <field>
+          <name>Scars &amp; Marks: </name>
+          <value>has a mole on his right cheek below the eye: </value>
+        </field>
+      </row>
+    </footer>
+  </tableless_>
+
+
+
+
 </html>

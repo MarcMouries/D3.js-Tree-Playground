@@ -6,6 +6,9 @@
     <link type="text/css" rel="stylesheet" href="style_mindmap.css"/>
     <script type="text/javascript" src="https://d3js.org/d3.v3.min.js"></script>
     <script type="text/javascript" src="mousetrap.js"></script>
+    <script type="text/javascript" src="mm_d3Toolkit.js"></script>
+
+    
     <style type="text/css">
       .node circle {
         cursor: pointer;
@@ -30,6 +33,7 @@
     </style>
   </head>
   <body>
+
     <div id="body">
       <div id="toolbar">
         <button onclick="createNew(); return false;">New</button>
@@ -43,8 +47,38 @@
         <button onclick="setConnector('diagonal'); return false;">Diagonal connector</button>
         <button onclick="setConnector('elbow'); return false;">Elbow connector</button>
       </div>
+
+        <!---------------------------->
+  <!-- TREE TOOLBAR -->
+  <!---------------------------->
+  <div class="tree_toolbar">
+    <fieldset>
+      <legend>Tree Options</legend>
+      <div class="flex-container longhand">
+        <div class="flex-item">
+          <label class="title">Connector:</label>
+          <div>
+            <input type="radio" name="connector" value="curved"  onclick="setConnector('diagonal')">
+            <label for="curved">curved</label>
+          </div>
+          <div>
+            <input type="radio" name="connector" value="elbow" checked onclick="setConnector('elbow')">
+            <label for="elbow">elbow</label>
+          </div>
+
+        </div>
+      </div>
+    </fieldset>
+  </div>
       <div id="footer">[Enter] Change name, [Left] Move select left, [Right] Move selection right, [Up] Move selection up, [Down] Move selection down, [Ins] Add new node,  [Del] Delete selected node</div>
     </div>
+
+
+
+
+
+
+    
     <script type="text/javascript">
 /*
 // Add a new item
@@ -303,37 +337,18 @@ update(root);
       //tree(root);
       // v4
 
-      var calcLeft = function(d){
-        var l = d.y;
-        if(d.position==='left'){
-          l = (d.y)-w/2;
-          l = (w/2) + l;
-        }
-        return {x : d.x, y : l};
-      };
-
-      //var diagonal = d3.svg.diagonal().projection(function(d) { return [d.y, d.x]; });
 
 
-          var diagonal = function link(d) {
-   return "M" + d.source.y + "," + d.source.x
-        + "C" + (d.source.y + d.target.y) / 2 + "," + d.source.x
-        + " " + (d.source.y + d.target.y) / 2 + "," + d.target.x
-        + " " + d.target.y + "," + d.target.x;
-  };
 
-      var elbow = function (d, i){
-            var source = calcLeft(d.source);
-            var target = calcLeft(d.target);
-            var hy = (target.y-source.y)/2;
-            return "M" + source.y + "," + source.x
-                   + "H" + (source.y+hy)
-                   + "V" + target.x + "H" + target.y;
-          };
-      var connector = elbow;
+      var diagonal = mm_d3Toolkit.link_diagonal;
+      var connector = mm_d3Toolkit.link_elbow;
+
+      //  #svg_container {
+
 
       var vis = d3.select("#body")
-        .append("svg:svg")
+       // .append("svg:svg")
+        .append("svg")
           .attr("width", w
           + m[1] + m[3])
           .attr("height", h + m[0] + m[2])
@@ -473,7 +488,10 @@ console.log(source);
 
         // Update the links…
         var link = vis.selectAll("path.link")
-            .data(tree.links(nodes), function(d) { return d.target.id; });
+            .data(
+              tree.links(nodes), 
+              function(d) { return d.target.id; }
+            );
 
         // Enter any new links at the parent's previous position.
         link.enter().insert("svg:path", "g")
