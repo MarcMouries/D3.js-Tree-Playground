@@ -328,20 +328,15 @@ update(root);
       };
       
 
-
       // v3
       var tree = d3.layout.tree().size([h, w]);
-
-      // v4 treelayout
-      //var tree = d3.tree().size([h, w]);
-      //tree(root);
-      // v4
 
 
 
 
       var diagonal = mm_d3Toolkit.link_diagonal;
-      var connector = mm_d3Toolkit.link_elbow;
+      var elbow = mm_d3Toolkit.link_elbow;
+      var connector = elbow;
 
       //  #svg_container {
 

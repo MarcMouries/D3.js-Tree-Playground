@@ -1,9 +1,7 @@
 /**
+ *  
  * 
  */
-
-
-
 var mm_d3Toolkit = {
 
 
@@ -13,7 +11,6 @@ var mm_d3Toolkit = {
       " " + (d.source.y + d.target.y) / 2 + "," + d.target.x +
       " " + d.target.y + "," + d.target.x;
   },
-
 
 
   calcLeft: function (d) {
