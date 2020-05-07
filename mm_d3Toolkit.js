@@ -14,10 +14,11 @@ var mm_d3Toolkit = {
 
 
   calcLeft: function (d) {
+    console.log("calcLedt: " + h);
     var l = d.y;
     if (d.position === 'left') {
-      l = (d.y) - w / 2;
-      l = (w / 2) + l;
+      l = (d.y) - h / 2;
+      l = (h / 2) + l;
     }
     return {
       x: d.x,

@@ -6,31 +6,13 @@
     </head>
 
     <body>
-        <script type="text/javascript" src="treeDataToolkit.js"></script>
-<script>
+      <script type="text/javascript" src="treeDataToolkit.js"></script>
+      <script type="text/javascript" src="tree_widget_data.js"></script>
+      <script>
 
 // DATA
 //////////////////////////////////
-var person = {
-  "name": "Person",
-  "parent": null,
-  "first_name" : "John",
-  "last_name" : "Doe",
-  age:50,
-  eye_color:"blue"
-};
 
-var known_addresses = { "name": "Known Addresses", "parent": "Person"};
-var family_members = {  "name": "Family",  "parent": "Person"};
-var vehicles = { "name": "Vehicles", "parent": "Person"};
-var charges =  { "name": "Charges", "parent": "Person"};
-// the flat data
-var flat_tree = [];
-flat_tree.push(person);
-flat_tree.push(known_addresses);
-flat_tree.push(family_members);
-flat_tree.push(vehicles);
-flat_tree.push(charges);
 
 console.log("FLAT TREE=");
 console.log(flat_tree);
@@ -41,6 +23,10 @@ console.log("TREE=");
 var tree = treeDataToolkit.convertFlatRelationshipsToTree(flat_tree);
 console.log(tree);
 
+
+
+console.log("dataMap=");
+		console.log(tree[0]);
 </script>
 </body>
   </html>

@@ -1,0 +1,68 @@
+/* Make the chart container fill the page using CSS. */
+#tree_container {
+  position: fixed;
+  left: 0px;
+  right: 0px;
+  top: 150px;
+  bottom: 0px;
+  border: 1px solid red;
+}
+
+
+svg {
+  border: 1px solid blue;
+}
+
+.toolbar_container {
+padding: 0;
+margin: 0;
+list-style: none;
+display: flex;
+justify-content: flex-start;
+}
+.toolbar_item {
+_color: #C3D0D9;
+border: 1px solid #C3D0D9;
+width: 150px;
+font-size: 1em;
+text-align: left;
+padding: 10px;
+display: flex;
+flex-direction: column;
+}
+
+.tree_toolbar fieldset {
+font-size: 0.8em;
+border: 2px solid #000;
+_padding: 2em;
+border-radius: 0.5em;
+_margin-bottom: 20px;
+}
+
+.tree_toolbar legend {
+color: #fff;
+background: #000;
+padding: 0.25em 1em;
+border-radius: 1em;
+}
+
+.node circle {
+  cursor: pointer;
+  fill: #fff;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+.node text {
+  font-size: 11px;
+}
+
+path.link {
+  fill: none;
+  stroke: #ccc;
+  stroke-width: 1.5px;
+}
+
+.node.selected circle {
+  fill: green;
+}

@@ -71,7 +71,6 @@
     _border-width: 2px;
     padding-left: 10px;
     margin-top: 0px;
-
   }
 
   .tree_menu .option {
@@ -80,23 +79,22 @@
 
   }
 
-  .flex-container {
+  .toolbar_container {
     padding: 0;
     margin: 0;
     list-style: none;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
   }
 
   .longhand {
     flex-flow: wrap row;
   }
 
-  .flex-item {
+  .toolbar_item {
     _color: #C3D0D9;
     border: 1px solid #C3D0D9;
     width: 150px;
-    height: 50px;
     font-size: 1em;
     text-align: left;
     padding: 10px;
@@ -138,18 +136,32 @@
   <div class="tree_toolbar">
     <fieldset>
       <legend>Tree Options</legend>
-      <div class="flex-container longhand">
-        <div class="flex-item">
+      <div class="toolbar_container longhand">
+        <div class="toolbar_item">
           <label class="title">Connector:</label>
           <div>
-            <input type="radio" name="connector" value="curved" checked onclick="setConnector('curved')">
+            <input type="radio" name="connector" value="curved" onclick="setConnector('diagonal')">
             <label for="curved">curved</label>
           </div>
           <div>
-            <input type="radio" name="connector" value="elbow" onclick="setConnector('elbow')">
+            <input type="radio" name="connector" value="elbow" checked onclick="setConnector('elbow')">
             <label for="elbow">elbow</label>
           </div>
-
+        </div>
+        <div class="toolbar_item">
+          <label class="title">Orientation:</label>
+          <div>
+            <input type="radio" name="Orientation" value="left" onclick="setOrientation('left')">
+            <label for="left">left</label>
+          </div>
+          <div>
+            <input type="radio" name="Orientation" value="center" checked onclick="setOrientation('center')">
+            <label for="center">center</label>
+          </div>
+          <div>
+            <input type="radio" name="Orientation" value="right" checked onclick="setOrientation('right')">
+            <label for="right">right</label>
+          </div>          
         </div>
       </div>
     </fieldset>
@@ -169,6 +181,34 @@
 
     // DATA
     //////////////////////////////////
+
+
+
+/**
+*/
+function Person(first, last, age, eye) {
+  this.firstName = first;
+  this.lastName = last;
+  this.age = age;
+  this.eyeColor = eye;
+}
+
+// Create 2 Person objects
+var aPerson = new Person("John", "Doe", 50, "blue");
+console.log(JSON.stringify(aPerson));
+var objectFields = Object.entries(aPerson);
+var objectKeys = Object.keys(aPerson);
+console.log(JSON.stringify(objectFields));
+console.log(JSON.stringify(objectKeys));
+
+for (var i in objectKeys){
+     var key = objectKeys[i];
+     var value = aPerson[ key ];
+     console.log(key + " =  "+ value );    
+}
+
+
+
     var person = {
       "parent": null,
       "name": "Person",
@@ -201,6 +241,7 @@
     flat_tree.push(family_members);
     flat_tree.push(vehicles);
     flat_tree.push(charges);
+
 
 
     console.log(flat_tree);
