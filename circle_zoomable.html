@@ -1,0 +1,49 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <script type="text/javascript" src="https://d3js.org/d3.v3.js"></script>
+    <style type="text/css">
+      body, html {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+      }
+      svg {
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+      p {
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <p>Use the mouse to pan (click and move) / zoom (scrollwheel)</p>
+  </body>
+  <script type="text/javascript">
+    var svg = d3.select("body")
+      .append("svg")
+      .attr("width", "100%")
+      .attr("height", "100%")
+      .call(d3.behavior.zoom().on("zoom", function () {
+        svg.attr("transform", "translate(" + d3.event.translate + ")" + " scale(" + d3.event.scale + ")")
+      }))
+      .append("g")
+
+      var margin = {top: 20, right: 120, bottom: 20, left: 120};
+      var clientWidth =  document.body.clientWidth ;
+      var clientHeight =  document.body.clientHeight ;
+      var width = clientWidth - margin.right - margin.left;
+      var height = clientHeight - margin.top - margin.bottom;
+
+      var circle_radius =  Math.min(width, height)  /2;
+
+    svg.append("circle")
+      .attr("cx", clientWidth / 2)
+      .attr("cy", clientHeight / 2)
+      .attr("r", circle_radius)
+      .style("fill", "#B8DEE6")
+  </script>
+</html>
