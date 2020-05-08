@@ -61,11 +61,12 @@ var person = {
         "Scars & Marks": "has a mole on his right cheek below the eye"
       };
 
-
-var tableless_html = tableToolkit.createTable(person, fields_header, fields_content, fields_footer);
-var tablelessDiv = document.createElement("table");
-tablelessDiv.innerHTML = tableless_html;
-document.body.appendChild(tablelessDiv);
+      var table_class = "fugitive";
+      var table_html = tableToolkit.createTable(table_class, person, fields_header, fields_content, fields_footer);
+ 
+var tableDiv = document.createElement("table");
+tableDiv.innerHTML = table_html;
+document.body.appendChild(tableDiv);
 
 
 

@@ -10,65 +10,67 @@
   <script type="text/javascript" src="mm_d3Toolkit.js"></script>
   <script type="text/javascript" src="tree_widget_data.js"></script>
   <script type="text/javascript" src="treeDataToolkit.js"></script>
-</head>
-<body>
-    <div id="toolbar">
-      <button onclick="createNew(); return false;">New</button>
-      <button onclick="loadFreeMind('test.mm'); return false;">FreeMind (test.mm)</button>
-      <button onclick="loadJSON('flare.json'); return false;">Flare (flare.json)</button>
-      <button onclick="loadJSON('data.json'); return false;">JSON (test.json)</button>
-      <button onclick="addNodes('right'); return false;">Add nodes right</button>
-      <button onclick="addNodes('left'); return false;">Add nodes left</button>
-      <button onclick="moveNodes('right', 'left'); return false;">Move right to left</button>
-      <button onclick="moveNodes('left', 'right'); return false;">Move left to right</button>
-      <button onclick="setConnector('diagonal'); return false;">Diagonal connector</button>
-      <button onclick="setConnector('elbow'); return false;">Elbow connector</button>
-    </div>
+  <script src="tableToolkit.js"></script>
 
-    <!---------------------------->
-    <!-- TREE TOOLBAR -->
-    <!---------------------------->
-    <div class="tree_toolbar">
-      <fieldset>
-        <legend>Tree Options</legend>
-        <div class="toolbar_container longhand">
-          <div class="toolbar_item">
-            <label class="title">Connector:</label>
-            <div>
-              <input type="radio" name="connector" value="curved" onclick="setConnector('diagonal')">
-              <label for="curved">curved</label>
-            </div>
-            <div>
-              <input type="radio" name="connector" value="elbow" checked onclick="setConnector('elbow')">
-              <label for="elbow">elbow</label>
-            </div>
+</head>
+
+<body>
+  <div id="toolbar">
+    <button onclick="createNew(); return false;">New</button>
+    <button onclick="loadFreeMind('test.mm'); return false;">FreeMind (test.mm)</button>
+    <button onclick="loadJSON('flare.json'); return false;">Flare (flare.json)</button>
+    <button onclick="loadJSON('data.json'); return false;">JSON (test.json)</button>
+    <button onclick="addNodes('right'); return false;">Add nodes right</button>
+    <button onclick="addNodes('left'); return false;">Add nodes left</button>
+    <button onclick="moveNodes('right', 'left'); return false;">Move right to left</button>
+    <button onclick="moveNodes('left', 'right'); return false;">Move left to right</button>
+    <button onclick="setConnector('diagonal'); return false;">Diagonal connector</button>
+    <button onclick="setConnector('elbow'); return false;">Elbow connector</button>
+  </div>
+
+  <!---------------------------->
+  <!-- TREE TOOLBAR -->
+  <!---------------------------->
+  <div class="tree_toolbar">
+    <fieldset>
+      <legend>Tree Options</legend>
+      <div class="toolbar_container longhand">
+        <div class="toolbar_item">
+          <label class="title">Connector:</label>
+          <div>
+            <input type="radio" name="connector" value="curved" onclick="setConnector('diagonal')">
+            <label for="curved">curved</label>
           </div>
-          <div class="toolbar_item">
-            <label class="title">Orientation:</label>
-            <div>
-              <input type="radio" name="Orientation" value="left" onclick="setOrientation('left')">
-              <label for="left">left</label>
-            </div>
-            <div>
-              <input type="radio" name="Orientation" value="center" checked onclick="setOrientation('center')">
-              <label for="center">center</label>
-            </div>
-            <div>
-              <input type="radio" name="Orientation" value="right" checked onclick="setOrientation('right')">
-              <label for="right">right</label>
-            </div>          
+          <div>
+            <input type="radio" name="connector" value="elbow" checked onclick="setConnector('elbow')">
+            <label for="elbow">elbow</label>
           </div>
         </div>
-      </fieldset>
-    </div>
-    <div id="tree_container"></div>
-    <div id="footer">[Enter] Change name, [Left] Move select left, [Right] Move selection right, [Up] Move selection up,
-      [Down] Move selection down, [Ins] Add new node, [Del] Delete selected node</div>
+        <div class="toolbar_item">
+          <label class="title">Orientation:</label>
+          <div>
+            <input type="radio" name="Orientation" value="left" onclick="setOrientation('left')">
+            <label for="left">left</label>
+          </div>
+          <div>
+            <input type="radio" name="Orientation" value="center" checked onclick="setOrientation('center')">
+            <label for="center">center</label>
+          </div>
+          <div>
+            <input type="radio" name="Orientation" value="right" checked onclick="setOrientation('right')">
+            <label for="right">right</label>
+          </div>
+        </div>
+      </div>
+    </fieldset>
+  </div>
+  <div id="tree_container"></div>
+  <div id="footer">[Enter] Change name, [Left] Move select left, [Right] Move selection right, [Up] Move selection up,
+    [Down] Move selection down, [Ins] Add new node, [Del] Delete selected node</div>
   <script type="text/javascript">
-
     // CANVAS DEFINITION
-   // var width = document.body.clientWidth;
-   // var height = document.body.clientHeight;
+    // var width = document.body.clientWidth;
+    // var height = document.body.clientHeight;
 
     var margin = {
       top: 0,
@@ -80,19 +82,19 @@
     width = 900;
     height = 600;
 
-  
 
-   // var m = [55, 55, 55, 55];
-      //w = 1280 - m[1] - m[3],
+
+    // var m = [55, 55, 55, 55];
+    //w = 1280 - m[1] - m[3],
     var w = width - margin.left - margin.right;
     var h = height - margin.top - margin.bottom;
-    var  i = 0;
+    var i = 0;
     var root;
-    
+
 
     // Draw for the first time to initialize.
-   //redraw(root, true);
-      // Redraw based on the new size whenever the browser window is resized.
+    //redraw(root, true);
+    // Redraw based on the new size whenever the browser window is resized.
     //  window.addEventListener("resize", redraw(root, true));
 
     var svg_container = document.getElementById("tree_container");
@@ -113,11 +115,11 @@
       });
     }
 
-   function resize(){
-    var width = svg_container.clientWidth;
-        var height = svg_container.clientHeight;
-        console.log(width + "/" + height);
-   }
+    function resize() {
+      var width = svg_container.clientWidth;
+      var height = svg_container.clientHeight;
+      console.log(width + "/" + height);
+    }
 
 
     var getDirection = function (data) {
@@ -144,8 +146,8 @@
 
 
     //var addNodes = function (dir) {
-      //
-     function  addNodes (dir) {
+    //
+    function addNodes(dir) {
 
       root[dir].push({
         name: 'bar',
@@ -160,7 +162,7 @@
         name: 'value',
         position: dir
       });
-    //////////////////  update(root);
+      //////////////////  update(root);
     };
 
     var moveNodes = function (from, to) {
@@ -182,24 +184,6 @@
       d3.select(node).classed("selected", true);
     };
 
-    var createNew = function () {
-      //v3 root = {name: 'Root', children: [], left: [], right: []};
-      root = {
-        name: 'Root',
-        children: [],
-        left: [],
-        right: []
-      };
-
-      addNodes('left');
-      addNodes('right');
-
-      redraw(root, true);
-      selectNode(root);
-    };
-
-
-
 
 
     var diagonal = mm_d3Toolkit.link_diagonal;
@@ -208,27 +192,27 @@
 
 
 
-      function loadJSON(json){
-        var i = 0;
-        var l = json.children.length;
-        window.data = root = json;
-        root.x0 = h / 2;
-        root.y0 = 0;
+    function loadJSON(json) {
+      var i = 0;
+      var l = json.children.length;
+      window.data = root = json;
+      root.x0 = h / 2;
+      root.y0 = 0;
 
-        json.left = [];
-        json.right = [];
-        for (; i < l; i++) {
-          if (i % 2) {
-            json.left.push(json.children[i]);
-            json.children[i].position = 'left';
-          } else {
-            json.right.push(json.children[i]);
-            json.children[i].position = 'right';
-          }
+      json.left = [];
+      json.right = [];
+      for (; i < l; i++) {
+        if (i % 2) {
+          json.left.push(json.children[i]);
+          json.children[i].position = 'left';
+        } else {
+          json.right.push(json.children[i]);
+          json.children[i].position = 'right';
         }
-        redraw(root, true);
-        selectNode(root);
       }
+      redraw(root, true);
+      selectNode(root);
+    }
 
     //*
     var loadJSON_via_URL = function (fileName) {
@@ -267,24 +251,23 @@
 
       //console.log("redraw");
 
-     width = svg_container.clientWidth;
-     height = svg_container.clientHeight;
-    //console.log(width + "/" + height);
-    var w = width - margin.left - margin.right;
-    var h = height - margin.top - margin.bottom;
+      width = svg_container.clientWidth;
+      height = svg_container.clientHeight;
+      //console.log(width + "/" + height);
+      var w = width - margin.left - margin.right;
+      var h = height - margin.top - margin.bottom;
 
-    // Use the extracted size to set the size of an SVG element.
-   svg.selectAll("*").remove();
-    svg
-      .attr("width", w + margin.left + margin.right) // m1 m3
-      .attr("height", h + margin.top + margin.bottom) // m0 m4
+      // Use the extracted size to set the size of an SVG element.
+      svg.selectAll("*").remove();
+      svg
+        .attr("width", w + margin.left + margin.right) // m1 m3
+        .attr("height", h + margin.top + margin.bottom) // m0 m4
       ;
 
-    
+
       var vis = svg.append("svg:g")
         //.attr("transform", "translate(" + margin.right + "," + margin.top + ")")
-        .attr("transform", "translate(" + (w / 2 + margin.right) + "," + margin.top + ")")
-       ;
+        .attr("transform", "translate(" + (w / 2 + margin.right) + "," + margin.top + ")");
 
 
       var tree = d3.layout.tree().size([h, w]);
@@ -327,6 +310,10 @@
           if (source.y0) {
             return "translate(" + source.y0 + "," + source.x0 + ")";
           }
+        })
+        .append(function (d, i) {
+          return createSvgEl("g");
+
         })
         .on("click", handleClick);
 
@@ -448,7 +435,7 @@
         d._children = null;
       }
     }
-    
+
     /*******************
      *  EVENT HANDLING
      *******************/
@@ -617,25 +604,26 @@
       }
     });
 
-    
-    
+
+
     //*/
 
-   //loadJSON_via_URL('data.json');
+    //loadJSON_via_URL('data.json');
 
 
     console.log("TREE=");
     var tree_data = treeDataToolkit.convertFlatRelationshipsToTree(flat_tree);
     console.log(tree_data);
 
-    
+
     loadJSON(tree_data[0]);
     // Redraw based on the new size whenever the browser window is resized.
     //window.addEventListener("resize", resize);
-    window.addEventListener("resize", function(event){
+    window.addEventListener("resize", function (event) {
       //handleResize(event, "My Custom Data", new Date());
       redraw(root);
     });
   </script>
 </body>
+
 </html>

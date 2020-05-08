@@ -1,4 +1,4 @@
-var person = {
+var _person = {
     "name": "Person",
     "parent": null,
     "first_name": "John",
@@ -7,22 +7,38 @@ var person = {
     eye_color: "blue"
 };
 
+var person = {
+    "parent"       : null,
+    "name"         : "root",
+    "full name"    : "Eric Fox",
+    "Age"          : "44",
+    "Race"         : "White",
+    "Sex"          : "Male",
+    "Hair"         : "Black",
+    "Eyes"         : "Brown",
+    "Build"        : "Medium",
+    "Height"       : "5'8",
+    "Weight"       : "180 lbs",
+    "Scars & Marks": "has a mole on his right cheek below the eye"
+  };
+
+
 var known_addresses = {
     "name": "Known Addresses",
-    "parent": "Person",
+    "parent": "root",
     children: []
 };
 var family_members = {
     "name": "Family",
-    "parent": "Person"
+    "parent": "root"
 };
 var vehicles = {
     "name": "Vehicles",
-    "parent": "Person"
+    "parent": "root"
 };
 var charges = {
     "name": "Charges",
-    "parent": "Person"
+    "parent": "root"
 };
 
 

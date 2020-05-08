@@ -12,9 +12,9 @@ var tableToolkit = {
 	 * @param {*} fields_footer 
 	 * @returns Document
 	 */
-	createTable: function (data, fields_header, fields_content, fields_footer) {
+	createTable: function (table_class, data, fields_header, fields_content, fields_footer) {
 
-		var html = "<table>";
+		var html = "<table class=" + table_class + ">";
 
 		var nb_cols_in_table = 4;
 		// HEADER
@@ -35,6 +35,7 @@ var tableToolkit = {
 
 	// print the list of fields from the data in the container specified
 	_printFields: function (data, field_list, container, print_field_name, nb_cols_in_table) {
+		
 		var html = "";
 		html += "<" + container + ">";
 

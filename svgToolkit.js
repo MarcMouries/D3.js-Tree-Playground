@@ -16,10 +16,9 @@ var svgToolkit = {
       },
   
   // Create an SVG namespaced element
-  createElement: function(nodeName){
-          return document.createElementNS("http://www.w3.org/2000/svg", nodeName);
+  createElement: function(name){
+          return document.createElementNS("http://www.w3.org/2000/svg", name);
       },
-  
   
   
   // CREATED : <feGaussianBlur stdDeviation="5"></feGaussianBlur>

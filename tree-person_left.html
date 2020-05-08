@@ -169,85 +169,13 @@
 
   <script src="https://d3js.org/d3.v5.min.js"></script>
   <script src="svgToolkit.js"></script>
+  <script src="tree_widget_data.js"></script>
+  <script src="tableToolkit.js"></script>
 
   <script>
     function setConnector(link_connector_type) {
       update(root, link_connector_type);
     };
-
-
-
-
-
-    // DATA
-    //////////////////////////////////
-
-
-
-/**
-*/
-function Person(first, last, age, eye) {
-  this.firstName = first;
-  this.lastName = last;
-  this.age = age;
-  this.eyeColor = eye;
-}
-
-// Create 2 Person objects
-var aPerson = new Person("John", "Doe", 50, "blue");
-console.log(JSON.stringify(aPerson));
-var objectFields = Object.entries(aPerson);
-var objectKeys = Object.keys(aPerson);
-console.log(JSON.stringify(objectFields));
-console.log(JSON.stringify(objectKeys));
-
-for (var i in objectKeys){
-     var key = objectKeys[i];
-     var value = aPerson[ key ];
-     console.log(key + " =  "+ value );    
-}
-
-
-
-    var person = {
-      "parent": null,
-      "name": "Person",
-      "first_name": "John",
-      "last_name": "Doe",
-      age: 50,
-      eye_color: "blue"
-    };
-
-    var known_addresses = {
-      "name": "Known Addresses",
-      "parent": "Person"
-    };
-    var family_members = {
-      "name": "Family",
-      "parent": "Person"
-    };
-    var vehicles = {
-      "name": "Vehicles",
-      "parent": "Person"
-    };
-    var charges = {
-      "name": "Charges",
-      "parent": "Person"
-    };
-    // the flat data
-    var flat_tree = [];
-    flat_tree.push(person);
-    flat_tree.push(known_addresses);
-    flat_tree.push(family_members);
-    flat_tree.push(vehicles);
-    flat_tree.push(charges);
-
-
-
-    console.log(flat_tree);
-
-    /////  TREE
-
 
     // set the dimensions and margins of the diagram
     var margin = {
@@ -386,10 +314,10 @@ for (var i in objectKeys){
         })
         .append(function (d, i) {
           //console.log("node " + i + d.data);
-          if (d.data.name == "Person") {
+          if (d.data.name == "root") {
             return createRootElement(d);
           } else {
-            return createSvgEl("g");
+            return svgToolkit.createElement("g");
           }
         });
 
@@ -487,22 +415,12 @@ for (var i in objectKeys){
       svgToolkit.applyFilter(rect, filterId);
       //var blur = 5;
       //filter = svgToolkit.createFilter("feGaussianBlur",  filterId, {stdDeviation: blur});
-
       //rect.parentNode.append(filter);
-
       //g.appendChild(filter);
-
 
       g.appendChild(rect);
       g.appendChild(createTable());
       return g;
-
-    }
-
-
-
-    function createSvgEl(name) {
-      return document.createElementNS('http://www.w3.org/2000/svg', name);
     }
 
 
@@ -517,52 +435,16 @@ for (var i in objectKeys){
       //foreignObject.setAttribute('max-width', "150px");
 
 
-      var div = document.createElement('div');
+      var tableDiv = document.createElement("table");
 
+      var fields_header = ["name"];
+      var fields_content = ["Age", "Race", "Sex", "Hair", "Eyes", "Build", "Height"]; //"Weight"
+      var fields_footer = ["Scars & Marks"];
 
-      //var html = createTable
-      var html = `
-<table class="table fugitive">
-        <thead>
-          <tr>
-            <th colspan="4">Eric Fox</th>
-          </tr>
-        </thead>
-      <tbody>
-      <tr>
-      <td>DoB:</td>
-      <td>06/13/1964</td>
-      <td>Race</td>
-      <td>White</td>
-      </tr>
-      <tr>
-      <td>Sex</td>
-      <td>Male</td>
-      <td>Hair</td>
-      <td>Black</td>
-      </tr>
-      <tr>
-      <td>Eyes</td>
-      <td>Brown</td>
-      <td>Build</td>
-      <td>Medium</td>
-      </tr>
-      <tr>
-      <td>Height</td>
-      <td>5'8"</td>
-      <td>Weight</td>
-      <td>150 lbs</td>
-      </tr>
-      <tr>
-      <td>Scars & Marks</td>
-      <td colspan="4">has a mole on his right cheek below the eye.</td>
-      </tr>
-      </tbody>
-      </table>
-`;
-
-      div.innerHTML = html;
-      foreignObject.appendChild(div);
+      var table_class = "fugitive";
+      var table_html = tableToolkit.createTable(table_class, person, fields_header, fields_content, fields_footer);
+      tableDiv.innerHTML = table_html;
+      foreignObject.appendChild(tableDiv);
       return foreignObject;
     }
   </script>
