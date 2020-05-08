@@ -8,10 +8,11 @@
   <script type="text/javascript" src="https://d3js.org/d3.v3.min.js"></script>
   <script type="text/javascript" src="mousetrap.js"></script>
   <script type="text/javascript" src="mm_d3Toolkit.js"></script>
-  <script type="text/javascript" src="tree_widget_data.js"></script>
-  <script type="text/javascript" src="treeDataToolkit.js"></script>
+  <script src="tree_widget_data.js"></script>
+  <script src="treeDataToolkit.js"></script>
   <script src="tableToolkit.js"></script>
-
+  <script src="svgToolkit.js"></script>
+  
 </head>
 
 <body>
@@ -79,6 +80,12 @@
       left: 100
     };
 
+    var tree_margin = {
+      top: 20,
+      right: 20,
+      bottom: 20,
+      left: 20
+    };
     width = 900;
     height = 600;
 
@@ -204,10 +211,10 @@
       for (; i < l; i++) {
         if (i % 2) {
           json.left.push(json.children[i]);
-          json.children[i].position = 'left';
+          json.children[i].position = 'right';
         } else {
           json.right.push(json.children[i]);
-          json.children[i].position = 'right';
+          json.children[i].position = 'left';
         }
       }
       redraw(root, true);
@@ -272,8 +279,11 @@
 
       var tree = d3.layout.tree().size([h, w]);
 
-      // Compute the new tree layout.
-      var nodesLeft = tree.size([h, (w / 2) - 20]);
+
+
+      
+      // Compute the new tree layout.      
+      var nodesLeft = tree.size([h, (w / 2) - tree_margin.left]);
       nodesLeft
         .children(function (d) {
           return (d.depth === 0) ? d.left : d.children;
@@ -281,7 +291,8 @@
         .nodes(root)
         .reverse();
 
-      var nodesRight = tree.size([h, w / 2]);
+      //var nodesRight = tree.size([h, w / 2]);
+      var nodesRight = tree.size([h, (w / 2) - tree_margin.right]);
       nodesRight
         .children(function (d) {
           return (d.depth === 0) ? d.right : d.children;
@@ -312,7 +323,7 @@
           }
         })
         .append(function (d, i) {
-          return createSvgEl("g");
+          return svgToolkit.createElement("g");
 
         })
         .on("click", handleClick);
@@ -606,8 +617,6 @@
 
 
 
-    //*/
-
     //loadJSON_via_URL('data.json');
 
 
@@ -617,6 +626,9 @@
 
 
     loadJSON(tree_data[0]);
+    // sort the tree according to the node names
+
+
     // Redraw based on the new size whenever the browser window is resized.
     //window.addEventListener("resize", resize);
     window.addEventListener("resize", function (event) {

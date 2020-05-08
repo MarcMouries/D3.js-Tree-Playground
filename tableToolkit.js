@@ -6,12 +6,15 @@ var tableToolkit = {
 	/**
 	 * Create a tableless container for the data specified
 	 * 
+	 * @param {*} table_class the css class for the table
 	 * @param {*} data contains the data to be presented in the form
 	 * @param {*} fields_header 
 	 * @param {*} fields_content 
 	 * @param {*} fields_footer 
 	 * @returns Document
 	 */
+
+
 	createTable: function (table_class, data, fields_header, fields_content, fields_footer) {
 
 		var html = "<table class=" + table_class + ">";

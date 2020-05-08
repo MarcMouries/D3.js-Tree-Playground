@@ -171,6 +171,9 @@
   <script src="svgToolkit.js"></script>
   <script src="tree_widget_data.js"></script>
   <script src="tableToolkit.js"></script>
+  <script src="mm_d3Toolkit.js"></script>
+
+  
 
   <script>
     function setConnector(link_connector_type) {
@@ -218,6 +221,8 @@
     // declares a tree layout and assigns the size
     var tree = d3.tree().size([height, width]);
 
+
+
     //  assigns the data to a hierarchy using parent-child relationships
     //var nodes = d3.hierarchy(treeData, function(d) {
     //    return d.children;
@@ -233,55 +238,16 @@
 
     /**  LINK FUNCTIONS  **/
 
-    var link_curved = function (d) {
-      var source = calcLeft(d.source);
-      var target = calcLeft(d.target);
-      return "M" + source.y + "," + source.x +
-        "C" + (source.y + target.y) / 2 + "," + source.x +
-        " " + (source.y + target.y) / 2 + "," + target.x +
-        " " + target.y + "," + target.x;
-    };
-
-
-    var calcLeft = function (d) {
-      var l = d.y;
-      if (d.position === 'left') {
-        l = (d.y) - w / 2;
-        l = (w / 2) + l;
-      }
-      return {
-        x: d.x,
-        y: l
-      };
-    };
-
-    var link_elbow = function (d) {
-      var source = calcLeft(d.source);
-      var target = calcLeft(d.target);
-      var hy = (target.y - source.y) / 2;
-      return "M" + source.y + "," + source.x +
-        "H" + (source.y + hy) +
-        "V" + target.x + "H" + target.y;
-    };
-
-    var link_straight = function (d) {
-      return "M" + d.x + "," + d.y +
-        "L" + d.parent.x + "," + d.parent.y;
-    };
 
 
 
-    var connector_type = {
-      "curved": link_curved,
-      "elbow": link_elbow,
-      "straight": link_elbow
-    };
 
-    update(root, 'straight');
+    connector_type =   mm_d3Toolkit.link_straight;
+    update(root);
 
 
 
-    function update(node, link_connector_type) {
+    function update(node) {
 
       //console.log(connector_type[link_connector_type]);
       //console.log(connector_type["curved"]);
@@ -294,7 +260,7 @@
         .data(tree(root).links())
         .enter().append("path")
         .attr("class", "link")
-        .attr("d", connector_type[link_connector_type]);
+        .attr("d", connector_type);
 
 
       // adds each node as a group
@@ -314,7 +280,7 @@
         })
         .append(function (d, i) {
           //console.log("node " + i + d.data);
-          if (d.data.name == "root") {
+          if (d.data.type == "root") {
             return createRootElement(d);
           } else {
             return svgToolkit.createElement("g");
@@ -385,9 +351,9 @@
 
     /** ROOT **/
 
-    function createSomething() {
+    function __createSomething() {
       return function () {
-        var group = d3.select(document.createElementNS(d3.ns.prefix.svg, 'g'));
+        var group = d3.select(svgToolkit.createElement('foreignObject'));
         // Add stuff...
         group.append("rect")
           .attr("height", 50)
@@ -419,28 +385,24 @@
       //g.appendChild(filter);
 
       g.appendChild(rect);
-      g.appendChild(createTable());
+     // g.appendChild(createTable());
       return g;
     }
 
 
     function createTable() {
-      var ns = 'http://www.w3.org/2000/svg';
 
-      var foreignObject = document.createElementNS(ns, 'foreignObject');
+      var foreignObject = svgToolkit.createElement('foreignObject');
       foreignObject.setAttribute('height', "220px");
       foreignObject.setAttribute('width', "220px");
       foreignObject.setAttribute("x", -65); // d.x 
       foreignObject.setAttribute("y", -50); //d.y - boxHeigth / 2);
-      //foreignObject.setAttribute('max-width', "150px");
 
 
-      var tableDiv = document.createElement("table");
-
+      var tableDiv = document.createElement("div");
       var fields_header = ["name"];
       var fields_content = ["Age", "Race", "Sex", "Hair", "Eyes", "Build", "Height"]; //"Weight"
       var fields_footer = ["Scars & Marks"];
-
       var table_class = "fugitive";
       var table_html = tableToolkit.createTable(table_class, person, fields_header, fields_content, fields_footer);
       tableDiv.innerHTML = table_html;

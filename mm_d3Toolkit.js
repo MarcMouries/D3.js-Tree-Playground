@@ -13,8 +13,8 @@ var mm_d3Toolkit = {
   },
 
 
+ // used by links when root is centered
   calcLeft: function (d) {
-    console.log("calcLedt: " + h);
     var l = d.y;
     if (d.position === 'left') {
       l = (d.y) - h / 2;
@@ -27,6 +27,15 @@ var mm_d3Toolkit = {
   },
 
 
+  link_curved : function (d) {
+    var source = calcLeft(d.source);
+    var target = calcLeft(d.target);
+    return "M" + source.y + "," + source.x +
+           "C" + (source.y + target.y) / 2 + "," + source.x +
+           " " + (source.y + target.y) / 2 + "," + target.x +
+           " " + target.y + "," + target.x;
+  },
+
   link_elbow: function (d, i) {
     var source = mm_d3Toolkit.calcLeft(d.source);
     var target = mm_d3Toolkit.calcLeft(d.target);
@@ -34,8 +43,15 @@ var mm_d3Toolkit = {
     return "M" + source.y + "," + source.x +
       "H" + (source.y + hy) +
       "V" + target.x + "H" + target.y;
-  }
+  },
 
+  link_straight : function (d) {
+    var source = mm_d3Toolkit.calcLeft(d.source);
+    var target = mm_d3Toolkit.calcLeft(d.target);
+
+    return "M" + source.y + "," + source.x +
+      "L" + target.y + "," + target.x;
+  }
 
 
 }

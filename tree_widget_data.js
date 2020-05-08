@@ -9,8 +9,8 @@ var _person = {
 
 var person = {
     "parent"       : null,
-    "name"         : "root",
-    "full name"    : "Eric Fox",
+    "type"         : "person",
+    "name"         : "Eric Fox",
     "Age"          : "44",
     "Race"         : "White",
     "Sex"          : "Male",
@@ -22,27 +22,34 @@ var person = {
     "Scars & Marks": "has a mole on his right cheek below the eye"
   };
 
+  
 
-var known_addresses = {
-    "name": "Known Addresses",
-    "parent": "root",
+  var arrests = {
+    "name": "Arrests",
+    "parent": "Eric Fox",
+    children: []
+};
+
+var residences = {
+    "name": "Residences",
+    "parent": "Eric Fox",
     children: []
 };
 var family_members = {
     "name": "Family",
-    "parent": "root"
+    "parent": "Eric Fox"
 };
 var vehicles = {
     "name": "Vehicles",
-    "parent": "root"
+    "parent": "Eric Fox"
 };
 var charges = {
     "name": "Charges",
-    "parent": "root"
+    "parent": "Eric Fox"
 };
 
 
-var known_address_A = {
+var residence_A = {
     "parent": "Known Addresses",
     "name": "179 WALNUT STREET",
     type: "address",
@@ -50,7 +57,7 @@ var known_address_A = {
     state: "MA",
     zip: "11516"
 };
-var known_address_B = {
+var residence_B = {
     "parent": "Known Addresses",
     "name": "179 WALNUT STREET",
     type: "address",
@@ -59,14 +66,18 @@ var known_address_B = {
     zip: "11516"
 };
 
-known_addresses.children.push(known_address_A);
-known_addresses.children.push(known_address_B);
+residences.children.push(residence_A);
+residences.children.push(residence_B);
 
 
 // the flat data
 var flat_tree = [];
 flat_tree.push(person);
-flat_tree.push(known_addresses);
-flat_tree.push(family_members);
-flat_tree.push(vehicles);
+
+
+flat_tree.push(arrests);
 flat_tree.push(charges);
+flat_tree.push(family_members);
+flat_tree.push(residences);
+flat_tree.push(vehicles);
+
