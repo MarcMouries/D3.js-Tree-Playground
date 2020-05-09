@@ -1,0 +1,48 @@
+
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js"></script>
+  </head>
+
+  <body>
+    <table border=1>
+      <tr>
+        <td>some content</td>
+        <td>some more content</td>
+        <td rowspan="2">THIS is A COLUMN</td>
+      </tr>
+      <tr>
+        <td colspan="2">SINGLE CELL ROW</td>
+      </tr>
+    </table>
+    
+    <div>
+      <div>
+        <div>HEADER</div>
+        <div id="row">
+          <div>field name</div>
+          <div>field value</div>
+          <div>field name</div>
+          <div>field value</div>
+        </div>
+        <div id="row">
+          <div>field name</div>
+          <div>field value</div>
+          <div>field name</div>
+          <div>field value</div>
+        </div>
+        <div>single row</div>
+      </div>
+    </div>
+  </body>
+  <style>
+    body div { border: 1px solid #999; margin: 0; }
+    body > div { display: flex; flex-flow: row nowrap; margin-top: 10px; }
+    body > div > div { display: flex; flex-flow: column nowrap; flex: 1 1 0; }
+    body > div > div > div { display: flex; flex-flow: row nowrap; flex: 1 1 1;}
+    body > div > div > div > div { flex: 1 1 0; }
+  </style>
+</html>
