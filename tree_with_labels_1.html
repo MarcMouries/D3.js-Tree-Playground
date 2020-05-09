@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+.node {
+  stroke: #fff;
+  stroke-width: 2px;
+}
+
+.link {
+  fill: none;
+  stroke: #000;
+}
+
+</style>
+<body>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script>
+
+var width = 960,
+    height = 500;
+
+var tree = d3.layout.tree()
+    .size([width - 20, height]);
+
+var suffix_tree = {"id" : 19, "edge" : "", "children" : [{"id" : 0, "edge" : "$", "suffix" : 12},{"id" : 15, "edge" : "a", "children" : [{"id" : 14, "edge" : "b", "children" : [{"id" : 1, "edge" : "$", "suffix" : 10},{"id" : 13, "edge" : "ra", "children" : [{"id" : 2, "edge" : "b$", "suffix" : 7},{"id" : 3, "edge" : "cadabrab$", "suffix" : 0}]}]},{"id" : 4, "edge" : "cadabrab$", "suffix" : 3},{"id" : 5, "edge" : "dabrab$", "suffix" : 5}]},{"id" : 17, "edge" : "b", "children" : [{"id" : 6, "edge" : "$", "suffix" : 11},{"id" : 16, "edge" : "ra", "children" : [{"id" : 7, "edge" : "b$", "suffix" : 8},{"id" : 8, "edge" : "cadabrab$", "suffix" : 1}]}]},{"id" : 9, "edge" : "cadabrab$", "suffix" : 4},{"id" : 10, "edge" : "dabrab$", "suffix" : 6},{"id" : 18, "edge" : "ra", "children" : [{"id" : 11, "edge" : "b$", "suffix" : 9},{"id" : 12, "edge" : "cadabrab$", "suffix" : 2}]}]}
+nodes = tree(suffix_tree);
+
+suffix_tree.parent = suffix_tree;
+suffix_tree.px = suffix_tree.x;
+suffix_tree.py = suffix_tree.y;
+
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width)
+    .attr("height", height+100)
+  	.append("g")
+    .attr("transform", "translate(10,10)");
+
+node = svg.selectAll(".node").data(tree.nodes(suffix_tree), function(d) { return d.id; });
+link = svg.selectAll(".link").data(tree.links(nodes), function(d) { return d.source.id + "-" + d.target.id; });
+
+node = node.enter()
+		.append("g")
+		.attr("class", function(d) { return d.children ? "inner" : "leaf";})
+
+svg.selectAll(".inner").append("path")
+  .attr("d", d3.svg.symbol().type(function(d){ return d.children ? "circle" : "square"; }))
+  .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
+
+leaf_nodes = svg.selectAll(".leaf")
+leaf_text = leaf_nodes.append('text')
+    .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
+    .attr("text-anchor", "middle")
+    .attr("class", "leaftext")
+    .attr("dy", 20)
+    .text(function(d){return d.suffix;});
+
+
+link = link.enter().append("g")
+	.attr("class", "edge")
+
+link_paths = link.append("line")
+  .attr("class", "link")
+  .attr("x1", function(d) { return d.source.x; })
+  .attr("y1", function(d) { return d.source.y; })
+  .attr("x2", function(d) { return d.target.x; })
+  .attr("y2", function(d) { return d.target.y; });
+
+
+var label_path = svg.selectAll(".edge")
+    .append("path")
+    .attr("class", "label_path")
+    .attr("id", function(d) { return d.source.id + "-" + d.target.id; })
+	.attr('d', function(d) { return calc_path(d) })
+
+var path_label = svg.append("svg:g").selectAll(".label_path")
+    .data(tree.links(nodes), function(d) { return d.source.id + "-" + d.target.id; })
+  	.enter().append("svg:text")
+    .attr("class", "path_label")
+    .append("svg:textPath")
+      .attr("startOffset", "50%")
+      .attr("text-anchor", "middle")
+      .attr("xlink:href", function(d) { return "#" + d.source.id + "-" + d.target.id; })
+      .style("fill", "#000")
+      .style("font-family", "Arial")
+      .text(function(d) { return d.target.x > d.source.x ? d.target.edge : d.target.edge.split("").reverse().join("")  });
+
+function calc_path(d) {
+	var start = d.target.x > d.source.x ? d.source : d.target;
+	var end = d.target.x > d.source.x ? d.target : d.source;
+    var deltaX = end.x - start.x,
+        deltaY = end.y - start.y,
+        dist = Math.sqrt(deltaX * deltaX + deltaY * deltaY),
+        normX = deltaX / dist,
+        normY = deltaY / dist,
+        sourcePadding = d.left ? 17 : 12,
+        targetPadding = d.right ? 17 : 12,
+        sourceX = start.x + (sourcePadding * normX),
+        sourceY = start.y + (sourcePadding * normY),
+        targetX = end.x - (targetPadding * normX),
+        targetY = end.y - (targetPadding * normY);
+    return 'M' + sourceX + ',' + sourceY + 'L' + targetX + ',' + targetY;
+}
+
+
+
+</script>
