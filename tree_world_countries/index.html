@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>World Countries Tree with explanations</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css?family=Playfair+Display" rel="stylesheet">
+  <script src="https://unpkg.com/d3@5.6.0/dist/d3.min.js"></script>
+</head>
+
+<body>
+
+  <div id="chart" style="width: 500px; height: 500px;"></div>
+
+  <svg></svg>
+  <script>
+
+var containerId = "chart";
+var element = document.getElementById(containerId);
+const margin = { top: 0, right: 50, bottom: 0, left: 175 };
+
+
+var svg = d3.select(element).append("svg");
+
+    //const svg = d3.select('svg');
+    //writes the height and width
+    const width = document.body.clientWidth;
+    const height = document.body.clientHeight;
+
+    //creates the margin
+    const innerWidth = width - margin.left - margin.right;
+    const innerHeight = height - margin.top - margin.bottom;
+    // applies layout
+    const treeLayout = d3.tree().size([innerHeight, innerWidth]);
+    // defines zoomG
+    const zoomG = svg
+      .attr('width', width)
+      .attr('height', height)
+      .append('g');
+
+    // defines g
+    const g = zoomG.append('g')
+      .attr('transform', `translate(${margin.left},${margin.top})`);
+
+    // directs zoom to zoom in
+    svg.call(d3.zoom().on('zoom', () => {
+      zoomG.attr('transform', d3.event.transform);
+    }));
+
+    // defines root, links, and linkPathGenerator and assignes them values
+// the flat data
+var flatData = [
+  {"name": "Top Level", "parent": null}, 
+  {"name": "Level 2: A", "parent": "Top Level" },
+  {"name": "Level 2: B", "parent": "Top Level" },
+  {"name": "Son of A", "parent": "Level 2: A" },
+  {"name": "Daughter of A", "parent": "Level 2: A" }
+];
+
+// convert the flat data into a hierarchy 
+var treeData = d3.stratify()
+  .id(function(d) { return d.name; })
+  .parentId(function(d) { return d.parent; })
+  (flatData);
+
+
+
+        const root = d3.hierarchy(treeData);
+        const links = treeLayout(root).links();
+        const linkPathGenerator = d3.linkHorizontal()
+          .x(d => d.y)
+          .y(d => d.x);
+
+        // links the lines to the nodes 
+        g.selectAll('path').data(links)
+          .enter().append('path')
+          .attr('d', linkPathGenerator);
+
+        // Adds the text to the lines and adjusts them
+        g.selectAll('text').data(root.descendants())
+          .enter().append('text')
+          .attr('x', d => d.y)
+          .attr('y', d => d.x)
+          .attr('dy', '0.32em')
+          .attr('text-anchor', d => d.children ? 'middle' : 'start')
+          .attr('font-size', d => 3.25 - d.depth + 'em')
+          .text(d => d.data.id);
+    
+  </script>
+</body>
+
+</html>
