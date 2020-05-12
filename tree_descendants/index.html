@@ -156,11 +156,9 @@ var Tree = function(svg, selector, direction){
   this.direction = direction;
   
   this.tree = d3.layout.tree()
-      
-      // Using nodeSize we are able to control
-      // the separation between nodes. If we used
-      // the size parameter instead then d3 would
-      // calculate the separation dynamically to fill
+
+      // Using nodeSize we are able to control the separation between nodes. If we used
+      // the size parameter instead then d3 would calculate the separation dynamically to fill
       // the available space.
       .nodeSize([nodeWidth, nodeHeight])
       
