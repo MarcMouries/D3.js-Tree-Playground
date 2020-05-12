@@ -277,12 +277,13 @@
         .attr("transform", "translate(" + (w / 2 + margin.right) + "," + margin.top + ")");
 
 
-      var tree = d3.layout.tree().size([h, w]);
+      var tree = d3.layout.tree()
+      .separation(function(a, b) { return a.parent === b.parent ? 0.2 : 0.5; })
+         .size([h, w]);
 
 
 
-      
-      // Compute the new tree layout.      
+      // Compute the new tree layout.
       var nodesLeft = tree.size([h, (w / 2) - tree_margin.left]);
       nodesLeft
         .children(function (d) {

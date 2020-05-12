@@ -6,6 +6,9 @@
     </head>
 
     <body>
+
+      <textarea  id="textarea"cols="80" rows="50"></textarea>
+
       <script type="text/javascript" src="treeDataToolkit.js"></script>
       <script type="text/javascript" src="tree_widget_data.js"></script>
       <script>
@@ -26,7 +29,11 @@ console.log(tree);
 
 
 console.log("dataMap=");
-		console.log(tree[0]);
+    console.log(tree[0]);
+    
+    var element = document.getElementById("textarea");
+    element.value = JSON.stringify(tree);
 </script>
+
 </body>
   </html>

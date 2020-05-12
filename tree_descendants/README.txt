@@ -1,0 +1,10 @@
+https://github.com/justincy/d3-pedigree-examples
+
+Great article on d3
+
+https://bost.ocks.org/mike/selection/
+
+https://alignedleft.com/projects/2014/easy-as-pi/
+
+
+https://bost.ocks.org/mike/join/
