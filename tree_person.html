@@ -109,18 +109,6 @@
 
 
 
-    function load_data() {
-      root = {
-        name: 'Root',
-        children: [],
-        left: [],
-        right: []
-      };
-      root['left'].push({
-        name: 'bar',
-        position: 'left'
-      });
-    }
 
     function resize() {
       var width = svg_container.clientWidth;
@@ -200,15 +188,15 @@
 
 
     function loadJSON(json) {
-      var i = 0;
-      var l = json.children.length;
+      //var i = 0;
+      var nb_children = json.children.length;
       window.data = root = json;
       root.x0 = h / 2;
       root.y0 = 0;
 
       json.left = [];
       json.right = [];
-      for (; i < l; i++) {
+      for (var i=0; i < nb_children; i++) {
         if (i % 2) {
           json.left.push(json.children[i]);
           json.children[i].position = 'right';
@@ -618,17 +606,15 @@
 
 
 
-    //loadJSON_via_URL('data.json');
+    loadJSON_via_URL('data.json');
 
 
-    console.log("TREE=");
-    var tree_data = treeDataToolkit.convertFlatRelationshipsToTree(flat_tree);
-    console.log(tree_data);
+    //console.log("TREE=");
+    //var tree_data = treeDataToolkit.convertFlatRelationshipsToTree(flat_tree);
+    //console.log(tree_data);
 
 
-    loadJSON(tree_data[0]);
-    console.log(tree_data[0]);
-
+    //loadJSON(tree_data[0]);
     // sort the tree according to the node names
 
 
