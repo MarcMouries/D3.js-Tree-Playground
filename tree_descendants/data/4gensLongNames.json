@@ -1,51 +1,40 @@
 {
   "name": "This is a long long ROOT",
-  "id": "06ada7cd-3078-54bc-bb87-72e9d6f38abf",
   "_parents": [
     {
       "name": "Charges",
-      "id": "a39bfa73-6617-5e8e-9470-d26b68787e52",
-      "_parents": [
-      ]
+      "_parents": []
     },
     {
       "name": "Residences",
-      "id": "522266d2-f01a-5ec0-9977-622e4cb054c0",
       "_parents": [
         {
-          "name": "Residence 1",
-          "id": "da430aa2-f438-51ed-ae47-2d9f76f8d831"
+          "name": "Residence 1"
         },
         {
           "name": "Residence 2",
-          "id": "bfd1612c-b90d-5975-824c-49ecf62b3d5f",
           "_parents": [
             {
-              "name": "Donald Freeman Cox",
-              "id": "4f910be4-b827-50be-b783-6ba3249f6ebc"
+              "name": "Donald Freeman Cox"
             },
             {
-              "name": "Alex Fernandez Gonzales",
-              "id": "efb2396d-478a-5cbc-b168-52e028452f3b"
+              "name": "Alex Fernandez Gonzales"
             }
           ]
         }
       ]
     }
-  ]
-  ,
+  ],
   "_children": [
     {
-      "name": "Assets",
-      "id": "60d7d16b-2ec3-51ac-b016-a1b16cf56d39"
+      "name": "Assets"
     },
     {
-      "name": "Family",
-      "id": "-2ec3-51ac-b016-a1b16cf56d39"
+      "name": "Family"
     },
     {
       "name": "Vehicles",
-      "id": "51ac-b016-a1b16cf56d39"
+      "_children": [{ "name": "V 1" }, { "name": "V 2" }]
     }
   ]
 }
