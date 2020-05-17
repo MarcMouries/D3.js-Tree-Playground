@@ -1,0 +1,40 @@
+{
+  "name": "This is a long long ROOT",
+  "_parents": [
+    {
+      "name": "Charges",
+      "_parents": []
+    },
+    {
+      "name": "Residences",
+      "_parents": [
+        {
+          "name": "Residence 1"
+        },
+        {
+          "name": "Residence 2",
+          "_parents": [
+            {
+              "name": "Donald Freeman Cox"
+            },
+            {
+              "name": "Alex Fernandez Gonzales"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "_children": [
+    {
+      "name": "Assets"
+    },
+    {
+      "name": "Family"
+    },
+    {
+      "name": "Vehicles",
+      "_children": [{ "name": "V 1" }, { "name": "V 2" }]
+    }
+  ]
+}
