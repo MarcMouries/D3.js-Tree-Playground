@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+
+    </style>
+</head>
+
+<body>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script type="text/javascript">
+        var width = 400;
+        var height = 400;
+        var svg = d3.select("body")
+            .append("svg")
+            .attr("width", width)
+            .attr("height", height);
+        var nodes = [
+            { "id": "Eric Fox"     }, 
+            { "id": "Italy"        },
+            { "id": "America"      }, 
+            { "id": "Canada"       }, 
+            { "id": "Australia"    },
+            { "id": "Japan"        }, 
+            { "id": "China"        }];
+        var edges = [
+        { "source": 0, "target": 1  }, 
+        { "source": 0, "target": 2  }, 
+        { "source": 0, "target": 3  }, 
+        { "source": 0, "target": 4  },
+        { "source": 0, "target": 5  },
+        { "source": 0, "target": 6  }];
+
+
+
+/**
+ * Returns a list of all nodes under the root.
+ */ 
+ function flatten(root) {
+  var nodes = []; 
+  var i = 0;
+ 
+  function recurse(node) {
+    if (node.children) 
+      node.children.forEach(recurse);
+    if (!node.id) 
+      node.id = ++i;
+    nodes.push(node);
+  }
+ 
+  recurse(root);
+  return nodes;
+} 
+
+
+        var force = d3.forceSimulation()
+            .force("link", d3.forceLink()
+                .id(function (d, i) {
+                    return i
+                })
+                .distance(function (d) {
+                    return 100
+                }))
+            .force("charge", d3.forceManyBody())
+            .force("center", d3.forceCenter(width / 2, height / 2));
+
+        force.restart(); //start
+
+        var svg_edges = svg.selectAll("line")
+            .data(edges)
+            .enter()
+            .append("line")
+            .style("stroke", "#ccc")
+            .style("stroke-width", 1);
+
+        var color = d3.scaleOrdinal(d3.schemeCategory20);
+
+        //add nodes
+        var svg_nodes = svg.selectAll("circle")
+            .data(nodes)
+            .enter()
+            .append("circle")
+            .attr("r", 20)
+            .style("fill", function (d, i) {
+                return color(i);
+            })
+            .call(d3.drag()); //to drag the nodes
+
+        //add information
+        var svg_texts = svg.selectAll("text")
+            .data(nodes)
+            .enter()
+            .append("text")
+            .style("fill", "black")
+            .attr("dx", 20)
+            .attr("dy", 8)
+            .text(function (d) {
+                return d.id;
+            });
+
+        force.nodes(nodes);
+        force.force("link")
+            .links(edges);
+
+        force.on("tick", function () { //update the position of lines
+            svg_edges.attr("x1", function (d) {
+                    return d.source.x;
+                })
+                .attr("y1", function (d) {
+                    return d.source.y;
+                })
+                .attr("x2", function (d) {
+                    return d.target.x;
+                })
+                .attr("y2", function (d) {
+                    return d.target.y;
+                })
+
+            //update the position of nodes
+            svg_nodes.attr("cx", function (d) {
+                    return d.x;
+                })
+                .attr("cy", function (d) {
+                    return d.y;
+                });
+
+            //update the position of information
+            svg_texts.attr("x", function (d) {
+                    return d.x;
+                })
+                .attr("y", function (d) {
+                    return d.y;
+                });
+
+        });
+    </script>
+</body>
+
+</html>

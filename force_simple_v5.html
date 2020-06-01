@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        .link {
+            stroke: #aaa;
+        }
+
+        .node {
+            pointer-events: all;
+            stroke: none;
+            stroke-width: 40px;
+        }
+    </style>
+    <script src="/scripts/snippet-javascript-console.min.js?v=1"></script>
+</head>
+
+<body>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <svg width="500" height="300"></svg>
+    <script type="text/javascript">
+        var nodes = [{
+            "id": 1,        }, {
+            "id": 2,        }, {
+            "id": 3,        }, {
+            "id": 4,        }, {
+            "id": 5,        }, {
+            "id": 6,        }, {
+            "id": 7,        }, {
+            "id": 8,        }];
+
+        var links = [
+            { source: 1,            target: 2        }, 
+            { source: 1,            target: 3        }, 
+            { source: 1,            target: 4        }, 
+            { source: 2,            target: 5        }, 
+            { source: 2,            target: 6        }, 
+            { source: 1,            target: 7        }, 
+            { source: 7,            target: 8        }];
+
+        var index = 10;
+        var svg = d3.select("svg"),
+            width = +svg.attr("width"),
+            height = +svg.attr("height"),
+            node,
+            link;
+
+        var defs = svg.append('svg:defs');
+
+        defs.append("svg:pattern")
+            .attr("id", "vit-icon")
+            .attr("width", 1)
+            .attr("height", 1)
+            .append("svg:image")
+            .attr("xlink:href", "http://66.media.tumblr.com/avatar_1c725152c551_128.png")
+            .attr("width", 48)
+            .attr("height", 48)
+            .attr("x", 0)
+            .attr("y", 0);
+
+        var simulation = d3.forceSimulation()
+            .force("link", d3.forceLink().id(function (d) {
+                return d.id;
+            }).distance(100))
+            .force("collide", d3.forceCollide(50))
+            .force("charge", d3.forceManyBody())
+            .force("center", d3.forceCenter(width / 2, height / 2));
+
+        link = svg.selectAll(".link")
+            .data(links, function (d) {
+                return d.target.id;
+            })
+
+        link = link.enter()
+            .append("line")
+            .attr("class", "link");
+
+        node = svg.selectAll(".node")
+            .data(nodes, function (d) {
+                return d.id;
+            })
+
+        node = node.enter()
+            .append("g")
+            .attr("class", "node")
+            .call(d3.drag()
+                .on("start", dragstarted)
+                .on("drag", dragged)
+                .on("end", dragended));
+
+        node.append("circle")
+            .attr("r", d => d.id === 1 ? 24 : 14)
+            .style("fill", function (d) {
+                if (d.id === 1) {
+                    return "url(#vit-icon)";
+                } else {
+                    return "teal"
+                }
+            })
+
+        simulation
+            .nodes(nodes)
+            .on("tick", ticked);
+
+        simulation.force("link")
+            .links(links);
+
+
+        function ticked() {
+            link
+                .attr("x1", function (d) {
+                    return d.source.x;
+                })
+                .attr("y1", function (d) {
+                    return d.source.y;
+                })
+                .attr("x2", function (d) {
+                    return d.target.x;
+                })
+                .attr("y2", function (d) {
+                    return d.target.y;
+                });
+
+            node
+                .attr("transform", function (d) {
+                    return "translate(" + d.x + ", " + d.y + ")";
+                });
+        }
+
+        function dragstarted(d) {
+            if (!d3.event.active) simulation.alphaTarget(0.3).restart()
+        }
+
+        function dragged(d) {
+            d.fx = d3.event.x;
+            d.fy = d3.event.y;
+        }
+
+        function dragended(d) {
+            if (!d3.event.active) simulation.alphaTarget(0);
+            d.fx = undefined;
+            d.fy = undefined;
+        }
+
+
+
+    </script>
+</body>
+
+</html>

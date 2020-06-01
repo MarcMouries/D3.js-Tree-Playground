@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<!-- saved from url=(0070)https://alpha.gazlab.com/content-host/d3charts/projects/palmberg-tree/ -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
+        <meta http-equiv="X-UA-Compatible" content="IE=EDGE">
+        <link rel="shortcut icon" href="http://thegazette.com/imgs/gazette-kcrg.png">
+        
+        <!-- Mobile meta tags-->
+        <meta name="HandheldFriendly" content="True">
+        <meta name="MobileOptimized" content="320">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <meta name="apple-touch-fullscreen" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta http-equiv="cleartype" content="on">
+        <link rel="apple-touch-icon" href="http://thegazette.com/imgs/gazette-kcrg.png">
+
+    	<title>Tree chart: Mary Palmberg's connections</title>
+		
+		<link rel="stylesheet" type="text/css" href="./styles.css">
+        <script async="" src="./analytics.js"></script>
+        <script src="./jquery-1.11.2.min.js"></script>
+        <script src="./underscore-min-1.6.js"></script>
+		<script src="./d3-3.5.12.min.js"></script>
+        <script src="./d3.tip.js"></script>
+  	</head>
+  	<body data-gr-c-s-loaded="true">
+        <h3>It takes a village to meet community needs</h3>
+  		<svg width="1200" height="600" style="display: inline;">
+        <svg style="display: inline;">
+            <defs>
+                <!-- <marker id="triangle" markerWidth="13" markerHeight="13" refx="2" refy="6" orient="auto">
+                    <path d="M2,2 L2,11 L10,6 L2,2" style="fill: #000000;" />
+                </marker> -->
+                <pattern patterunits="userSpaceOnUse" id="MaryPalmberg" height="1" width="1">
+                    <image x="0" y="0" width="64" height="64" xlink:href="images/cropped/palmberg.jpg"></image>
+                </pattern>
+                <pattern patterunits="userSpaceOnUse" id="EmanuellaIsrael" height="1" width="1">
+                    <image x="0" y="0" width="58" height="58" xlink:href="images/cropped/israel.jpg"></image>
+                </pattern>
+                <pattern patterunits="userSpaceOnUse" id="EricRichard" height="1" width="1">
+                    <image x="0" y="0" width="58" height="58" xlink:href="images/cropped/richard.jpg"></image>
+                </pattern>
+                <pattern patterunits="userSpaceOnUse" id="HannahAltman" height="1" width="1">
+                    <image x="0" y="0" width="58" height="58" xlink:href="images/cropped/altman.jpg"></image>
+                </pattern>
+                <pattern patterunits="userSpaceOnUse" id="JanKoch" height="1" width="1">
+                    <image x="0" y="0" width="58" height="58" xlink:href="images/cropped/koch.jpg"></image>
+                </pattern>
+                <pattern patterunits="userSpaceOnUse" id="JaneSkinner" height="1" width="1">
+                    <image x="0" y="0" width="58" height="58" xlink:href="images/cropped/skinner.jpg"></image>
+                </pattern>
+                <pattern patterunits="userSpaceOnUse" id="MaraCole" height="1" width="1">
+                    <image x="0" y="0" width="58" height="58" xlink:href="images/cropped/cole.jpg"></image>
+                </pattern>
+                <pattern patterunits="userSpaceOnUse" id="GregSchrock" height="1" width="1">
+                    <image x="0" y="0" width="58" height="58" xlink:href="images/cropped/schrock.jpg"></image>
+                </pattern>
+                <pattern patterunits="userSpaceOnUse" id="ThomasJensen" height="1" width="1">
+                    <image x="0" y="0" width="58" height="58" xlink:href="images/cropped/jensen.jpg"></image>
+                </pattern>
+                <pattern patterunits="userSpaceOnUse" id="Wagenknechts" height="1" width="1">
+                    <image x="0" y="0" width="58" height="58" xlink:href="images/cropped/wagenknechts.jpg"></image>
+                </pattern>
+                <pattern patterunits="userSpaceOnUse" id="Truckdriver" height="1" width="1">
+                    <image x="0" y="0" width="58" height="58" xlink:href="images/cropped/truck_driver.jpg"></image>
+                </pattern>
+                <pattern patterunits="userSpaceOnUse" id="CathyHolmes" height="1" width="1">
+                    <image x="0" y="0" width="58" height="58" xlink:href="images/cropped/holmes.jpg"></image>
+                </pattern>
+                <pattern patterunits="userSpaceOnUse" id="ClarenceBorck" height="1" width="1">
+                    <image x="0" y="0" width="58" height="58" xlink:href="images/cropped/borck.jpg"></image>
+                </pattern>
+            </defs>    
+        </svg>
+        <p>Mary Palmberg, of Iowa City, uses an email list of more than 200 people to help fill community needs. This chart shows how the Helpers Email list works. People on the left made a request or donated an item. They connected with Mary, in the middle, who shared the need with her helpers. People on the right responded to Mary’s requests for help. Five stories are shown on the chart and each has a unique color.</p>
+        <p>Roll over a person’s photo for more information on their connection to the Helpers Email list.</p>
+        <h5 id="mobile-note" class="hide-desktop show-650"><strong>NOTE:</strong> If you are on a smartphone, please turn your phone sideways to view the chart better.</h5>
+        <script src="./tree-data.json"></script>
+        <script src="./name-boxes.js"></script>
+        <script src="./tooltips.js"></script>
+        <script src="./script.js"></script>
+        
+        <div class="d3-tip w" style="position: absolute; top: 411.104px; opacity: 0; pointer-events: none; box-sizing: border-box; left: 405px;"><span class="exit hide-desktop show-700">X</span><h3>Mara Cole, 39, Iowa City</h3><h4>Graphic designer</h4><div class="tip-role"><strong>Role:</strong> Cole, whose husband went to law school with Richard saw Richard's post on Facebook about trying to find a home for Simon. Cole posted her own message and then connected with Palmberg Jan. 8 about finding Simon a home in Iowa City.</div></div>
+
+  	
+<div class="d3-tip" style="position: absolute; top: 0px; opacity: 0; pointer-events: none; box-sizing: border-box;"></div><div class="d3-tip" style="position: absolute; top: 0px; opacity: 0; pointer-events: none; box-sizing: border-box;"></div><div class="d3-tip" style="position: absolute; top: 0px; opacity: 0; pointer-events: none; box-sizing: border-box;"></div><div class="d3-tip" style="position: absolute; top: 0px; opacity: 0; pointer-events: none; box-sizing: border-box;"></div><div class="d3-tip" style="position: absolute; top: 0px; opacity: 0; pointer-events: none; box-sizing: border-box;"></div></body></html>

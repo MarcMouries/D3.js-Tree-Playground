@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <title>Force Person</title>
+    <style>
+        .node {
+            fill: #ccc;
+            stroke: rgb(0, 0, 0);
+            _stroke-width: 2px;
+        }
+
+        .link {
+            stroke: #777;
+            stroke-width: 2px;
+        }
+    </style>
+</head>
+
+<body>
+    <script src='http://d3js.org/d3.v3.min.js'></script>
+    <script>
+        var width = 960,
+            height = 600;
+        var data;
+        var node;
+        var link;
+
+        // var color = d3.scaleOrdinal(d3.schemeCategory20);
+
+
+        var svg = d3.select("body").append("svg")
+            .attr("width", width)
+            .attr("height", height);
+
+
+        console.log("1111");
+
+        data = {
+            "name": "Eric Fox", "size": 50, "link": "http://google.com",
+            "children": [
+                {"name": "Person 01", "size": 25, "link": "http://google.com"},
+                {"name": "Person 02", "size": 25, "link": "http://yahoo.com"},
+                {"name": "Person 03", "size": 25, "link": "http://youtube.com"},
+                {"name": "Person 04", "size": 25, "link": "http://twitter.com"},
+                {"name": "Person 05", "size": 25, "link": "http://facebook.com"}
+        ]};
+
+
+
+        update();
+
+        /*   d3.json("force_person_data.json", function (error, json) {
+            data = json;
+            update();
+            console.log("2222" + error);
+
+        });
+*/
+
+
+        function update() {
+
+            console.log("data");
+            console.log(data);
+
+            const hierarchy = d3.hierarchy(data);
+            console.log("hierarchy");
+            console.log(hierarchy);
+
+            const links = hierarchy.links();
+            const nodes = hierarchy.descendants();
+            console.log("links");
+            console.log(links);
+            console.log("nodes");
+            console.log(nodes);
+
+            var simulation = d3.forceSimulation(nodes)
+                .force("link", d3.forceLink(links).id(d => d.id).distance(10).strength(1))
+                .force("charge", d3.forceManyBody().strength(-50))
+                .force("x", d3.forceX())
+                .force("y", d3.forceY())
+                .force("center", d3.forceCenter(width / 2, height / 2));
+            //.on("tick", tick);
+
+           // simulation.stop();
+
+
+            var nodes_flat_data = flatten(data);
+            console.log("nodes_flat_data");
+            console.log(nodes_flat_data);
+
+            // var links = d3.layout.tree().links(nodes);
+
+            link = svg.append("g")
+                .attr("stroke", "#999")
+                .attr("stroke-opacity", 0.6)
+                .selectAll("line")
+                .data(links)
+                .join("line");
+
+
+
+            link.exit().remove();
+
+            link.enter().insert("line", ".node")
+                .attr("class", "link");
+
+            // Update nodes.
+            node = svg.append("g")
+                .attr("fill", "#fff")
+                .attr("stroke", "#000")
+                .attr("stroke-width", 1.5)
+                .selectAll("circle")
+                .data(nodes)
+                .join("circle")
+                .attr("fill", d => d.children ? null : "#000")
+                .attr("stroke", d => d.children ? null : "#fff")
+                .attr("r", 3.5)
+                //.call(drag(simulation))
+                ;
+
+
+
+                
+
+
+
+
+            node.exit().remove();
+
+            var nodeEnter = node.enter().append("g")
+                .attr("class", "node")
+                .on("click", click)
+                // .call(simulation.drag)
+                .attr("href", function (d) {
+                    return d.link;
+                });
+
+            nodeEnter.append("svg:a")
+                .attr("xlink:href", function (d) {
+                    return d.link;
+                })
+                .append("circle")
+                .attr("r", function (d) {
+                    if (d.children) {
+                        return 50;
+                    }
+                    return 30;
+                });
+            //          .attr("r", function(d) { return Math.sqrt(d.size) / 10 || 4.5; });
+
+            nodeEnter.append("text")
+                //.attr("dy", "- 200")
+                .attr("dx", -20)
+                .attr("dy", +50)
+                .style("fill", "black")
+                .text(function (d) {
+                    return d.name;
+                });
+
+            node.select("circle")
+                .style("fill", color);
+
+            simulation
+                //.nodes(dataset.nodes)
+                .on("tick", ticked);
+
+        }
+
+        function ticked() {
+            link
+                .attr("x1", d => d.source.x)
+                .attr("y1", d => d.source.y)
+                .attr("x2", d => d.target.x)
+                .attr("y2", d => d.target.y);
+
+            node
+                .attr("cx", d => d.x)
+                .attr("cy", d => d.y);
+        };
+
+
+
+
+        function tick() {
+            link.attr("x1", function (d) {
+                    return d.source.x;
+                })
+                .attr("y1", function (d) {
+                    return d.source.y;
+                })
+                .attr("x2", function (d) {
+                    return d.target.x;
+                })
+                .attr("y2", function (d) {
+                    return d.target.y;
+                });
+
+            node.attr("transform", function (d) {
+                return "translate(" + d.x + "," + d.y + ")";
+            });
+        }
+
+        function color(d) {
+            return d._children ? "#3182bd" // collapsed package
+                :
+                d.children ? "#2F9BC1" // expanded package
+                :
+                "#fd8d3c"; // leaf node
+        }
+
+        // Toggle children on click.
+        function click(obj) {
+            if (d3.event.defaultPrevented) return; // ignore drag
+            if (d.children) {
+                d._children = d.children;
+                d.children = null;
+            } else {
+                d.children = d._children;
+                d._children = null;
+            }
+            update();
+        }
+
+        // Returns a list of all nodes under the root.
+        function flatten(root) {
+            var nodes = [],
+                i = 0;
+
+            function recurse(node) {
+                if (node.children) node.children.forEach(recurse);
+                if (!node.id) node.id = ++i;
+                nodes.push(node);
+            }
+
+            recurse(root);
+            return nodes;
+        }
+    </script>
+</body>
+
+</html>

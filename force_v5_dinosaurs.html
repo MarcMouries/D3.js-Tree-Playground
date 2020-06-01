@@ -1,0 +1,115 @@
+<html>
+
+<head>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+</head>
+
+<body>
+    <script>
+        window.onload = function () {
+
+            var width = 800,
+                height = 600;
+
+            var radius = 15;
+
+            var sourceNodes = [
+                { "id": "Tyrannosaurus rex" },
+                { "id": "Spinosaurus aegyptiacus" },
+                { "id": "Velociraptor mongoliensis" },
+                { "id": "Brachiosaurus altithorax" },
+                { "id": "Brontosaurus excelsus" },
+                { "id": "Stegosaurus stenops" },
+                { "id": "Triceratops horridus" },
+                { "id": "Iguanadon bernissartensis" },
+                { "id": "Parasaurolophus walkeri" },
+                { "id": "Ankylosaurus magniventris" },
+            ];
+
+            var links = [
+                { "source": 0, "target": 1 }, // Tyrannosaurus rex -> Spinosaurus aegyptiacus
+                { "source": 0, "target": 2 }, // etc... s
+                { "source": 0, "target": 3 },
+                { "source": 0, "target": 4 },
+                { "source": 1, "target": 6 },
+                { "source": 1, "target": 7 },
+                { "source": 1, "target": 8 },
+                { "source": 1, "target": 9 },
+                { "source": 1, "target": 1 },
+                { "source": 2, "target": 5 },
+                { "source": 2, "target": 2 },
+                { "source": 2, "target": 5 },
+                { "source": 2, "target": 0 },
+            ];
+
+            var colors = d3.schemeCategory10;
+            var simulation = d3.forceSimulation(sourceNodes)
+                .force("charge", d3.forceManyBody())
+                .force("link", d3.forceLink(links).distance(200))
+                .force("center", d3.forceCenter().x(width / 2).y(height / 2));
+
+            var svg = d3.select('body')
+                .append("svg")
+                .attr("width", width)
+                .attr("height", height);
+
+            var lines = svg.selectAll("line")
+                .data(links)
+                .enter()
+                .append("line")
+                .style("stroke", "#ccc")
+                .style("stroke-width", 2);
+
+            var circlesGroup = svg.selectAll("g")
+                .data(sourceNodes)
+                .enter()
+                .append("g");
+
+            var circles = circlesGroup
+                .append("circle")
+                .attr("r", radius)
+                .style("fill", function (d, i) {
+                    return colors[i];
+                })
+                .call(d3.drag()
+                    .on("start", function (d) {
+                        simulation.alphaTarget(0.25).restart();
+                        d.fx = d.x;
+                        d.fy = d.y;
+                    })
+                    .on("drag", function (d) {
+                        d.fx = d3.event.x;
+                        d.fy = d3.event.y;
+                    })
+                    .on("end", function (d) {
+                        simulation.alphaTarget(0);
+                        d.fx = null;
+                        d.fy = null;
+                    }));
+
+            var text = circlesGroup.append("text").text(function (d) { return d.id; })
+                .attr("fill", function (d, i) {
+                    return colors[i];
+                })
+                .attr("font-size", 15)
+                .attr("font-weight", "bold");
+
+            simulation.on("tick", function () {
+
+                circles.attr("cx", function (d) { return d.x; })
+                    .attr("cy", function (d) { return d.y; });
+                text.attr("x", function (d) { return d.x + radius; })
+                    .attr("y", function (d) { return d.y + radius; });
+
+                lines.attr("x1", function (d) { return d.source.x; })
+                    .attr("y1", function (d) { return d.source.y; })
+                    .attr("x2", function (d) { return d.target.x; })
+                    .attr("y2", function (d) { return d.target.y; });
+
+
+            });
+        }
+    </script>
+</body>
+
+</html>

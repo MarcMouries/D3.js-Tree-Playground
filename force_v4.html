@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Directed Graph</title>
+    <script src='https://d3js.org/d3.v4.min.js'></script>
+    <script src='http://code.jquery.com/jquery-3.1.1.min.js' integrity='sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=' crossorigin='anonymous'></script>
+    <style>
+        .links line {
+            stroke: #aaa;
+        }
+
+        .node circle {
+            pointer-events: all;
+            stroke: #000;
+            stroke-width: 2;
+        }
+
+        .slds-text-heading--label {
+            font: 9px helvetica;
+        }
+    </style>
+</head>
+<body>
+<svg></svg>
+<script>
+    //Width and height
+    var svgWidth = 800;
+    var svgHeight = 600;
+    var circleRadius = 20;
+    //Original data
+
+var data = [
+{ name: "Eric Fox", 
+  family: [
+  { name: "Cindy Fox" },
+  { name: "Edward Fox" } 
+  ],
+}
+];
+
+    var dataset = {
+        nodes: [
+            { name: "Eric Fox" ,
+            "img":  "http://marvel-force-chart.surge.sh/marvel_force_chart_img/top_spiderman.png"
+        },
+
+            { name: "Family" },  // 1
+            { name: "Friends" },
+            { name: "Places" },
+
+            { name: "Cindy Fox", 
+        "img" : "http://marvel-force-chart.surge.sh/marvel_force_chart_img/top_captainmarvel.png" },  // 4
+            { name: "Edward Fox" }, // 5
+            { name: "Lisa Fox" }, // 6
+
+            { name: "NY" }, // 7 
+            { name: "VA" }, //
+            { name: "CA" }, // 
+        ],
+        edges: [
+            { source: 0, target: 1 }, 
+            { source: 0, target: 2 },
+            { source: 0, target: 3 },
+            { source: 1, target: 4 }, // Family
+            { source: 1, target: 5 }, // Family
+            { source: 1, target: 6 }, // Family
+            { source: 3, target: 7 },
+            { source: 3, target: 8 },
+            { source: 3, target: 9 },
+        ]
+    };
+
+
+    var simulation = d3.forceSimulation()
+            .force("link", d3.forceLink().id(function(d,i) {
+                return i;
+            }).distance(50))
+            .force("charge", d3.forceManyBody().strength(-200 ))
+            .force("center", d3.forceCenter(svgWidth / 2,svgHeight / 2));
+
+    var colors = d3.scaleOrdinal(d3.schemeCategory10);
+
+    //Create SVG element
+    var svg = d3.select("svg")
+            .attr("width", svgWidth)
+            .attr("height", svgHeight);
+
+
+    var lines = svg.append('g')
+            .attr('class','lines')
+            .selectAll("line")
+            .data(dataset.edges)
+            .enter()
+            .append("line");
+
+
+    // NODE 
+
+    node = svg.selectAll(".node")
+      .data(dataset.nodes, function(d) { return d.id; });
+
+  // Enter any new nodes.
+   var nodeGroup = node.enter().append("g")
+      .attr("class", "node")
+    //  .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
+      .call(d3.drag()
+                    .on("start", dragstarted)
+                    .on("drag", dragged)
+                    .on("end", dragended));
+      
+
+
+  // Append a circle
+  nodeGroup.append("svg:circle")
+      .attr("r", 
+            function(d) { 
+                return Math.sqrt(d.size) / 10 || 4.5; 
+            })
+      .style("fill", "#eee");
+
+                
+  nodeGroup.append("svg:image")
+        .attr("xlink:href",  function(d) { return d.img;})
+       .attr("x", function(d) { return -25;})
+        .attr("y", function(d) { return -25;})
+        .attr("height", 50)
+        .attr("width", 50);
+
+
+    var nodes_text = nodeGroup.append("text")
+            .attr("class", "nodetext slds-text-heading--label")
+          //  .attr("text-anchor", "middle")
+            .attr("dx", -30)
+            .attr("dy", 30)
+            .text(function(d) {
+                return  d.name;
+            });
+
+  // Exit any old nodes.
+  nodeGroup.exit().remove();
+  // Re-select for update.
+  path = svg.selectAll(".lines");
+  node = svg.selectAll(".node");
+
+
+    simulation
+            .nodes(dataset.nodes)
+            .on("tick", ticked);
+
+    simulation
+            .force("link")
+            .links(dataset.edges);
+
+    // on each tick, update node and link positions
+    function ticked() {
+        path.attr("d", positionLink);
+        node.attr("transform", positionNode);
+    }
+// move the node based on forces calculations
+function positionNode(d) {
+        // keep the node within the boundaries of the svg
+        if (d.x < 0) {
+            d.x = 0
+        };
+        if (d.y < 0) {
+            d.y = 0
+        };
+        if (d.x > svgWidth) {
+            d.x = svgWidth
+        };
+        if (d.y > svgHeight) {
+            d.y = svgHeight
+        };
+        return "translate(" + d.x + "," + d.y + ")";
+    }
+    function positionLink(d) {
+        lines
+                .attr("x1", function (d) {
+                    var xPos = d.source.x;
+                    if (xPos < 0) return 0;
+                    if (xPos > (svgWidth - circleRadius)) return (svgWidth - circleRadius);
+                    return xPos;
+                })
+                .attr("y1", function (d) {
+                    var yPos = d.source.y;
+                    if (yPos < 0) return 0;
+                    if (yPos > (svgHeight - circleRadius)) return (svgHeight - circleRadius);
+                    return yPos;
+                })
+                .attr("x2", function (d) {
+                    var xPos = d.target.x;
+                    if (xPos < 0) return 0;
+                    if (xPos > (svgWidth - circleRadius)) return (svgWidth - circleRadius);
+                    return xPos;
+                })
+                .attr("y2", function (d) {
+                    var yPos = d.target.y;
+                    if (yPos < 0) return 0;
+                    if (yPos > (svgHeight - circleRadius)) return (svgHeight - circleRadius);
+                    return yPos;
+                });
+    }
+
+
+    function dragstarted(d) {
+        if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+        d.fx = d.x;
+        d.fy = d.y;
+    }
+
+    function dragged(d) {
+        d.fx = d3.event.x;
+        d.fy = d3.event.y;
+    }
+
+    function dragended(d) {
+        if (!d3.event.active) simulation.alphaTarget(0);
+        d.fx = null;
+        d.fy = null;
+    }
+
+</script>
+</body>
+</html>

@@ -35,10 +35,10 @@ var residences = {
     "parent": "Eric Fox",
     children: []
 };
-var family_members = {
-    "name": "Family",
-    "parent": "Eric Fox"
-};
+var family_members = [
+    { "name": "Cindy Fox"},
+    { "name": "Lisa Fox"},
+];
 var vehicles = {
     "name": "Vehicles",
     "parent": "Eric Fox"

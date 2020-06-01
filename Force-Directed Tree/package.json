@@ -1,0 +1,14 @@
+{
+  "name": "f38d6e89e2cba5e5",
+  "main": "f38d6e89e2cba5e5@174.js",
+  "version": "174.0.0",
+  "homepage": "https://observablehq.com/d/f38d6e89e2cba5e5",
+  "author": {
+    "name": "marcmouries",
+    "url": "https://observablehq.com/@marcmouries"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4"
+  }
+}

@@ -1,0 +1,9 @@
+{
+    "nodes": [ { "id": "English" },{ "id": "Italy" },
+                        { "id": "America" },{ "id": "Canada" },
+                        { "id": "Australia" },{ "id": "Japan" },
+                        { "id": "China" } ],
+    "links":[ { "source": 0 , "target": 1 } , { "source": 0 , "target": 2 },
+                        { "source": 0 , "target": 3 } , { "source": 1 , "target": 4 },
+                        { "source": 1 , "target": 5 } , { "source": 1 , "target": 6 }]
+  }

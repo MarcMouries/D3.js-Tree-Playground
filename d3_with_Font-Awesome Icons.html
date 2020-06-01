@@ -1,0 +1,25 @@
+<title>How to add font-awesome icons to SVG?</title>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+     <style>
+        .icon {
+            font-size: 32px;
+        }
+        </style>
+        
+     <body>
+        <div id="d3svg"></div>
+
+     </body>
+<script type="text/javascript">
+
+var svg = d3.select("#d3svg")
+.append("svg")
+.attr("width", "100%")
+.attr("height", "500px")
+svg.append('svg:foreignObject')
+.attr("width", 50)
+.attr("height", 50)
+.append("xhtml:body")
+.html('<i class="fa fa-user icon"></i>');
+</script>
