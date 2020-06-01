@@ -34,7 +34,9 @@
     },
     {
       "name": "Vehicles",
-      "_children": [{ "name": "V 1" }, { "name": "V 2" }]
+      "_children": [
+        { "name": "V 1" }, 
+        { "name": "V 2" }]
     }
   ]
 }

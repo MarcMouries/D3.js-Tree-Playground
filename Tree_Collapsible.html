@@ -1,193 +1,197 @@
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Meanings & Synonyms</title>
-    <script src="https://d3js.org/d3.v3.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <meta charset="UTF-8">
+  <title>Meanings & Synonyms</title>
+  <script src="https://d3js.org/d3.v3.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
-    <style>
-        .link line {
-            stroke: #696969;
-        }
+  <style>
+    .link  {
+      stroke: #696969;
+      fill: none;
+      stroke: lightsteelblue;
+      stroke-width: 2px;
+    }
 
-        .link line.separator {
-            stroke: #fff;
-            stroke-width: 2px;
-        }
+    .link line.separator {
+      stroke: #fff;
+      stroke-width: 2px;
+    }
 
-        .node circle {
-            stroke: #000;
-            stroke-width: 1.5px;
-        }
+    .node circle {
+      stroke: #000;
+      stroke-width: 1.5px;
+    }
 
-        .node text {
-            font: 10px sans-serif;
-            pointer-events: none;
-        }
-    </style>
+    .node text {
+      font: 10px sans-serif;
+      pointer-events: none;
+    }
+  </style>
 </head>
+
 <body>
 
-    <div id="tabs"></div>
-    <div class="tabs"></div>
-<script>
-/* Collapsible Tree Global variables */
-var tree, diagonal, svg = [];
-var inc = 0, duration = 750, root = [];
+  <div id="tabs"></div>
+  <div class="tabs"></div>
+  <script>
+    /* Collapsible Tree Global variables */
+    var tree, diagonal, svg = [];
+    var inc = 0, duration = 750, root = [];
 
 
-$('#tabs').append("<h2>Artifacts</h2>");
-collapse_graph('artifact');            
-$('#tabs').append("<h2>Behaviors</h2>");            
-collapse_graph('behavior');            
-$('#tabs').append("<h2>Issues</h2>");          
-collapse_graph('issue');
+    $('#tabs').append("<h2>Artifacts</h2>");
+    collapse_graph('artifact');
+    $('#tabs').append("<h2>Behaviors</h2>");
+    collapse_graph('behavior');
+    $('#tabs').append("<h2>Issues</h2>");
+    collapse_graph('issue');
 
-function collapse_graph(type){
+    function collapse_graph(type) {
 
-var data = {};
-//data['name'] = type + "s";
-//data['children'] = getChildrenEntities(type);
+      var data = {};
+      //data['name'] = type + "s";
+      //data['children'] = getChildrenEntities(type);
 
-if(type == 'artifact') {
-data = JSON.parse('{"name":"artifacts","children":[{"name":"weights","children":[]},{"name":"sampling compartment","children":[]},{"name":"depth guage","children":[{"name":"Decomp8","children":[{"name":"Pressure gauge","children":[]}]},{"name":"Decomp9","children":[{"name":"a sensor that determines the depth","children":[]}]}]}]}');
-}
+      if (type == 'artifact') {
+        data = JSON.parse('{"name":"artifacts","children":[{"name":"weights","children":[]},{"name":"sampling compartment","children":[]},{"name":"depth guage","children":[{"name":"Decomp8","children":[{"name":"Pressure gauge","children":[]}]},{"name":"Decomp9","children":[{"name":"a sensor that determines the depth","children":[]}]}]}]}');
+      }
 
-if (type == 'behavior') {
-data = JSON.parse('{"name":"behaviors","children":[{"name":"Hydrostatic pressure","children":[{"name":"Decomp6","children":[{"name":"Ro","children":[]},{"name":"h","children":[]},{"name":"g","children":[]}]}]}]}');
-}
+      if (type == 'behavior') {
+        data = JSON.parse('{"name":"behaviors","children":[{"name":"Hydrostatic pressure","children":[{"name":"Decomp6","children":[{"name":"Ro","children":[]},{"name":"h","children":[]},{"name":"g","children":[]}]}]}]}');
+      }
 
-if (type == 'issue') {
-data = JSON.parse('{"name":"issues","children":[{"name":"withstanding pressure in depth","children":[]}]}');
-}
+      if (type == 'issue') {
+        data = JSON.parse('{"name":"issues","children":[{"name":"withstanding pressure in depth","children":[]}]}');
+      }
 
-// d3 business.
-var width = 800;
-var height = 500;
+      // d3 business.
+      var width = 800;
+      var height = 500;
 
-tree = d3.layout.tree().size([height, width]);
+      tree = d3.layout.tree().size([height, width]);
 
-diagonal = d3.svg.diagonal().projection(function(d) { return [d.y, d.x]; });
+      diagonal = d3.svg.diagonal().projection(function (d) { return [d.y, d.x]; });
 
-svg[type] = d3.select("#tabs").append("svg")
-    .attr("type", type)
-    .attr("width", width)
-    .attr("height", height)
-    .append("g")
-    .attr("transform", "translate(100,0)");
+      svg[type] = d3.select("#tabs").append("svg")
+        .attr("type", type)
+        .attr("width", width)
+        .attr("height", height)
+        .append("g")
+        .attr("transform", "translate(100,0)");
 
-root[type] = data;
-  root[type].x0 = height / 2;
-  root[type].y0 = 0;
+      root[type] = data;
+      root[type].x0 = height / 2;
+      root[type].y0 = 0;
 
-  //root.children.forEach(collapse);
-  update(root[type], type);
+      //root.children.forEach(collapse);
+      update(root[type], type);
 
-  //d3.select(self.frameElement).style("height", "800px");
-}
+      //d3.select(self.frameElement).style("height", "800px");
+    }
 
-function update(source,type) {
+    function update(source, type) {
 
-  // Compute the new tree layout.
-  var nodes = tree.nodes(root[type]).reverse(),
-  links = tree.links(nodes);
+      // Compute the new tree layout.
+      var nodes = tree.nodes(root[type]).reverse(),
+        links = tree.links(nodes);
 
-  // Normalize for fixed-depth.
-  nodes.forEach(function(d) { d.y = d.depth * 180; });
+      // Normalize for fixed-depth.
+      nodes.forEach(function (d) { d.y = d.depth * 180; });
 
-  // Update the nodes…
-  var node = svg[type].selectAll("g.node")
-  .data(nodes, function(d) { return d.id || (d.id = ++inc); });
+      // Update the nodes…
+      var node = svg[type].selectAll("g.node")
+        .data(nodes, function (d) { return d.id || (d.id = ++inc); });
 
-  // Enter any new nodes at the parent's previous position.
-  var nodeEnter = node.enter().append("g")
-  .attr("class", "node")
-  .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 +")"; }).on('click', click);
+      // Enter any new nodes at the parent's previous position.
+      var nodeEnter = node.enter().append("g")
+        .attr("class", "node")
+        .attr("transform", function (d) { return "translate(" + source.y0 + "," + source.x0 + ")"; }).on('click', click);
 
-  nodeEnter.append("circle")
-  .attr("r", 1e-6)
-  .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+      nodeEnter.append("circle")
+        .attr("r", 1e-6)
+        .style("fill", function (d) { return d._children ? "lightsteelblue" : "#fff"; });
 
-  nodeEnter.append("text")
-  .attr("x", function(d) { return d.children || d._children ? -10 : 10; })
-  .attr("dy", ".35em")
-  .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
-  .text(function(d) { return d.name; })
-  .style("fill-opacity", 1e-6);
+      nodeEnter.append("text")
+        .attr("x", function (d) { return d.children || d._children ? -10 : 10; })
+        .attr("dy", ".35em")
+        .attr("text-anchor", function (d) { return d.children || d._children ? "end" : "start"; })
+        .text(function (d) { return d.name; })
+        .style("fill-opacity", 1e-6);
 
-  // Transition nodes to their new position.
-  var nodeUpdate = node.transition()
-  .duration(duration)
-  .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
+      // Transition nodes to their new position.
+      var nodeUpdate = node.transition()
+        .duration(duration)
+        .attr("transform", function (d) { return "translate(" + d.y + "," + d.x + ")"; });
 
-  nodeUpdate.select("circle")
-  .attr("r", 4.5)
-  .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+      nodeUpdate.select("circle")
+        .attr("r", 4.5)
+        .style("fill", function (d) { return d._children ? "lightsteelblue" : "#fff"; });
 
-  nodeUpdate.select("text")
-  .style("fill-opacity", 1);
+      nodeUpdate.select("text")
+        .style("fill-opacity", 1);
 
-  // Transition exiting nodes to the parent's new position.
-  var nodeExit = node.exit().transition()
-  .duration(duration)
-  .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; })
-  .remove();
+      // Transition exiting nodes to the parent's new position.
+      var nodeExit = node.exit().transition()
+        .duration(duration)
+        .attr("transform", function (d) { return "translate(" + source.y + "," + source.x + ")"; })
+        .remove();
 
-  nodeExit.select("circle")
-  .attr("r", 1e-6);
+      nodeExit.select("circle")
+        .attr("r", 1e-6);
 
-  nodeExit.select("text")
-  .style("fill-opacity", 1e-6);
+      nodeExit.select("text")
+        .style("fill-opacity", 1e-6);
 
-  // Update the links…
-  var link = svg[type].selectAll("path.link")
-  .data(links, function(d) { return d.target.id; });
+      // Update the links…
+      var link = svg[type].selectAll("path.link")
+        .data(links, function (d) { return d.target.id; });
 
-  // Enter any new links at the parent's previous position.
-  link.enter().insert("path", "g")
-  .attr("class", "link")
-  .attr("d", function(d) {
-    var o = {x: source.x0, y: source.y0};
-    return diagonal({source: o, target: o});
-  });
+      // Enter any new links at the parent's previous position.
+      link.enter().insert("path", "g")
+        .attr("class", "link")
+        .attr("d", function (d) {
+          var o = { x: source.x0, y: source.y0 };
+          return diagonal({ source: o, target: o });
+        });
 
-  // Transition links to their new position.
-  link.transition()
-  .duration(duration)
-  .attr("d", diagonal);
+      // Transition links to their new position.
+      link.transition()
+        .duration(duration)
+        .attr("d", diagonal);
 
-  // Transition exiting nodes to the parent's new position.
-  link.exit().transition()
-  .duration(duration)
-  .attr("d", function(d) {
-    var o = {x: source.x, y: source.y};
-    return diagonal({source: o, target: o});
-  })
-  .remove();
+      // Transition exiting nodes to the parent's new position.
+      link.exit().transition()
+        .duration(duration)
+        .attr("d", function (d) {
+          var o = { x: source.x, y: source.y };
+          return diagonal({ source: o, target: o });
+        })
+        .remove();
 
-  // Stash the old positions for transition.
-  nodes.forEach(function(d) {
-    d.x0 = d.x;
-    d.y0 = d.y;
-  });
-  inc = 0;
-}
+      // Stash the old positions for transition.
+      nodes.forEach(function (d) {
+        d.x0 = d.x;
+        d.y0 = d.y;
+      });
+      inc = 0;
+    }
 
-// Toggle children on click.
-function click(d) {
-  if (d.children) {
-    d._children = d.children;
-    d.children = null;
-  } 
-  else {
-    d.children = d._children;
-    d._children = null;
-  }
-  var type = $(this).parents('svg').attr('type');
-  update(d, type);
-}
+    // Toggle children on click.
+    function click(d) {
+      if (d.children) {
+        d._children = d.children;
+        d.children = null;
+      }
+      else {
+        d.children = d._children;
+        d._children = null;
+      }
+      var type = $(this).parents('svg').attr('type');
+      update(d, type);
+    }
 
-</script>
+  </script>
 </body>

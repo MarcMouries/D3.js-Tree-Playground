@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<meta charset="utf-8" />
+<style>
+
+ body 
+ {
+    background-color: #334454
+ }
+  .line  {
+    stroke: #999;
+    stroke-opacity: 0.6;
+    stroke-width: 0.2;
+  }
+
+
+  .nodes circle {
+    stroke: #fff;
+    stroke-width: 1.5px;
+  }
+
+
+  .nodeLabel {
+      font-size: 10px;
+      fill: #999;
+      text-anchor: middle;
+      cursor: pointer;
+    }
+
+  * {box-sizing: border-box;}
+
+    .wrapper {
+        _max-width: 1024px;
+        margin: 0 auto;
+        font: 1.2em Helvetica, arial, sans-serif;
+    }
+
+    .wrapper > * {
+        _border: 2px solid #f08c00;
+        border-radius: 5px;
+        padding: 10px;
+    }
+
+    nav ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+.main-head {
+  grid-area: header;
+  background-color:#2F4050
+
+}
+.content {
+  grid-area: content;
+  background-color:#2F4050
+
+}
+
+.side {
+  grid-area: sidebar;
+  background-color:#2F4050
+
+}
+
+.main-footer {
+  grid-area: footer;
+  background-color:#2F4050
+}
+.wrapper {
+  display: grid;
+  grid-gap: 20px;
+  grid-template-areas: 
+    "header"
+    "nav"
+    "content"
+    "sidebar"
+    "footer";
+}
+
+@media (min-width: 700px) {
+  .wrapper {
+    grid-template-columns: 4fr 1fr;
+    grid-template-areas: 
+      "header   header"
+      "content  sidebar"
+      "footer   footer"
+   }
+   nav ul {
+     flex-direction: column;
+   }
+}
+</style>
+<body>
+    <div class="wrapper">
+        <header class="main-head">The header</header>
+        <article class="content">
+            <svg width="960" height="600"></svg>
+        </article>
+        <aside class="side">Sidebar</aside>
+        <footer class="main-footer">The footer</footer>
+</div>
+
+
+<div class="container">
+    <div>
+    </div>
+    <div></div>
+
+</div>
+
+</body>
+
+<script src="https://d3js.org/d3.v5.min.js"></script>
+<script>
+  //initilize svg or grab svg
+  var svg = d3.select("svg");
+  var width = svg.attr("width");
+  var height = svg.attr("height");
+
+  //intialize data
+  var graphData = {
+    nodes: [
+      { name: "Eric Fox" , "type" : "", "img" : "https://t3.ftcdn.net/jpg/02/14/97/48/240_F_214974835_QQWV4VtCNW7OFqf3TAzBlD5Ot4qbVFpl.jpg"},
+      { name: "Friends"  ,"type" : "category"},
+      { name: "friend_1" ,"type" : "", "img": "https://image.flaticon.com/icons/svg/186/186341.svg"},
+      { name: "friend_2" ,"type" : "", "img": "https://image.flaticon.com/icons/svg/1149/1149408.svg"},
+      { name: "friend_3" ,"type" : "", "img": "https://image.flaticon.com/icons/svg/190/190640.svg"},
+      { name: "friend_4" ,"type" : "", "img": "https://image.flaticon.com/icons/svg/924/924874.svg"},
+
+
+
+
+      { name: "Family"   ,"type" : "category"},
+      { name: "Family_1" ,"type" : ""},
+      { name: "Family_2" ,"type" : ""},
+      { name: "Family_3" ,"type" : ""},
+    ],
+    links: [
+      { source: "Eric Fox", target: "Friends" },
+      { source: "Eric Fox", target: "Family" },
+      { source: "friend_1", target: "Friends" },
+      { source: "friend_2", target: "Friends" },
+      { source: "friend_3", target: "Friends" },
+      { source: "friend_4", target: "Friends" },
+      { source: "Family_1", target: "Family" },
+      { source: "Family_2", target: "Family" },
+      { source: "Family_3", target: "Family" }
+    ]
+  };
+
+    var repelForce = d3.forceManyBody().strength(-5000).distanceMax(450).distanceMin(85);
+    var linkForce  = d3.forceLink(graphData.links).distance(getDistance).strength(2);
+    linkForce.id(getNodeID);
+    var simulation = d3.forceSimulation(graphData.nodes)
+    .force("linkForce",linkForce)
+    .force("repelForce",repelForce)
+   // .force("collide",d3.forceCollide().radius(function(d) { return d.r * 20; }).iterations(10).strength(1))
+
+   .force('collide', d3.forceCollide(function(d){
+        return d.name === "Eric Fox" ? 150 : 50
+      }))
+     .force("charge", d3.forceManyBody().strength(-300))
+   // .force("center", d3.forceCenter(width / 2, height / 2))
+     .force("xAxis",d3.forceX(width/2).strength(0.4))
+     .force("yAxis",d3.forceY(height/2).strength(0.6))
+     .on("tick", ticked);
+
+    /* Nodes are identified by their name
+    */
+    function getNodeID(d) {
+          return d.name;
+    }
+
+    function getDistance(d)
+    {
+        return 100;//d.distance+30;
+    }
+
+    var links = svg
+    .selectAll("links")
+    .data(graphData.links)
+    .enter()
+    .append("line")
+    .classed("line", true);
+
+
+    var drag = d3
+    .drag()
+    .on("start", dragstarted)
+    .on("drag", dragged)
+    .on("end", dragended);
+
+
+/*
+    .filter(function (d) {
+       return d.type === "person";
+      })
+*/
+
+  var nodeGroup = svg
+    .selectAll("g")
+    .data(graphData.nodes)
+    .enter()
+    .append("g")
+    //   .on("click", click)
+    .on("click", handle_node_click)
+    .on("mouseover", handle_node_mouseover)
+
+    .call(drag);
+
+var
+    grey_Level_One = "#272727",
+    grey_Level_Two = "#565656",
+    grey_Level_Thr = "#868686",
+    grey_Level_Fou = "#b6b6b6";
+
+var node_radius = 10;
+var image_width = 50;
+var image_height = image_width;
+
+  var circles = nodeGroup
+    .append("circle")
+    .attr("r", node_radius)
+    .attr("fill", "#eeeeee");
+
+  // Append images
+  var images = nodeGroup.append("svg:image")
+        .attr("xlink:href",  function(d) { return d.img;})
+        .attr("x", function(d) { return -25;})
+        .attr("y", function(d) { return -25;})
+        .attr("height", image_height)
+        .attr("width", image_width);
+
+
+  var nodeLabel = nodeGroup
+        .append("text")
+        .attr("x", 0) //function(d) { return image_height;})
+        .attr("y", function(d) { return image_height;})
+        .attr("text-anchor","middle")
+        .classed("nodeLabel", true)
+        .text(function(d) {
+            return d.name;
+        });
+
+  function ticked() {
+    //translate(x, y)
+    nodeGroup.attr("transform", function(d) {
+      return "translate(" + d.x + ", " + d.y + ")";
+    });
+
+    links
+      .attr("x1", function(d) {    return d.source.x;      })
+      .attr("y1", function(d) {    return d.source.y;      })
+      .attr("x2", function(d) {    return d.target.x;      })
+      .attr("y2", function(d) {    return d.target.y;      });
+    //console.log(simulation.alpha());
+  }
+
+  function handle_node_click(d) {
+    console.log("You clicked", d);
+ }
+ function handle_node_mouseover(d) {
+    console.log("You mouseover", d);
+ }
+
+ 
+
+  function dragstarted(d) {
+    //your alpha hit 0 it stops! make it run again
+    simulation.alphaTarget(0.3).restart();
+    d.fx = d3.event.x;
+    d.fy = d3.event.y;
+  }
+  function dragged(d) {
+    d.fx = d3.event.x;
+    d.fy = d3.event.y;
+  }
+
+  function dragended(d) {
+    // alpha min is 0, head there
+    simulation.alphaTarget(0);
+    d.fx = null;
+    d.fy = null;
+  }
+</script>
