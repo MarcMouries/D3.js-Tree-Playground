@@ -1,0 +1,149 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title>Force Directed Graph with minimal animation-in</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="googlebot" content="noindex, nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <script     type="text/javascript"     src="//code.jquery.com/jquery-1.9.1.js"   ></script>
+  <script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
+
+
+
+  <!-- 
+    https://stackoverflow.com/questions/29639270/space-out-nodes-evenly-around-root-node-in-d3-force-layout?rq=1
+  -->
+  <style type="text/css">
+      body { height: 800px; }
+
+#theVizness{
+    position: relative;
+    width: 50%;
+    height: 50%;
+    border: 1px solid black;
+}
+.file {
+    stroke: #fff;
+    stroke-width: 2px;
+}
+
+.link {
+    stroke: #999;
+    stroke-opacity: .6;
+}
+.loading {
+    font-size: 18px;
+    font-family: Arial;
+}
+    /* EOS */
+  </style>
+
+</head>
+<body>
+    <div id="theVizness"></div>
+</body>
+
+
+<script type="text/javascript">
+
+  var width = $("#theVizness").width();
+  var height = $("#theVizness").height();
+  
+  var color = d3.scale.ordinal().range(["#ff0000", "#fff000", "#ff4900"]);
+  
+  var force = d3.layout.force()
+      .charge(-120)
+      .linkDistance(30)
+      .size([width, height]);
+  
+  var svg = d3.select("#theVizness").append("svg")
+      .attr("width", width)
+      .attr("height", height);
+  
+  var loading = svg.append("text")
+      .attr("class", "loading")
+      .attr("x", width / 2)
+      .attr("y", height / 2)
+      .attr("dy", ".35em")
+      .style("text-anchor", "middle")
+      .text("Loading...");
+  
+  d3.json("force_evenly_spaced.json", function (error, json) {
+      var nodes = json.nodes;
+      force.nodes(nodes)
+          .links(json.links)
+          .charge(function(d){
+              var charge = -500;
+              if (d.index === 0) charge = -5000;
+              return charge;
+          });
+      
+      var link = svg.selectAll(".link")
+          .data(json.links)
+          .enter().append("line")
+          .attr("class", "link")
+          .style("stroke-width", 1);
+      
+          var files = svg.selectAll(".file")
+          .data(json.nodes)
+          .enter().append("circle")
+          .attr("class", "file")
+          .attr("r", 10)
+          .attr("fill", function (d) {
+              return color(d.colorGroup);
+          });
+      var totalNodes = files[0].length;
+      
+      files.append("title")
+          .text(function (d) { return d.name; });
+      
+      force.start();
+      for (var i = totalNodes * totalNodes; i > 0; --i) force.tick();
+  
+      
+      nodes[0].x = width / 2;
+      nodes[0].y = height / 2;
+      
+      link.attr("x1", function (d) { return d.source.x; })
+          .attr("y1", function (d) { return d.source.y; })
+          .attr("x2", function (d) { return d.target.x; })
+          .attr("y2", function (d) { return d.target.y; });
+      
+      files.attr("cx", function (d) { return d.x; })
+          .attr("cy", function (d) { return d.y; })
+          .attr("class", function(d){
+              var classString = "file"
+              
+              if (d.index === 0) classString += " rootFile";
+              
+              return classString;
+          })
+          .attr("r", function(d){
+              var radius = 10;
+              
+              if (d.index === 0) radius = radius * 2;
+              
+              return radius;
+          });
+      force.on("tick", function() {
+      link.attr("x1", function(d) { return d.source.x; })
+          .attr("y1", function(d) { return d.source.y; })
+          .attr("x2", function(d) { return d.target.x; })
+          .attr("y2", function(d) { return d.target.y; });
+  
+      files.attr("cx", function(d) { return d.x; })
+          .attr("cy", function(d) { return d.y; });
+    });
+      
+      loading.remove();
+      
+    }); 
+  
+  
+    //]]></script>
+
+</html>
