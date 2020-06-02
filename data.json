@@ -1,48 +1,58 @@
-  {
-    "name": "Fugitive Joe Smith",
-    "parent": "null",
-    "type": "fugitive",
-    "children": [{
-        "name": "Known Addresses",
-        "type": "location",
-        "children": [{
-            "name": "179 Walnut St, Douglas, MA 01516",
-            "type": "location",
-            "children": [{
-                "name": "Son of Fugitive",
-                "type": "person"
-              },
-              {
-                "name": "Daughter of Fugitive",
-                "type": "person"
-              }
-            ]
-          },
-          {
-            "name": "2225 Lawson Ln, Santa Clara, CA 95054",
-            "type": "location",
-            "children": [{
-                "name": "Marc Mouries",
-                "type": "person"
-              },
-              {
-                "name": "Fred Luddy",
-                "type": "person"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "name": "RAP Sheet",
-        "type": "rap_sheet",
-        "children": [{
-            "name": "Summary",
-            "type": "rap_sheet",
-            "children": [{
+{
+  "name": "Eric Fox",
+  "parent": "null",
+  "type": "fugitive",
+  "case_number": "FCS0001004",
+  "children": [
+    {
+      "name": "Known Addresses",
+      "type": "location",
+      "children": [
+        {
+          "name": "Residence FOX",
+          "type": "location",
+          "address": "179 Walnut St, Douglas, MA 01516",
+          "children": [
+            {
+              "name": "Cindy FOX (Wife)",
+              "type": "person"
+            },
+            {
+              "name": "Edward FOX (Son)",
+              "type": "person"
+            },
+            {
+              "name": "Lisa FOX (Daughter)",
+              "type": "person"
+            }
+          ]
+        },
+        {
+          "name": "Residence PARK",
+          "type": "location",
+          "address": "2225 Lawson Ln, Santa Clara, CA 95054",
+          "children": [
+            {
+              "name": "Carlos PARK (Cousin)",
+              "type": "person"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "RAP Sheet",
+      "type": "rap_sheet",
+      "children": [
+        {
+          "name": "Summary",
+          "type": "rap_sheet",
+          "children": [
+            {
               "name": "Caution Info",
               "type": "rap_sheet",
-              "children": [{
+              "children": [
+                {
                   "name": "Known to carry a weapon.",
                   "type": "rap_sheet"
                 },
@@ -51,86 +61,89 @@
                   "type": "rap_sheet"
                 }
               ]
-            }]
-          },
-          {
-            "name": "Arrests",
-            "type": "rap_sheet"
-          }
-        ]
-      },
-      {
-        "name": "Alias",
-        "type": "alias",
-        "children": [{
-            "name": "Jim Blunder",
-            "type": "alias_name"
-          },
-          {
-            "name": "Jimmy Fiasco",
-            "type": "alias_name"
-          }
-        ]
-      },
-      {
-        "name": "Field Interviews",
-        "type": "type1",
-        "children": [{
-            "name": "10/19/2018",
-            "type": "type1"
-          },
-          {
-            "name": "02/04/2020",
-            "type": "type1",
-            "children": [{
-                "name": "Location",
-                "type": "location",
-                "children": [{
-                    "name": "Starbucks",
-                    "type": "location"
-                  },
-                  {
-                    "name": "18025 Ventura Blvd, Encino, CA 91316",
-                    "type": "location"
-                  }
-                ]
-              },
-              {
-                "name": "Vehicle",
-                "type": "vehicle",
-                "children": [{
-                    "name": "Model",
-                    "type": "vehicle",
-                    "children": [{
+            }
+          ]
+        },
+        {
+          "name": "Arrests",
+          "type": "rap_sheet"
+        }
+      ]
+    },
+    {
+      "name": "Alias",
+      "type": "alias",
+      "children": [
+        {
+          "name": "Alex Grundy",
+          "type": "person"
+        }
+      ]
+    },
+    {
+      "name": "Field Interviews",
+      "type": "field_interview",
+      "children": [
+        {
+          "name": "10/19/2018",
+          "type": "field_interview"
+        },
+        {
+          "name": "02/04/2020",
+          "type": "field_interview",
+          "children": [
+            {
+              "name": "Location",
+              "type": "location",
+              "children": [
+                {
+                  "name": "Starbucks",
+                  "type": "location"
+                },
+                {
+                  "name": "18025 Ventura Blvd, Encino, CA 91316",
+                  "type": "location"
+                }
+              ]
+            },
+            {
+              "name": "Vehicle",
+              "type": "vehicle",
+              "children": [
+                {
+                  "name": "Model",
+                  "type": "vehicle",
+                  "children": [
+                    {
                       "name": "Toyota Camry",
                       "type": "vehicle",
                       "Vehicle_make": "toyota",
                       "Vehicle_model": "camry"
-                    }]
-                  },
-                  {
-                    "name": "Registered to",
-                    "type": "person",
-                    "children": [{
+                    }
+                  ]
+                },
+                {
+                  "name": "Registered to",
+                  "type": "person",
+                  "children": [
+                    {
                       "name": "Billy Jack - Jenny Smith",
                       "type": "person",
-                      "link": "**** Married to ****",
-                      "children": [{
+                      "children": [
+                        {
                           "name": "Jenny Smith",
                           "link": "**** Married to ****",
-
                           "type": "person"
                         }
-
-
                       ]
-                    }]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

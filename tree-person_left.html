@@ -354,10 +354,9 @@
 
     /** ROOT **/
 
-    function __createSomething() {
+    function createSomething() {
       return function () {
         var group = d3.select(svgToolkit.createElement('foreignObject'));
-        // Add stuff...
         group.append("rect")
           .attr("height", 50)
           .attr("width", 50)
@@ -388,7 +387,7 @@
       //g.appendChild(filter);
 
       g.appendChild(rect);
-     // g.appendChild(createTable());
+      g.appendChild(createTable());
       return g;
     }
 

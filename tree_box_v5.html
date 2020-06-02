@@ -1,53 +1,494 @@
-
 <!DOCTYPE html>
 <html>
-  <head>
-    <script type="text/javascript" src="https://d3js.org/d3.v5.js"></script>
-    <style type="text/css">
-      body, html {
-        width: 100%;
-        height: 100%;
-        margin: 0;
+
+<head>
+  <script type="text/javascript" src="https://d3js.org/d3.v5.js"></script>
+  <style type="text/css">
+    body,
+    html {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+    }
+
+    svg {
+      border: 2px solid #000;
+    }
+
+    p {
+      text-align: center;
+    }
+
+
+
+    .node circle {
+      fill: #fff;
+      stroke: steelblue;
+      stroke-width: 3px;
+    }
+
+    .node rect {
+      fill: #fff;
+      stroke: steelblue;
+      stroke-width: 3px;
+    }
+
+    .node text {
+      font: 12px sans-serif;
+      _stroke: orangered;
+
+    }
+
+    .link path {
+      fill: none;
+      stroke: #ccc;
+      stroke-width: 2px;
+    }
+
+    .link text {
+      font: 12px sans-serif;
+      stroke: blue
+    }
+
+    .arrow {
+      fill: none;
+      stroke: #ccc;
+      stroke-width: 1px;
+    }
+  </style>
+
+  </style>
+</head>
+
+<body>
+  <p>Use the mouse to pan (click and move) / zoom (scrollwheel)</p>
+</body>
+<script type="text/javascript">
+
+  var json_tree_data = {
+    "name": "Eric Fox",
+    "parent": "null",
+    "type": "fugitive",
+    "case_number": "FCS0001004",
+    "children": [
+      {
+        "name": "Known Addresses",
+        "type": "location",
+        "children": [
+          {
+            "name": "Residence FOX",
+            "type": "location",
+            "address": "179 Walnut St, Douglas, MA 01516",
+            "children": [
+              {
+                "name": "Cindy FOX (Wife)",
+                "type": "person"
+              },
+              {
+                "name": "Edward FOX (Son)",
+                "type": "person"
+              },
+              {
+                "name": "Lisa FOX (Daughter)",
+                "type": "person"
+              }
+            ]
+          },
+          {
+            "name": "Residence PARK",
+            "type": "location",
+            "address": "2225 Lawson Ln, Santa Clara, CA 95054",
+            "children": [
+              {
+                "name": "Carlos PARK (Cousin)",
+                "type": "person"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "RAP Sheet",
+        "type": "rap_sheet",
+        "children": [
+          {
+            "name": "Summary",
+            "type": "rap_sheet",
+            "children": [
+              {
+                "name": "Caution Info",
+                "type": "rap_sheet",
+                "children": [
+                  {
+                    "name": "Known to carry a weapon.",
+                    "type": "rap_sheet"
+                  },
+                  {
+                    "name": "Has threatened police officer and fought with fellow inmates while incarcerated.",
+                    "type": "rap_sheet"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Arrests",
+            "type": "rap_sheet"
+          }
+        ]
+      },
+      {
+        "name": "Alias",
+        "type": "alias",
+        "children": [
+          {
+            "name": "Alex Grundy",
+            "type": "person"
+          }
+        ]
+      },
+      {
+        "name": "Field Interviews",
+        "type": "field_interview",
+        "children": [
+          {
+            "name": "10/19/2018",
+            "type": "field_interview"
+          },
+          {
+            "name": "02/04/2020",
+            "type": "field_interview",
+            "children": [
+              {
+                "name": "Location",
+                "type": "location",
+                "children": [
+                  {
+                    "name": "Starbucks",
+                    "type": "location"
+                  },
+                  {
+                    "name": "18025 Ventura Blvd, Encino, CA 91316",
+                    "type": "location"
+                  }
+                ]
+              },
+              {
+                "name": "Vehicle",
+                "type": "vehicle",
+                "children": [
+                  {
+                    "name": "Model",
+                    "type": "vehicle",
+                    "children": [
+                      {
+                        "name": "Toyota Camry",
+                        "type": "vehicle",
+                        "Vehicle_make": "toyota",
+                        "Vehicle_model": "camry"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "Billy Jack",
+                    "type": "person",
+                    "link_type": "Registered to",
+                    "children": [
+                      {
+                        "name": "Jenny Smith",
+                        "type": "person",
+                        "link_type": "Married to",
+                        "children": [
+                          {
+                            "name": "Jenny Smith",
+                            "type": "person",
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
       }
-      svg {
-        border: 2px solid #000;
+    ]
+  };
+
+
+  var svg = d3.select("body").append("svg");
+  svg
+    .attr("width", "100%")
+    .attr("height", "100%");
+  var draggable_group = svg.append("g");
+  svg.call(d3.zoom().on('zoom', function () {
+    draggable_group.attr('transform', d3.event.transform);
+  }));
+
+
+  var margin = { top: 20, right: 120, bottom: 20, left: 120 };
+  var clientWidth = document.body.clientWidth;
+  var clientHeight = document.body.clientHeight;
+  var width = clientWidth - margin.right - margin.left;
+  var height = clientHeight - margin.top - margin.bottom;
+
+  var circle_radius = Math.min(width, height) / 2;
+
+
+  // CIRCLE
+  /*
+  draggable_group.append("circle")
+  .attr("cx", clientWidth / 2)
+  .attr("cy", clientHeight / 2)
+  .attr("r", circle_radius)
+  .style("fill", "#B8DEE6")
+*/
+
+  var i = 0,
+    duration = 750,
+    hierarchy;
+
+  // declares a tree layout and assigns the size
+  var treemap = d3.tree().size([height, width]);
+
+  // Assigns parent, children, height, depth
+  hierarchy = d3.hierarchy(json_tree_data, function (d) {
+    return d.children;
+  });
+  hierarchy.x0 = height / 2;
+  hierarchy.y0 = 0;
+
+  // Collapse after the second level
+  // hierarchy.children.forEach(collapse);
+
+  update(hierarchy);
+
+  // Collapse the node and all it's children
+  function collapse(d) {
+    if (d.children) {
+      d._children = d.children
+      d._children.forEach(collapse)
+      d.children = null
+    }
+  }
+
+  function update(source) {
+
+    // Assigns the x and y position for the nodes
+    var treeData = treemap(hierarchy);
+
+    // Compute the new tree layout.
+    var nodes = treeData.descendants();
+    var links = treeData.descendants().slice(1);
+
+    // Normalize for fixed-depth.
+    nodes.forEach(function (d) {
+      d.y = d.depth * 180
+    });
+
+    // ****************** Nodes section ***************************
+
+    // Update the nodes...
+    var node = draggable_group.selectAll('g.node')
+      .data(nodes, function (d) {
+        return d.id || (d.id = ++i);
+      });
+
+    // Enter any new modes at the parent's previous position.
+    var nodeEnter = node.enter().append('g')
+      .attr('class', 'node')
+      .attr("transform", function (d) {
+        return "translate(" + source.y0 + "," + source.x0 + ")";
+      })
+      .on('click', click);
+
+    // Add Circle for the nodes
+    nodeEnter.filter(function (d) {
+      return (!d.data.type || d.data.type !== 'data');
+    }).append('circle')
+      .attr('class', 'node')
+      .attr('r', 1e-6)
+      .style("fill", function (d) {
+        return d._children ? "lightsteelblue" : "#fff";
+      });
+
+    nodeEnter.filter(function (d) {
+      return (d.data.type && d.data.type === 'data');
+    }).append('rect')
+      .attr('class', 'node')
+      .attr('width', 20)
+      .attr('height', 20)
+      .attr('y', -10)
+      .attr('x', -10)
+      .style("fill", function (d) {
+        return d._children ? "lightsteelblue" : "#fff";
+      });
+
+    // Add labels for the nodes
+    nodeEnter.append('text')
+      .attr("dy", "2em")
+      .attr("x", function (d) {
+        return d.children || d._children ? 13 : 13;
+      })
+      .attr("text-anchor", function (d) {
+        return d.children || d._children ? "start" : "start";
+      })
+      .text(function (d) {
+        return d.data.name;
+      });
+
+    // UPDATE
+    var nodeUpdate = nodeEnter.merge(node);
+
+    // Transition to the proper position for the node
+    nodeUpdate.transition()
+      .duration(duration)
+      .attr("transform", function (d) {
+        return "translate(" + d.y + "," + d.x + ")";
+      });
+
+    // Update the node attributes and style
+    nodeUpdate.select('circle.node')
+      .attr('r', 10)
+      .style("fill", function (d) {
+        return d._children ? "lightsteelblue" : "#fff";
+      })
+      .attr('cursor', 'pointer');
+
+
+    // Remove any exiting nodes
+    var nodeExit = node.exit().transition()
+      .duration(duration)
+      .attr("transform", function (d) {
+        return "translate(" + source.y + "," + source.x + ")";
+      })
+      .remove();
+
+    // On exit reduce the node circles size to 0
+    nodeExit.select('circle')
+      .attr('r', 1e-6);
+
+    // On exit reduce the opacity of text labels
+    nodeExit.select('text')
+      .style('fill-opacity', 1e-6);
+
+    // ****************** links section ***************************
+
+    // Update the links...
+    var link = draggable_group.selectAll('g.link')
+      .data(links, function (d) {
+        return d.id;
+      });
+
+    // Enter any new links at the parent's previous position.
+    var linkEnter = link.enter().insert('g', 'g')
+      .attr("class", "link");
+
+    linkEnter.append('path')
+      .attr('d', function (d) {
+        var o = {
+          x: source.x0,
+          y: source.y0
+        }
+        return diagonal(o, o)
+      });
+
+    linkEnter.append('text')
+      .text(function (d, i) {
+        //if (d.parent.link_type) {
+        return d.data.link_type;
+
+        //}
+        // if (d.parent && d.parent.children.length > 1){
+        //   if (!d.parent.index) d.parent.index = 0;
+        //   return ++d.parent.index;
+        // }
+      })
+      .attr("fill", "Black")
+      .style("font", "normal 12px Arial")
+
+      //.attr('dy', "-1em")
+   /*   .attr("transform", function(d) {
+        return "translate(" +
+            ((d.y + d.parent.y)/2) + "," + 
+            ((d.x + d.parent.x)/2) + ")"
+    })         
+ */
+     ;
+
+
+    // UPDATE
+
+    var linkUpdate = linkEnter.merge(link);
+
+    // Transition back to the parent element position
+    linkUpdate.select('path').transition()
+      .duration(duration)
+      .attr('d', function (d) {
+        return diagonal(d, d.parent)
+      });
+
+    linkUpdate.select('text').transition()
+      .duration(duration)
+      .attr('transform', function (d) {
+        if (d.parent) {
+          return 'translate(' + ((d.parent.y + d.y) / 2) + ',' + ((d.parent.x + d.x) / 2) + ')'
+        }
+      })
+
+    // Remove any exiting links
+    link.exit().each(function (d) {
+      d.parent.index = 0;
+    })
+
+    var linkExit = link.exit()
+      .transition()
+      .duration(duration);
+
+    linkExit.select('path')
+      .attr('d', function (d) {
+        var o = {
+          x: source.x,
+          y: source.y
+        }
+        return diagonal(o, o)
+      })
+
+    linkExit.select('text')
+      .style('opacity', 0);
+
+    linkExit.remove();
+
+    // Store the old positions for transition.
+    nodes.forEach(function (d) {
+      d.x0 = d.x;
+      d.y0 = d.y;
+    });
+
+    // Creates a curved (diagonal) path from parent to the child nodes
+    function diagonal(s, d) {
+      path = `M ${s.y} ${s.x}
+    C ${(s.y + d.y) / 2} ${s.x},
+      ${(s.y + d.y) / 2} ${d.x},
+      ${d.y} ${d.x}`
+
+      return path
+    }
+
+    // Toggle children on click.
+    function click(d) {
+      if (d.children) {
+        d._children = d.children;
+        d.children = null;
+      } else {
+        d.children = d._children;
+        d._children = null;
       }
-      p {
-        text-align: center;
-      }
-    </style>
-  </head>
-  <body>
-    <p>Use the mouse to pan (click and move) / zoom (scrollwheel)</p>
-  </body>
-  <script type="text/javascript">
+      update(d);
+    }
+  }
+</script>
+</body>
 
-
-var svg = d3.select("body").append("svg");
-        svg
-            .attr("width", "100%")
-            .attr("height", "100%");
-
-        var group = svg.append("g");
-
-
-        svg.call(d3.zoom().on('zoom', function () {
-          group.attr('transform', d3.event.transform);
-        }));
-
-
-      var margin = {top: 20, right: 120, bottom: 20, left: 120};
-      var clientWidth =  document.body.clientWidth ;
-      var clientHeight =  document.body.clientHeight ;
-      var width = clientWidth - margin.right - margin.left;
-      var height = clientHeight - margin.top - margin.bottom;
-
-      var circle_radius =  Math.min(width, height)  /2;
-
-      group.append("circle")
-      .attr("cx", clientWidth / 2)
-      .attr("cy", clientHeight / 2)
-      .attr("r", circle_radius)
-      .style("fill", "#B8DEE6")
-  </script>
 </html>

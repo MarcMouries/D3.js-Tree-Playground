@@ -72,13 +72,7 @@
             .append("g")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 
-        //var svg = d3.select("body").append("svg")
-        //    .attr("width", width + margin.right + margin.left)
-        //   .attr("height", height + margin.top + margin.bottom)
-        //    .append("g")
-        //    .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 
-        //d3.select(self.frameElement).style("height", "800px");
 
         var collapse = function (d) {
             if (d.children) {
@@ -195,8 +189,10 @@
                 });
 
             // Enter any new links at the parent's previous position.
-            link.enter().insert("path", "g")
-                .attr("class", "link")
+           var linkEnter =  link.enter().insert("path")
+          //  var linkEnter = link.enter().insert('g', 'g')
+            .attr("class", "link");
+           linkEnter.append('path')
                 .attr("d", function (d) {
                     var o = {
                         x: source.previous_X,
@@ -207,6 +203,12 @@
                         target: o
                     });
                 });
+
+
+///
+
+
+///
 
             // Transition links to their new position.
             link.transition()
@@ -244,7 +246,7 @@
             root = json;
             root.previous_X = height / 2;
             root.previous_Y = 0;
-            root.children.forEach(collapse);
+           // root.children.forEach(collapse);
             update(root);
         });
     </script>

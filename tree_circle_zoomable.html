@@ -41,6 +41,7 @@
   </body>
   <script type="text/javascript">
 
+/*
 var g = document.createElementNS("http://www.w3.org/2000/svg", "g");
     var svg = d3.select("body")
       .append("svg")
@@ -53,8 +54,18 @@ var g = document.createElementNS("http://www.w3.org/2000/svg", "g");
         return g;
       }
       );
+*/
+      var svg = d3.select("body").append("svg");
+        svg
+            .attr("width", "100%")
+            .attr("height", "100%");
+        var group = svg.append("g");
+        svg.call(d3.zoom().on('zoom', function () {
+          group.attr('transform', d3.event.transform);
+        }));
 
- 
+
+
 
       var margin = {top: 20, right: 120, bottom: 20, left: 120};
       var clientWidth =  document.body.clientWidth ;
