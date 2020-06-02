@@ -1,0 +1,29 @@
+
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script>
+
+var data = {
+  "name": "Eve",
+  "children": [{
+    "name": "Cain"
+  }, {
+    "name": "Seth",
+    "children": [
+        {  "name": "Enos" }, 
+        {  "name": "Noam" }]
+  }, 
+  {    "name": "Abel"  },
+  {    "name": "Awan",
+       "children": [ {"name": "Enoch" }]
+  }, {"name": "Azura" }]
+};
+
+var hierarchy = d3.hierarchy(data);
+
+var tree = d3.tree();
+
+var links = tree(hierarchy).links();
+
+console.log(links)
+
+</script>

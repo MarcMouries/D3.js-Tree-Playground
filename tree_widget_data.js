@@ -1,16 +1,10 @@
-var _person = {
-    "name": "Person",
-    "parent": null,
-    "first_name": "John",
-    "last_name": "Doe",
-    age: 50,
-    eye_color: "blue"
-};
 
 var person = {
     "parent"       : null,
     "type"         : "person",
     "name"         : "Eric Fox",
+    "first_name": "John",
+    "last_name": "Doe",
     "Age"          : "44",
     "Race"         : "White",
     "Sex"          : "Male",
@@ -21,8 +15,6 @@ var person = {
     "Weight"       : "180 lbs",
     "Scars & Marks": "has a mole on his right cheek below the eye"
   };
-
-  
 
   var arrests = {
     "name": "Arrests",

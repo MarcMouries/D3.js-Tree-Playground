@@ -48,16 +48,20 @@
 
         var defs = svg.append('svg:defs');
 
+
+      // add picture
         defs.append("svg:pattern")
-            .attr("id", "vit-icon")
+            .attr('id', "vit-icon")
             .attr("width", 1)
             .attr("height", 1)
             .append("svg:image")
-            .attr("xlink:href", "http://66.media.tumblr.com/avatar_1c725152c551_128.png")
+            .attr('xlink:href', "http://66.media.tumblr.com/avatar_1c725152c551_128.png")
             .attr("width", 48)
             .attr("height", 48)
             .attr("x", 0)
             .attr("y", 0);
+
+
 
         var simulation = d3.forceSimulation()
             .force("link", d3.forceLink().id(function (d) {
