@@ -4,247 +4,368 @@
 <head>
   <script type="text/javascript" src="https://d3js.org/d3.v5.js"></script>
   <style type="text/css">
-    body,
-    html {
+    /** CARD STYLE */
+    .card {
+      display: flex;
+      flex-direction: column;
+      background-color: white;
+      color: #333;
+      border: solid 1px #ddd;
+      width: 190px;
+      min-height: 94px;
+      border-radius: 6px;
+      box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
+      position: relative;
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      font-size: 10px;
+      _margin: 5px;
+    }
+
+    .card .actions {
+      background-color: white;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-evenly;
+    }
+
+    .card .actions>a {
+      font-size: 10px;
+      color: black;
+      padding: 5px;
+    }
+
+    .card .actions>a:hover {
+      color: #2baae1;
+    }
+
+    .firstinfo {
+      display: flex;
+      align-items: center;
+      flex-direction: row;
+      background-color: #eee;
+
+    }
+
+    .firstinfo img {
+      border-radius: 50%;
+      width: 48px;
+      height: 48px;
+      margin-right: 5px;
+    }
+
+    .firstinfo .profileinfo .h1,
+    .h2,
+    .h3,
+    .h4,
+    .h5,
+    .h6,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      font-weight: 500;
+      line-height: 0;
+      color: inherit;
+    }
+
+    .firstinfo .profileinfo h1 {
+      font-size: 1.3em;
+      font-weight: 600;
+    }
+
+    .firstinfo .profileinfo h2 {
+      font-size: 1.2em;
+    }
+
+    .firstinfo .profileinfo h3 {
+      font-size: 1.0em;
+      font-style: italic;
+    }
+
+    .firstinfo .profileinfo p.bio {
+      padding: 10px 0px;
+      color: #5A5A5A;
+      line-height: 1.2;
+      font-style: initial;
+    }
+
+
+
+
+    #tree-container {
       width: 100%;
-      height: 100%;
-      margin: 0;
+      cursor: pointer;
     }
 
-    svg {
-      border: 2px solid #000;
+    .svgContainer {
+      display: block;
+      margin: auto;
     }
 
-    p {
-      text-align: center;
+    .node {
+      cursor: pointer;
     }
 
-
-
-    .node circle {
-      fill: #fff;
-      stroke: steelblue;
-      stroke-width: 3px;
+    .node-rect {
+      _fill: rgb(240, 240, 240);
+      stroke: rgb(155, 155, 155);
+      visibility: visible;
     }
 
-    .node rect {
-      fill: #fff;
-      stroke: steelblue;
-      stroke-width: 3px;
+    .node-rect-closed {
+      stroke-width: 2px;
+      stroke: rgb(0, 0, 0);
     }
 
-    .node text {
-      font: 12px sans-serif;
-      _stroke: orangered;
-
-    }
-
-    .link path {
+    .link {
       fill: none;
-      stroke: #ccc;
+      stroke: lightsteelblue;
+      stroke-width: 2px;
+    }
+
+    .linkselected {
+      fill: none;
+      stroke: tomato;
+      stroke-width: 2px;
+    }
+
+    .arrow {
+      fill: lightsteelblue;
+      stroke-width: 1px;
+    }
+
+    .arrowselected {
+      fill: tomato;
       stroke-width: 2px;
     }
 
     .link text {
-      font: 12px sans-serif;
-      stroke: blue
+      font: 29px sans-serif;
+      fill: #CC0000;
     }
 
-    .arrow {
-      fill: none;
-      stroke: #ccc;
-      stroke-width: 1px;
+    .wordwrap {
+      white-space: pre-wrap;
+      /* CSS3 */
+      white-space: -moz-pre-wrap;
+      /* Firefox */
+      white-space: -pre-wrap;
+      /* Opera <7 */
+      white-space: -o-pre-wrap;
+      /* Opera 7 */
+      word-wrap: break-word;
+      /* IE */
     }
-  </style>
 
+
+
+    .tooltip-text-container {
+      height: 100%;
+      width: 100%;
+    }
+
+    .tooltip-text {
+      visibility: hidden;
+      font: 7px sans-serif;
+      color: white;
+      display: block;
+      padding: 5px;
+    }
+
+    .tooltip-box {
+      background: rgba(0, 0, 0, 0.7);
+      visibility: hidden;
+      position: absolute;
+      border-style: solid;
+      border-width: 1px;
+      border-color: black;
+      border-top-right-radius: 0.5em;
+    }
+
+    p {
+      display: inline;
+    }
+
+    .textcolored {
+      color: orange;
+    }
+
+    a.exchangeName {
+      color: orange;
+    }
+
+    .node-text {
+      font: 10px sans-serif;
+      _color: white;
+    }
+
+    .box {
+      font-family: "Open Sans", sans-serif;
+      color: white;
+      text-decoration: none solid rgb(51, 51, 51);
+      font-size: 10px;
+      font-weight: normal;
+      font-style: normal;
+      font-variant: normal;
+      padding: 5px;
+    }
+
+    .field_name {
+      font-weight: 600;
+      padding-right: 5px;
+      display: block;
+      margin-bottom: 2px;
+    }
+
+
+    .linkLine {
+      stroke: #999999;
+      stroke-opacity: 0.6;
+    }
+
+    .linkLabel {
+      color: #333333;
+      flood-color: #FFFFFF;
+      flood-opacity: 1;
+      font-size: 15px;
+      text-anchor: middle;
+    }
+
+    .node {
+      cursor: pointer;
+    }
+
+    .nodeLabel {
+      font-size: 20px;
+      fill: #FFFFFF;
+      text-anchor: middle;
+      cursor: pointer;
+    }
   </style>
 </head>
 
 <body>
   <p>Use the mouse to pan (click and move) / zoom (scrollwheel)</p>
+
+
+  <script type="text/template" id="box_template">
+    <div class="card">
+      <div class="firstinfo">
+        <div>
+          <img src="{photo}" />
+        </div>
+        <div class="profileinfo">
+          <h1>{last_name}</h1>
+          <h2>{first_name}</h2>
+          <h3>{relationship}</h3>
+        </div>
+      </div> <!-- first info-->
+      <div class="actions">
+        <a href="#person_about"><i class="fa fa-user"></i></a>
+        <a href="#person_about"><i class="fa fa-camera"></i></a>
+        <a href="#person_case"><i class="fa fa-briefcase"></i></a>
+      </div> <!-- actions -->
+    </div><!-- card -->
+  </script>
+  
+
 </body>
+
 <script type="text/javascript">
 
-  var json_tree_data = {
-    "name": "Eric Fox",
-    "parent": "null",
-    "type": "fugitive",
-    "case_number": "FCS0001004",
-    "children": [
-      {
-        "name": "Known Addresses",
-        "type": "location",
-        "children": [
-          {
-            "name": "Residence FOX",
-            "type": "location",
-            "address": "179 Walnut St, Douglas, MA 01516",
-            "children": [
-              {
-                "name": "Cindy FOX (Wife)",
-                "type": "person"
-              },
-              {
-                "name": "Edward FOX (Son)",
-                "type": "person"
-              },
-              {
-                "name": "Lisa FOX (Daughter)",
-                "type": "person"
-              }
-            ]
-          },
-          {
-            "name": "Residence PARK",
-            "type": "location",
-            "address": "2225 Lawson Ln, Santa Clara, CA 95054",
-            "children": [
-              {
-                "name": "Carlos PARK (Cousin)",
-                "type": "person"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "name": "RAP Sheet",
-        "type": "rap_sheet",
-        "children": [
-          {
-            "name": "Summary",
-            "type": "rap_sheet",
-            "children": [
-              {
-                "name": "Caution Info",
-                "type": "rap_sheet",
-                "children": [
-                  {
-                    "name": "Known to carry a weapon.",
-                    "type": "rap_sheet"
-                  },
-                  {
-                    "name": "Has threatened police officer and fought with fellow inmates while incarcerated.",
-                    "type": "rap_sheet"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "name": "Arrests",
-            "type": "rap_sheet"
-          }
-        ]
-      },
-      {
-        "name": "Alias",
-        "type": "alias",
-        "children": [
-          {
-            "name": "Alex Grundy",
-            "type": "person"
-          }
-        ]
-      },
-      {
-        "name": "Field Interviews",
-        "type": "field_interview",
-        "children": [
-          {
-            "name": "10/19/2018",
-            "type": "field_interview"
-          },
-          {
-            "name": "02/04/2020",
-            "type": "field_interview",
-            "children": [
-              {
-                "name": "Location",
-                "type": "location",
-                "children": [
-                  {
-                    "name": "Starbucks",
-                    "type": "location"
-                  },
-                  {
-                    "name": "18025 Ventura Blvd, Encino, CA 91316",
-                    "type": "location"
-                  }
-                ]
-              },
-              {
-                "name": "Vehicle",
-                "type": "vehicle",
-                "children": [
-                  {
-                    "name": "Model",
-                    "type": "vehicle",
-                    "children": [
-                      {
-                        "name": "Toyota Camry",
-                        "type": "vehicle",
-                        "Vehicle_make": "toyota",
-                        "Vehicle_model": "camry"
-                      }
-                    ]
-                  },
-                  {
-                    "name": "Billy Jack",
-                    "type": "person",
-                    "link_type": "Registered to",
-                    "children": [
-                      {
-                        "name": "Jenny Smith",
-                        "type": "person",
-                        "link_type": "Married to",
-                        "children": [
-                          {
-                            "name": "Jenny Smith",
-                            "type": "person",
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      }
-    ]
+
+  // DIMENSIONS
+  var rectNode = {
+    width: 180,
+    height: 90,
+    textMargin: 8
   };
 
+  var margin = {
+    top: 20,
+    right: 20,
+    bottom: 20,
+    left: 20
+  };
+
+  // COLOR PALETTE 
+  var
+    transparent = "transparent",
+    // ServiceNow Colors
+    Green_Acapulco = "#84b8a4",
+    Blue_Hippie = "#68a1af",
+    Red_Orchid = "#db8f8f",
+    Red_Orchid_1 = "#de9a9a",
+    Red_Orchid_2 = "#e2a5a5",
+
+    /*
+    #e5b0b0
+    #e9bbbb
+    #edc7c7
+    #f0d2d2
+    #f4dddd
+    #f7e8e8
+    #fbf3f3
+    #ffffff
+    	*/
+
+
+    Green_Gable = "#293E40",
+
+    Green_Gable_1 = "#546566",
+    Green_Gable_2 = "#768485",
+    Green_Gable_3 = "#919D9D",
+    Green_Gable_4 = "#A7B1B1",
+    Green_Gable_5 = "#B9C1C1",
+    Green_Gable_6 = "#C7CDCD",
+    Green_Gable_7 = "#D2D7D7",
+    Green_Gable_8 = "#DBDFDF",
+    Green_Gable_9 = "#E2E5E5",
+
+    //
+    black = "#1b262c",
+    yellow = "#FFD160",
+    orange = "#fa744f",
+    red = "#ed6663",
+    grey = "#565656",
+    grey_Level_One = "#272727",
+    grey_Level_Two = "#565656",
+    grey_Level_Thr = "#868686",
+    grey_Level_Fou = "#b6b6b6";
+
+    var colorByNodeType = {
+      "field_interview": grey,
+      "rap_sheet": Red_Orchid,
+      "Caution_Info": Red_Orchid,
+      "location": Blue_Hippie,
+      "person": transparent,
+      "alias": Green_Gable_4,
+      "fugitive": Green_Gable_2,
+      "vehicle": Green_Acapulco
+    };
+
+  var clientWidth = document.body.clientWidth;
+  var clientHeight = document.body.clientHeight;
+  var width = clientWidth - margin.right - margin.left;
+  var height = clientHeight - margin.top - margin.bottom;
+
+
+  height = 600;
 
   var svg = d3.select("body").append("svg");
   svg
-    .attr("width", "100%")
-    .attr("height", "100%");
+    .attr("width", width)
+    .attr("height", height);
   var draggable_group = svg.append("g");
   svg.call(d3.zoom().on('zoom', function () {
     draggable_group.attr('transform', d3.event.transform);
   }));
 
 
-  var margin = { top: 20, right: 120, bottom: 20, left: 120 };
-  var clientWidth = document.body.clientWidth;
-  var clientHeight = document.body.clientHeight;
-  var width = clientWidth - margin.right - margin.left;
-  var height = clientHeight - margin.top - margin.bottom;
 
-  var circle_radius = Math.min(width, height) / 2;
-
-
-  // CIRCLE
-  /*
-  draggable_group.append("circle")
-  .attr("cx", clientWidth / 2)
-  .attr("cy", clientHeight / 2)
-  .attr("r", circle_radius)
-  .style("fill", "#B8DEE6")
-*/
-
+  console.log(height);
   var i = 0,
     duration = 750,
     hierarchy;
@@ -252,17 +373,38 @@
   // declares a tree layout and assigns the size
   var treemap = d3.tree().size([height, width]);
 
-  // Assigns parent, children, height, depth
-  hierarchy = d3.hierarchy(json_tree_data, function (d) {
-    return d.children;
-  });
-  hierarchy.x0 = height / 2;
-  hierarchy.y0 = 0;
+  var json_tree_data;
+
+  console.log("before...");
+
+  d3.json("./tree_box_v5.json")
+    .then(function (json) {
+      console.log("loading...");
+
+      json_tree_data = json;
+      console.log("loading...DONE");
+
+      // Assigns parent, children, height, depth
+      hierarchy = d3.hierarchy(json_tree_data, function (d) {
+        return d.children;
+      });
+      hierarchy.x0 = height / 2;
+      hierarchy.y0 = 0;
+      console.log(hierarchy);
+      update(hierarchy);
+    })
+    /*
+    .catch(function (error) {
+      // Do some error handling.
+      console.log("Error loading JSON: " + error);
+
+    })*/;
+
 
   // Collapse after the second level
   // hierarchy.children.forEach(collapse);
 
-  update(hierarchy);
+
 
   // Collapse the node and all it's children
   function collapse(d) {
@@ -303,28 +445,34 @@
       })
       .on('click', click);
 
+    //**************************************
+    // Node Content
+    //**************************************
+
     // Add Circle for the nodes
-    nodeEnter.filter(function (d) {
-      return (!d.data.type || d.data.type !== 'data');
-    }).append('circle')
+    /*
+    nodeEnter.append('circle')
       .attr('class', 'node')
       .attr('r', 1e-6)
       .style("fill", function (d) {
-        return d._children ? "lightsteelblue" : "#fff";
+        return d._children ? "lightsteelblue" : "red";
       });
+*/
 
     nodeEnter.filter(function (d) {
-      return (d.data.type && d.data.type === 'data');
-    }).append('rect')
-      .attr('class', 'node')
-      .attr('width', 20)
-      .attr('height', 20)
-      .attr('y', -10)
-      .attr('x', -10)
-      .style("fill", function (d) {
-        return d._children ? "lightsteelblue" : "#fff";
+        return (d.data.type);
+      }).append('rect')
+      .attr('class', 'node-rect')
+      .attr('width', rectNode.width)
+      .attr('height', rectNode.height)
+      .attr('rx', 6)
+      .attr('ry', 6)
+      .attr('fill', function (d) {
+        //console.log(d);
+        return colorByNodeType[d.data.type];
       });
 
+      /*
     // Add labels for the nodes
     nodeEnter.append('text')
       .attr("dy", "2em")
@@ -337,6 +485,26 @@
       .text(function (d) {
         return d.data.name;
       });
+*/
+nodeEnter.append('foreignObject')
+		//.attr('x', rectNode.textMargin)
+		//.attr('y', rectNode.textMargin)
+		.attr('width', function() {
+				return rectNode.width;
+			/*		return (rectNode.width - rectNode.textMargin * 2) < 0 ? 0
+							: (rectNode.width - rectNode.textMargin * 2)*/
+				})
+		.attr('height', function() {
+							return rectNode.height;
+				/*	return (rectNode.height - rectNode.textMargin * 2) < 0 ? 0
+							: (rectNode.height - rectNode.textMargin * 2)
+							*/
+				})
+		.append('xhtml').html(function(node) {
+				return make_content(node);
+		});
+
+
 
     // UPDATE
     var nodeUpdate = nodeEnter.merge(node);
@@ -408,14 +576,14 @@
       .attr("fill", "Black")
       .style("font", "normal 12px Arial")
 
-      //.attr('dy', "-1em")
-   /*   .attr("transform", function(d) {
+    //.attr('dy', "-1em")
+    /*   .attr("transform", function(d) {
         return "translate(" +
             ((d.y + d.parent.y)/2) + "," + 
             ((d.x + d.parent.x)/2) + ")"
     })         
  */
-     ;
+    ;
 
 
     // UPDATE
@@ -466,6 +634,9 @@
       d.y0 = d.y;
     });
 
+
+
+
     // Creates a curved (diagonal) path from parent to the child nodes
     function diagonal(s, d) {
       path = `M ${s.y} ${s.x}
@@ -487,8 +658,107 @@
       }
       update(d);
     }
+
+
+    function capitalize_word(string) { 
+         return string[0].toUpperCase() + string.slice(1); 
+        } 
+	
+	
+				function make_header(node, field_name) {
+				var result = "";
+				if (node.data[field_name]) {
+					result = 	'<b>'+  node.data[field_name] + '</b><br><br>'
+				}
+				return result;
+			}
+		
+			function make_field(node, field_name) {
+				var result = "";
+				var field_value = node.data[field_name];
+				if (node.data[field_name]) {
+					field_name = field_name.replace("_", " ");
+					field_name = field_name.replace("number", "#");
+					field_name = capitalize_word(field_name);
+					result = '<b>'+ field_name + ':</b> ' + field_value + '<br>'
+				}
+				return result;
+			}
+			function make_label(node, field_name) {
+				var result = "";
+				if (node.data[field_name]) {
+					result = 	node.data[field_name] + '<br>'
+				}
+				return result;
+			}
+
+		function make_content(node) {
+			if (node.data.type == "person" || node.data.type == "fugitive") {
+				var template_HTML = box_template.innerHTML;
+        var content = template_HTML.replace(/\{(\w+)\}/g, 
+							function(_,k){
+								return node.data[k];
+              });
+			return content;
+		}
+			
+			
+			// BOX
+			var box_start = '<div class="box">'
+	//		var box_start = '<div class="box" style="width: '+rectNode.width + 'px; height: '+rectNode.height + 'px;" class="node-text wordwrap">';
+				//		(rectNode.width - rectNode.textMargin * 2) + 'px; height: '+
+			//			(rectNode.height - rectNode.textMargin * 2) + 'px;" class="node-text wordwrap">';
+			
+			
+			var box_end = '</div>';
+			// FUGITIVE 
+			if (node.type == "fugitive") {
+				box_content =
+					make_header(node, "name") + 
+					make_field(node, "case_number");
+			}
+			else if (node.type == "location") {
+				box_content =
+					make_header(node, "name") +
+					make_label(node, "address");
+			}
+			else if (node.type == "person") {
+				box_content =
+					make_header(node, "name") +
+					'<i class="fa fa-female">&nbsp;</i><br>';
+			}
+			else if (node.type == "field_interview") {
+				box_content =
+					make_header(node, "name");
+			}			
+			else if (node.type == "rap_sheet") {
+				box_content =
+					make_header(node, "name");
+			}		
+						else if (node.type == "Caution_Info") {
+				box_content =
+					make_label(node, "name");
+						}
+			
+			else if (node.type == "vehicle") {
+				box_content =
+					make_header(node, "name") +
+					make_field(node, "year") +
+					make_field(node, "VIN");
+			}		
+			else {
+				box_content =
+					make_header(node, "name");
+			}
+			return box_start + box_content + box_end;
+		}
+
+
+
   }
 </script>
+
+
 </body>
 
 </html>

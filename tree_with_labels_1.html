@@ -23,7 +23,12 @@ var width = 960,
 var tree = d3.layout.tree()
     .size([width - 20, height]);
 
-var suffix_tree = {"id" : 19, "edge" : "", "children" : [{"id" : 0, "edge" : "$", "suffix" : 12},{"id" : 15, "edge" : "a", "children" : [{"id" : 14, "edge" : "b", "children" : [{"id" : 1, "edge" : "$", "suffix" : 10},{"id" : 13, "edge" : "ra", "children" : [{"id" : 2, "edge" : "b$", "suffix" : 7},{"id" : 3, "edge" : "cadabrab$", "suffix" : 0}]}]},{"id" : 4, "edge" : "cadabrab$", "suffix" : 3},{"id" : 5, "edge" : "dabrab$", "suffix" : 5}]},{"id" : 17, "edge" : "b", "children" : [{"id" : 6, "edge" : "$", "suffix" : 11},{"id" : 16, "edge" : "ra", "children" : [{"id" : 7, "edge" : "b$", "suffix" : 8},{"id" : 8, "edge" : "cadabrab$", "suffix" : 1}]}]},{"id" : 9, "edge" : "cadabrab$", "suffix" : 4},{"id" : 10, "edge" : "dabrab$", "suffix" : 6},{"id" : 18, "edge" : "ra", "children" : [{"id" : 11, "edge" : "b$", "suffix" : 9},{"id" : 12, "edge" : "cadabrab$", "suffix" : 2}]}]}
+var suffix_tree = {"id" : 19, "edge" : "", "children" : [
+  {"id" : 0, "edge" : "$", "suffix" : 12},{"id" : 15, "edge" : "a", 
+  "children" : [{"id" : 14, "edge" : "b", "children" : [{"id" : 1, "edge" : "$", "suffix" : 10},{"id" : 13, "edge" : "ra", 
+  "children" : [{"id" : 2, "edge" : "b$", "suffix" : 7},{"id" : 3, "edge" : "cadabrab$", "suffix" : 0}]}]},
+  {"id" : 4, "edge" : "cadabrab$", "suffix" : 3},{"id" : 5, "edge" : "dabrab$", "suffix" : 5}]},
+  {"id" : 17, "edge" : "b", "children" : [{"id" : 6, "edge" : "$", "suffix" : 11},{"id" : 16, "edge" : "ra", "children" : [{"id" : 7, "edge" : "b$", "suffix" : 8},{"id" : 8, "edge" : "cadabrab$", "suffix" : 1}]}]},{"id" : 9, "edge" : "cadabrab$", "suffix" : 4},{"id" : 10, "edge" : "dabrab$", "suffix" : 6},{"id" : 18, "edge" : "ra", "children" : [{"id" : 11, "edge" : "b$", "suffix" : 9},{"id" : 12, "edge" : "cadabrab$", "suffix" : 2}]}]}
 nodes = tree(suffix_tree);
 
 suffix_tree.parent = suffix_tree;
