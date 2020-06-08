@@ -1,0 +1,240 @@
+    
+    svg {
+
+    }
+  
+    /** CARD STYLE */
+    .card {
+        display: flex;
+        flex-direction: column;
+        background-color: white;
+        color: #333;
+        border: solid 1px #ddd;
+        width: 190px;
+        min-height: 94px;
+        border-radius: 6px;
+        box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
+        position: relative;
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        font-size: 10px;
+        _margin: 5px;
+      }
+  
+      .card .actions {
+        background-color: white;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-evenly;
+      }
+  
+      .card .actions>a {
+        font-size: 10px;
+        color: black;
+        padding: 5px;
+      }
+  
+      .card .actions>a:hover {
+        color: #2baae1;
+      }
+  
+      .firstinfo {
+        display: flex;
+        align-items: center;
+        flex-direction: row;
+        background-color: #eee;
+  
+      }
+  
+      .firstinfo img {
+        border-radius: 50%;
+        width: 48px;
+        height: 48px;
+        margin-right: 5px;
+      }
+  
+      .firstinfo .profileinfo .h1,
+      .h2,
+      .h3,
+      .h4,
+      .h5,
+      .h6,
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6 {
+        font-weight: 500;
+        line-height: 0;
+        color: inherit;
+      }
+  
+      .firstinfo .profileinfo h1 {
+        font-size: 1.3em;
+        font-weight: 600;
+      }
+  
+      .firstinfo .profileinfo h2 {
+        font-size: 1.2em;
+      }
+  
+      .firstinfo .profileinfo h3 {
+        font-size: 1.0em;
+        font-style: italic;
+      }
+  
+      .firstinfo .profileinfo p.bio {
+        padding: 10px 0px;
+        color: #5A5A5A;
+        line-height: 1.2;
+        font-style: initial;
+      }
+  
+  
+  
+      .node {
+        cursor: pointer;
+      }
+  
+      .node-rect {
+        _fill: rgb(240, 240, 240);
+        stroke: rgb(155, 155, 155);
+        visibility: visible;
+      }
+  
+      .node-rect-closed {
+        stroke-width: 2px;
+        stroke: rgb(0, 0, 0);
+      }
+  
+  
+      .link {
+        fill: none;
+        stroke: #000;
+        stroke-width: 1px;
+      }
+
+      .link text {
+        font-family: "Arial";
+        fill: #000;
+        stroke-width: 0.3px;
+        font-size: 12px;
+        font-weight: normal;
+      }
+
+      .linkselected {
+        fill: none;
+        stroke: tomato;
+        stroke-width: 2px;
+      }
+  
+      .arrow {
+        fill: lightsteelblue;
+        stroke-width: 1px;
+      }
+  
+      .arrowselected {
+        fill: tomato;
+        stroke-width: 2px;
+      }
+  
+
+  
+      .wordwrap {
+        white-space: pre-wrap;
+        /* CSS3 */
+        white-space: -moz-pre-wrap;
+        /* Firefox */
+        white-space: -pre-wrap;
+        /* Opera <7 */
+        white-space: -o-pre-wrap;
+        /* Opera 7 */
+        word-wrap: break-word;
+        /* IE */
+      }
+  
+  
+  
+      .tooltip-text-container {
+        height: 100%;
+        width: 100%;
+      }
+  
+      .tooltip-text {
+        visibility: hidden;
+        font: 7px sans-serif;
+        color: white;
+        display: block;
+        padding: 5px;
+      }
+  
+      .tooltip-box {
+        background: rgba(0, 0, 0, 0.7);
+        visibility: hidden;
+        position: absolute;
+        border-style: solid;
+        border-width: 1px;
+        border-color: black;
+        border-top-right-radius: 0.5em;
+      }
+  
+      p {
+        display: inline;
+      }
+  
+      .textcolored {
+        color: orange;
+      }
+  
+      a.exchangeName {
+        color: orange;
+      }
+  
+      .node-text {
+        font: 10px sans-serif;
+        _color: white;
+      }
+  
+      .box {
+        font-family: "Open Sans", sans-serif;
+        color: white;
+        text-decoration: none solid rgb(51, 51, 51);
+        font-size: 10px;
+        font-weight: normal;
+        font-style: normal;
+        font-variant: normal;
+        padding: 5px;
+      }
+  
+      .field_name {
+        font-weight: 600;
+        padding-right: 5px;
+        display: block;
+        margin-bottom: 2px;
+      }
+  
+  
+      .linkLine {
+        stroke: #999999;
+        stroke-opacity: 0.6;
+      }
+  
+      .linkLabel {
+        color: #333333;
+        flood-color: #FFFFFF;
+        flood-opacity: 1;
+        font-size: 15px;
+        text-anchor: middle;
+      }
+  
+      .node {
+        cursor: pointer;
+      }
+  
+      .nodeLabel {
+        font-size: 20px;
+        fill: #FFFFFF;
+        text-anchor: middle;
+        cursor: pointer;
+      }
+  

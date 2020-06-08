@@ -121,36 +121,31 @@
                             "name": "Vehicle",
                             "type": "vehicle",
                             "children": [{
-                                    "name": "Model",
+                                    "name": "Black Toyota Camry",
                                     "type": "vehicle",
-                                    "children": [{
-                                        "name": "Black Toyota Camry",
-                                        "type": "vehicle",
-                                        "VIN": "5TDZK3EH8CS056612",
-                                        "make": "toyota",
-                                        "model": "camry",
-                                        "year": "2008"
-                                    }]
+                                    "link_type": "Model",
+                                    "VIN": "5TDZK3EH8CS056612",
+                                    "make": "toyota",
+                                    "model": "camry",
+                                    "year": "2008"
                                 },
                                 {
-                                    "name": "Registered to",
-                                    "type": "vehicle",
+                                    "name": "Billy Jack",
+                                    "first_name": "Billy",
+                                    "last_name": "Jack",                                    
+                                    "type": "person",
+                                    "link_type": "Registered to",
+                                    "relationship": "",
+                                    "photo": "https://randomuser.me/api/portraits/men/22.jpg",
+
                                     "children": [{
-                                        "name": "Billy Jack (Husband)",
+                                        "name": "Jenny Smith",
                                         "type": "person",
-                                        "first_name": "Billy",
-                                        "last_name": "Jack",
-                                        "relationship": "",
-                                        "photo": "https://randomuser.me/api/portraits/men/22.jpg",
-                                        "children": [{
-                                            "name": "Jenny Smith",
-                                            "type": "person",
-                                            "link_type": "Married to",
-                                            "relationship": "sister",
-                                            "first_name": "Jenny",
-                                            "last_name": "Smith/Fox",
-                                            "photo": "https://randomuser.me/api/portraits/women/26.jpg"
-                                        }]
+                                        "link_type": "Married to",
+                                        "relationship": "sister",
+                                        "first_name": "Jenny",
+                                        "last_name": "Smith/Fox",
+                                        "photo": "https://randomuser.me/api/portraits/women/26.jpg"
                                     }]
                                 }
                             ]

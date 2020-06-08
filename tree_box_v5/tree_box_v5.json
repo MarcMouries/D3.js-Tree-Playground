@@ -1,0 +1,158 @@
+{
+    "name": "Eric Fox",
+    "parent": "null",
+    "type": "fugitive",
+    "photo": "https://dojopsdemo.service-now.com/69539e541bf45c50f76f20252a4bcb88.iix",
+    "relationship": "Fugitive",
+    "first_name": "Eric",
+    "last_name": "FOX",
+    "case_number": "FCS0001004",
+    "children": [{
+            "name": "Known Addresses",
+            "type": "location",
+            "children": [{
+                    "name": "Residence FOX",
+                    "type": "location",
+                    "address": "179 Walnut St, Douglas, MA 01516",
+                    "children": [{
+                            "type": "person",
+                            "name": "Cindy FOX",
+                            "first_name": "Cindy",
+                            "last_name": "FOX",
+                            "photo": "https://dojopsdemo.service-now.com/3e81dbe01bf01090f76f20252a4bcb46.iix",
+                            "relationship": "Wife"
+                        },
+                        {
+                            "name": "Edward FOX (Son)",
+                            "type": "person",
+                            "relationship": "Son",
+                            "first_name": "Edward",
+                            "last_name": "FOX",
+                            "photo": "https://dojopsdemo.service-now.com/2e6fc659db7418103405ce1c29961945.iix"
+                        },
+                        {
+                            "name": "Lisa FOX",
+                            "type": "person",
+                            "relationship": "Daughter",
+                            "first_name": "Lisa",
+                            "last_name": "FOX",
+                            "photo": "https://dojopsdemo.service-now.com/8bc1d3241bf01090f76f20252a4bcbf8.iix"
+
+                        }
+                    ]
+                },
+                {
+                    "name": "Residence PARK",
+                    "type": "location",
+                    "address": "2225 Lawson Ln, Santa Clara, CA 95054",
+                    "children": [{
+                        "name": "Carlos PARK (Cousin)",
+                        "type": "person",
+                        "relationship": "Cousin",
+                        "first_name": "Carlos",
+                        "last_name": "FOX",
+                        "photo": "https://dojopsdemo.service-now.com/c09393281bf01090f76f20252a4bcb1a.iix"
+                    }]
+                }
+            ]
+        },
+        {
+            "name": "RAP Sheet",
+            "type": "rap_sheet",
+            "children": [{
+                    "name": "Summary",
+                    "type": "rap_sheet",
+                    "children": [{
+                        "name": "Caution Info",
+                        "type": "rap_sheet",
+                        "children": [{
+                                "name": "Known to carry a weapon.",
+                                "type": "Caution_Info"
+                            },
+                            {
+                                "name": "Has threatened police officer and fought with fellow inmates while incarcerated.",
+                                "type": "Caution_Info"
+                            }
+                        ]
+                    }]
+                },
+                {
+                    "name": "Arrests",
+                    "type": "rap_sheet",
+                    "children": [{
+                        "name": "10/19/2018",
+                        "type": "rap_sheet"
+                    }]
+                }
+            ]
+        },
+        {
+            "name": "Alias",
+            "type": "alias",
+            "children": [{
+                "name": "Alex Grundy",
+                "type": "person",
+                "relationship": "Alias",
+                "first_name": "Alex",
+                "last_name": "Grundy",
+                "photo": "https://dojopsdemo.service-now.com/15b59e3adbf094503405ce1c29961995.iix"
+            }]
+        },
+        {
+            "name": "Field Interviews",
+            "type": "field_interview",
+            "children": [{
+                    "name": "10/19/2018",
+                    "type": "field_interview"
+                },
+                {
+                    "name": "02/04/2020",
+                    "type": "field_interview",
+                    "children": [{
+                            "name": "Location",
+                            "type": "location",
+                            "children": [{
+                                "name": "Starbucks",
+                                "type": "location",
+                                "address": "18025 Ventura Blvd, Encino, CA 91316"
+                            }]
+                        },
+                        {
+                            "name": "Vehicle",
+                            "type": "vehicle",
+                            "children": [{
+                                    "name": "Black Toyota Camry",
+                                    "type": "vehicle",
+                                    "link_type": "Model",
+                                    "VIN": "5TDZK3EH8CS056612",
+                                    "make": "toyota",
+                                    "model": "camry",
+                                    "year": "2008"
+                                },
+                                {
+                                    "name": "Billy Jack",
+                                    "first_name": "Billy",
+                                    "last_name": "Jack",                                    
+                                    "type": "person",
+                                    "link_type": "Registered to",
+                                    "relationship": "",
+                                    "photo": "https://randomuser.me/api/portraits/men/22.jpg",
+
+                                    "children": [{
+                                        "name": "Jenny Smith",
+                                        "type": "person",
+                                        "link_type": "Married to",
+                                        "relationship": "sister",
+                                        "first_name": "Jenny",
+                                        "last_name": "Smith/Fox",
+                                        "photo": "https://randomuser.me/api/portraits/women/26.jpg"
+                                    }]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
