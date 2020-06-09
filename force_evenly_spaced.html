@@ -71,6 +71,9 @@
       .attr("dy", ".35em")
       .style("text-anchor", "middle")
       .text("Loading...");
+
+
+  
   
   d3.json("force_evenly_spaced.json", function (error, json) {
       var nodes = json.nodes;
@@ -138,12 +141,7 @@
       files.attr("cx", function(d) { return d.x; })
           .attr("cy", function(d) { return d.y; });
     });
-      
       loading.remove();
-      
     }); 
-  
-  
     //]]></script>
-
 </html>

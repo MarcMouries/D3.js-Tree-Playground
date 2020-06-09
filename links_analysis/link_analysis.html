@@ -14,37 +14,45 @@
   }
 
 
-/* SVG */
-/* SVG */
+  /* SVG */
+  .svg_container {
+    display: inline-block;
+    position: relative;
+    width: 800px;
+    height: 800px;
+    border:1px solid black;
+    background: lightblue;
+
+  }
+
+  .ObjectViewer {
+    position: fixed;
+    top: 0px;
+    bottom: 0px;
+    width: 350px;
+    display: none;
+  }
 
 
+  .svg-content-responsive {
+    display: inline-block;
+    position: absolute;
+    top: 10px;
+    left: 0;
+  }
 
-.svg-container {
-  display: inline-block;
-  position: relative;
-  width: 100%;
-  padding-bottom: 100%; /* aspect ratio */
-  vertical-align: top;
-  overflow: hidden;
-}
-.svg-content-responsive {
-  display: inline-block;
-  position: absolute;
-  top: 10px;
-  left: 0;
-}
-
-svg .rect {
-  _fill: gold;
-  stroke: steelblue;
-  stroke-width: 5px;
-}
+  svg .rect {
+    _fill: gold;
+    stroke: steelblue;
+    stroke-width: 5px;
+  }
 
 
   .line {
     stroke: #999;
     stroke-opacity: 0.6;
     stroke-width: 0.5;
+
   }
 
 
@@ -55,19 +63,17 @@ svg .rect {
 
 
   .nodeLabel {
-    font-size: 10px;
-    fill: #999;
+    font: 10px sans-serif;
     text-anchor: middle;
     cursor: pointer;
+    fill: black;
   }
-
-
-
 
   .wrapper {
     _max-width: 1024px;
     margin: 0 auto;
     font: 1.2em Helvetica, arial, sans-serif;
+    
   }
 
   .wrapper>* {
@@ -134,12 +140,7 @@ svg .rect {
   }
 
 
-  .ObjectViewer {
-    position: fixed;
-    top: 0px;
-    bottom: 0px;
-    width: 350px;
-}
+
 
 
   .propertyEditor table thead tr th,
@@ -701,317 +702,359 @@ svg .rect {
 
 <body>
   <div class="page">
-    <header class="main-head">The header</header>
-    <div class="svg-container" id="svg-container"></div>
+    <header class="main-head">Fit to content</header>
+    <div class="svg_container" id="svg_container"></div>
     <div id="ObjectViewer" class="ObjectViewer">
-        <table>
-          <thead>
-            <tr>
-              <th><span class="title">Properties</span><span class="subTitle">1 selected object(s)</span></th>
-            </tr>
-          </thead>
-        </table>
-        <table>
-          <tbody>
-            <tr data-field="id" class="label">
-              <td>ID</td>
-              <td class="label"><span class="value" type="label">1</span>
-                <div class="hint"></div>
-                <div class="errors"></div>
-              </td>
-            </tr>
-            <tr data-field="name" class="featured required text">
-              <td>Name</td>
-              <td class="text"><input type="text" required="required">
-                <div class="hint"></div>
-                <div class="errors"></div>
-              </td>
-            </tr>
-            <tr data-field="userName" class="featured readonly text">
-              <td>Nick name</td>
-              <td class="text"><input type="text" readonly="readonly">
-                <div class="hint"></div>
-                <div class="errors"></div>
-              </td>
-            </tr>
-            <tr data-field="realName" class="text">
-              <td><span class="toolTip" data-title="This is the user's real born name"></span>Real full name</td>
-              <td class="text"><input type="text">
-                <div class="hint"></div>
-                <div class="errors"></div>
-              </td>
-            </tr>
-            <tr data-field="email" class="email">
-              <td>E-mail</td>
-              <td class="email"><input type="email">
-                <div class="hint"></div>
-                <div class="errors"></div>
-              </td>
-            </tr>
+      <table>
+        <thead>
+          <tr>
+            <th><span class="title">Properties</span><span class="subTitle">1 selected object(s)</span></th>
+          </tr>
+        </thead>
+      </table>
+      <table>
+        <tbody>
+          <tr data-field="id" class="label">
+            <td>ID</td>
+            <td class="label"><span class="value" type="label">1</span>
+              <div class="hint"></div>
+              <div class="errors"></div>
+            </td>
+          </tr>
+          <tr data-field="name" class="featured required text">
+            <td>Name</td>
+            <td class="text"><input type="text" required="required">
+              <div class="hint"></div>
+              <div class="errors"></div>
+            </td>
+          </tr>
+          <tr data-field="userName" class="featured readonly text">
+            <td>Nick name</td>
+            <td class="text"><input type="text" readonly="readonly">
+              <div class="hint"></div>
+              <div class="errors"></div>
+            </td>
+          </tr>
+          <tr data-field="realName" class="text">
+            <td><span class="toolTip" data-title="This is the user's real born name"></span>Real full name</td>
+            <td class="text"><input type="text">
+              <div class="hint"></div>
+              <div class="errors"></div>
+            </td>
+          </tr>
+          <tr data-field="email" class="email">
+            <td>E-mail</td>
+            <td class="email"><input type="email">
+              <div class="hint"></div>
+              <div class="errors"></div>
+            </td>
+          </tr>
 
-            <tr data-field="phone" class="text">
-              <td>Phone</td>
-              <td class="text"><input type="text" pattern="^[237]0/[0-9]{3}-[0-9]{4}$">
-                <div class="hint">Format: [20/30/70]000-0000</div>
-                <div class="errors"></div>
-              </td>
-            </tr>
-            <tr data-field="born" class="text disabled">
-              <td>Born</td>
-              <td class="text"><input type="text" disabled="disabled">
-                <div class="hint"></div>
-                <div class="errors"></div>
-              </td>
-            </tr>
-            <tr data-field="dob" class="date">
-              <td>Date of birth</td>
-              <td class="date"><input type="date">
-                <div class="hint"></div>
-                <div class="errors"></div>
-              </td>
-            </tr>
-            <tr data-field="status" class="required boolean">
-              <td>Status</td>
-              <td class="boolean"><input type="checkbox" required="required"><span class="helper">Yes</span>
-                <div class="hint"></div>
-                <div class="errors"></div>
-              </td>
-            </tr>
-            <tr data-field="avatar" class="image">
-              <td>Avatar</td>
-              <td class="image"><input type="text"><input type="file">
-                <div class="preview"
-                  style="background-image: url(&quot;http://ultraimg.com/images/Walter-White1.jpg&quot;); display: block;">
-                  <div class="remove" title="Remove image"></div>
-                </div>
-                <div class="hint"></div>
-                <div class="errors"></div>
-              </td>
-            </tr>
-            <tr data-field="created" class="readonly timestamp">
-              <td>Created at</td>
-              <td class="timestamp"><span class="value" type="timestamp">March 30, 2015 10:49 PM</span>
-                <div class="hint"></div>
-                <div class="errors"></div>
-              </td>
-            </tr>
-            <tr data-field="settings" class="group collapsed">
-              <td colspan="2"><i class="fa fa-group"></i><span>Other settings</span><span class="arrow"></span></td>
-            </tr>
-            <tr data-field="settings.isActor" class="group-settings required boolean" style="display: none;">
-              <td>Is an actor?</td>
-              <td class="boolean"><input type="checkbox" required="required"><span class="helper">No</span>
-                <div class="hint"></div>
-                <div class="errors"></div>
-              </td>
-            </tr>
-            <tr data-field="settings.themeColor" class="group-settings required color" style="display: none;">
-              <td>Color of theme</td>
-              <td class="color"><input type="color" required="required"><span class="helper">#fab000</span>
-                <div class="hint"></div>
-                <div class="errors"></div>
-              </td>
-            </tr>
-            <tr data-field="settings.fontColor" class="group-settings color" style="display: none;">
-              <td>Color of text</td>
-              <td class="color"><input type="color"><span class="helper"></span>
-                <div class="hint"></div>
-                <div class="errors"></div>
-              </td>
-            </tr>
-            <tr data-field="settings.backgroundColor" class="group-settings spectrum" style="display: none;">
-              <td>Color wih spectrum</td>
-              <td class="spectrum"><input type="spectrum"><span class="helper">#FF3300</span>
-                <div class="hint"></div>
-                <div class="errors"></div>
-              </td>
-            </tr>
-            <tr data-field="settings.motto" class="group-settings textarea" style="display: none;">
-              <td>Motto</td>
-              <td class="textarea"><textarea placeholder="What do you think?" rows="3"></textarea>
-                <div class="hint"></div>
-                <div class="errors"></div>
-              </td>
-            </tr>
-            <tr data-field="settings.nativeLang" class="group-settings required select" style="display: none;">
-              <td>Native language</td>
-              <td class="select"><select>
-                  <option value="en">English</option>
-                  <option value="de">Deutsch</option>
-                  <option value="it">Italiano</option>
-                  <option value="es">Español</option>
-                  <option value="fr">Français</option>
-                </select>
-                <div class="hint"></div>
-                <div class="errors"></div>
-              </td>
-            </tr>
-            <tr data-field="body" class="group collapsed">
-              <td colspan="2"><i class="fa fa-user"></i><span>Body properties</span><span class="arrow"></span></td>
-            </tr>
-            <tr data-field="body.weight" class="group-body number" style="display: none;">
-              <td>Body weight</td>
-              <td class="number"><input type="number" min="1" max="200">
-                <div class="hint"></div>
-                <div class="errors"></div>
-              </td>
-            </tr>
-            <tr data-field="body.height" class="group-body number" style="display: none;">
-              <td>Body height</td>
-              <td class="number"><input type="number" min="50" max="250">
-                <div class="hint"></div>
-                <div class="errors"></div>
-              </td>
-            </tr>
-            <tr data-field="body.glasses" class="group-body required boolean" style="display: none;">
-              <td>Wear glasses</td>
-              <td class="boolean"><input type="checkbox" required="required"><span class="helper">No</span>
-                <div class="hint"></div>
-                <div class="errors"></div>
-              </td>
-            </tr>
-            <tr data-field="body.foot" class="group-body number" style="display: none;">
-              <td>Body foot</td>
-              <td class="number"><input type="number">
-                <div class="hint"></div>
-                <div class="errors"></div>
-              </td>
-            </tr>
-            <tr data-field="sendMessage" class="button">
-              <td></td>
-              <td class="button"><button class="function sendMessage"><i class="fa fa-envelope"></i><span>Send message
-                    to user</span></button>
-                <div class="hint"></div>
-                <div class="errors"></div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        <table>
-          <tfoot></tfoot>
-        </table>
-      </div>
+          <tr data-field="phone" class="text">
+            <td>Phone</td>
+            <td class="text"><input type="text" pattern="^[237]0/[0-9]{3}-[0-9]{4}$">
+              <div class="hint">Format: [20/30/70]000-0000</div>
+              <div class="errors"></div>
+            </td>
+          </tr>
+          <tr data-field="born" class="text disabled">
+            <td>Born</td>
+            <td class="text"><input type="text" disabled="disabled">
+              <div class="hint"></div>
+              <div class="errors"></div>
+            </td>
+          </tr>
+          <tr data-field="dob" class="date">
+            <td>Date of birth</td>
+            <td class="date"><input type="date">
+              <div class="hint"></div>
+              <div class="errors"></div>
+            </td>
+          </tr>
+          <tr data-field="status" class="required boolean">
+            <td>Status</td>
+            <td class="boolean"><input type="checkbox" required="required"><span class="helper">Yes</span>
+              <div class="hint"></div>
+              <div class="errors"></div>
+            </td>
+          </tr>
+          <tr data-field="avatar" class="image">
+            <td>Avatar</td>
+            <td class="image"><input type="text"><input type="file">
+              <div class="preview"
+                style="background-image: url(&quot;http://ultraimg.com/images/Walter-White1.jpg&quot;); display: block;">
+                <div class="remove" title="Remove image"></div>
+              </div>
+              <div class="hint"></div>
+              <div class="errors"></div>
+            </td>
+          </tr>
+          <tr data-field="created" class="readonly timestamp">
+            <td>Created at</td>
+            <td class="timestamp"><span class="value" type="timestamp">March 30, 2015 10:49 PM</span>
+              <div class="hint"></div>
+              <div class="errors"></div>
+            </td>
+          </tr>
+          <tr data-field="settings" class="group collapsed">
+            <td colspan="2"><i class="fa fa-group"></i><span>Other settings</span><span class="arrow"></span></td>
+          </tr>
+          <tr data-field="settings.isActor" class="group-settings required boolean" style="display: none;">
+            <td>Is an actor?</td>
+            <td class="boolean"><input type="checkbox" required="required"><span class="helper">No</span>
+              <div class="hint"></div>
+              <div class="errors"></div>
+            </td>
+          </tr>
+          <tr data-field="settings.themeColor" class="group-settings required color" style="display: none;">
+            <td>Color of theme</td>
+            <td class="color"><input type="color" required="required"><span class="helper">#fab000</span>
+              <div class="hint"></div>
+              <div class="errors"></div>
+            </td>
+          </tr>
+          <tr data-field="settings.fontColor" class="group-settings color" style="display: none;">
+            <td>Color of text</td>
+            <td class="color"><input type="color"><span class="helper"></span>
+              <div class="hint"></div>
+              <div class="errors"></div>
+            </td>
+          </tr>
+          <tr data-field="settings.backgroundColor" class="group-settings spectrum" style="display: none;">
+            <td>Color wih spectrum</td>
+            <td class="spectrum"><input type="spectrum"><span class="helper">#FF3300</span>
+              <div class="hint"></div>
+              <div class="errors"></div>
+            </td>
+          </tr>
+          <tr data-field="settings.motto" class="group-settings textarea" style="display: none;">
+            <td>Motto</td>
+            <td class="textarea"><textarea placeholder="What do you think?" rows="3"></textarea>
+              <div class="hint"></div>
+              <div class="errors"></div>
+            </td>
+          </tr>
+          <tr data-field="settings.nativeLang" class="group-settings required select" style="display: none;">
+            <td>Native language</td>
+            <td class="select"><select>
+                <option value="en">English</option>
+                <option value="de">Deutsch</option>
+                <option value="it">Italiano</option>
+                <option value="es">Español</option>
+                <option value="fr">Français</option>
+              </select>
+              <div class="hint"></div>
+              <div class="errors"></div>
+            </td>
+          </tr>
+          <tr data-field="body" class="group collapsed">
+            <td colspan="2"><i class="fa fa-user"></i><span>Body properties</span><span class="arrow"></span></td>
+          </tr>
+          <tr data-field="body.weight" class="group-body number" style="display: none;">
+            <td>Body weight</td>
+            <td class="number"><input type="number" min="1" max="200">
+              <div class="hint"></div>
+              <div class="errors"></div>
+            </td>
+          </tr>
+          <tr data-field="body.height" class="group-body number" style="display: none;">
+            <td>Body height</td>
+            <td class="number"><input type="number" min="50" max="250">
+              <div class="hint"></div>
+              <div class="errors"></div>
+            </td>
+          </tr>
+          <tr data-field="body.glasses" class="group-body required boolean" style="display: none;">
+            <td>Wear glasses</td>
+            <td class="boolean"><input type="checkbox" required="required"><span class="helper">No</span>
+              <div class="hint"></div>
+              <div class="errors"></div>
+            </td>
+          </tr>
+          <tr data-field="body.foot" class="group-body number" style="display: none;">
+            <td>Body foot</td>
+            <td class="number"><input type="number">
+              <div class="hint"></div>
+              <div class="errors"></div>
+            </td>
+          </tr>
+          <tr data-field="sendMessage" class="button">
+            <td></td>
+            <td class="button"><button class="function sendMessage"><i class="fa fa-envelope"></i><span>Send message
+                  to user</span></button>
+              <div class="hint"></div>
+              <div class="errors"></div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <table>
+        <tfoot></tfoot>
+      </table>
+    </div>
     <footer class="main-footer">The footer</footer>
   </div>
-</div>
+  </div>
 </body>
 
 <script src="https://d3js.org/d3.v5.min.js"></script>
+<script src="links_icons.js"></script>
+
+
 
 <script>
-class ObjectViewer {
-  constructor() {
-    
-    this.container = document.getElementById("ObjectViewer");
-    var table_html = '<table width="320" border="1"><tr><td colspan="2" rowspan="1">' + " wdw" + '</td></tr><tr><td width="118">' + "sxs" + '</td><td width="186">' + "xs" + '</td></tr></table>';
-    var tableDiv = document.createElement("table");
-    tableDiv.innerHTML = table_html;
-    this.container.append(tableDiv);
-}
 
-}
-ObjectViewer = new ObjectViewer();
-
-
-        // Hide Object Viewer
-function hideObjectViewer() {
-  var cbjectViewer = document.getElementById("ObjectViewer");
-  var content = document.getElementById("svg-container");
-
-  content.style.marginRight = "0px";
-  cbjectViewer.style.right = "-350px";
-}
-
-        // Show Object Viewer
-function showObjectViewer() {
-  var cbjectViewer = document.getElementById("ObjectViewer");
-  var content = document.getElementById("svg-container");
-
-  content.style.marginRight = "350px";
-  cbjectViewer.style.right = "0px";
-}
+var svg_container = document.getElementById("svg_container");
+var object_viewer = document.getElementById("ObjectViewer");
 
 
 
-hideObjectViewer();
+
+  class ObjectViewer {
+    constructor() {
+
+      this.container = document.getElementById("ObjectViewer");
+      var table_html = '<table width="320" border="1"><tr><td colspan="2" rowspan="1">' + " wdw" +
+        '</td></tr><tr><td width="118">' + "sxs" + '</td><td width="186">' + "xs" + '</td></tr></table>';
+      var tableDiv = document.createElement("table");
+      tableDiv.innerHTML = table_html;
+      this.container.append(tableDiv);
+    }
+
+  }
+  ObjectViewer = new ObjectViewer();
 
 
+  // Hide Object Viewer
+  function hideObjectViewer() {
+    svg_container.style.marginRight = "0px";
+    object_viewer.style.right = "-350px";
+    object_viewer.style.display = "none";
+  }
+
+  // Show Object Viewer
+  function showObjectViewer() {
+    svg_container.style.marginRight = "350px";
+    object_viewer.style.right = "0px";
+    object_viewer.style.display = "block";
+  }
+
+  hideObjectViewer();
 </script>
 
 
 <script>
   //initilize svg or grab svg
-  var svg_container = d3.select(".svg-container");
-   // Container class to make it responsive.
-  svg_container.classed("svg-TRUC", true) ;
+  var compStyles = window.getComputedStyle(svg_container);
+
+var clientWidth = svg_container.clientWidth;
+var clientHeight = svg_container.clientHeight;
 
 
-var svg = svg_container
-.append("svg")
-   // Responsive SVG needs these 2 attributes and no width and height attr.
-   .attr("preserveAspectRatio", "xMinYMin meet")
-   .attr("viewBox", "0 0 1400 900")
-   // Class to make it responsive.
-   .classed("svg-content-responsive", true);
+  var width = clientWidth;
+  var height = clientHeight;
+  console.log(width);
+  console.log(height);
 
-   // Fill with a rectangle for visualization.
+  var svg = d3.select(".svg_container").append("svg")
+    // Responsive SVG needs these 2 attributes and no width and height attr.
+   // .attr("preserveAspectRatio", "xMinYMin meet")
+   // .attr("viewBox", "0 0 1400 900")
+    // Class to make it responsive.
+    //.classed("svg-content-responsive", true);
+
+  // Fill with a rectangle for visualization.
   // .append("rect")
   // .classed("rect", true)
-  // .attr("width", 600)
-  // .attr("height", 400);
-
-  var width = 600;
-  var height = 400;
-
-
-
-  //intialize data
-  var graphData = {
-    nodes: [
-      { name: "Eric Fox" , "type" : "", "img" : "https://t3.ftcdn.net/jpg/02/14/97/48/240_F_214974835_QQWV4VtCNW7OFqf3TAzBlD5Ot4qbVFpl.jpg"},
-      { name: "Friends"  ,"type" : "category"},
-      { name: "friend_1" ,"type" : "", "img": "https://image.flaticon.com/icons/svg/186/186341.svg"},
-      { name: "friend_2" ,"type" : "", "img": "https://image.flaticon.com/icons/svg/1149/1149408.svg"},
-      { name: "friend_3" ,"type" : "", "img": "https://image.flaticon.com/icons/svg/190/190640.svg"},
-      { name: "friend_4" ,"type" : "", "img": "https://image.flaticon.com/icons/svg/924/924874.svg"},
+   .attr("width", width)
+   .attr("height", height);
 
 
 
 
-      { name: "Family"   ,"type" : "category"},
-      { name: "Family_1" ,"type" : ""},
-      { name: "Family_2" ,"type" : ""},
-      { name: "Family_3" ,"type" : ""},
-    ],
-    links: [
-      { source: "Eric Fox", target: "Friends" },
-      { source: "Eric Fox", target: "Family" },
-      { source: "friend_1", target: "Friends" },
-      { source: "friend_2", target: "Friends" },
-      { source: "friend_3", target: "Friends" },
-      { source: "friend_4", target: "Friends" },
-      { source: "Family_1", target: "Family" },
-      { source: "Family_2", target: "Family" },
-      { source: "Family_3", target: "Family" }
-    ]
+  var person = {
+    name: "Eric Fox",
+    type: "person",
+    photo: "https://randomuser.me/api/portraits/men/22.jpg"
   };
 
-  var repelForce = d3.forceManyBody().strength(-5000).distanceMax(450).distanceMin(85);
-  var linkForce = d3.forceLink(graphData.links).distance(getDistance).strength(2);
-  linkForce.id(getNodeID);
-  var simulation = d3.forceSimulation(graphData.nodes)
-    .force("linkForce", linkForce)
-    .force("repelForce", repelForce)
-    // .force("collide",d3.forceCollide().radius(function(d) { return d.r * 20; }).iterations(10).strength(1))
+  var family_records = {
+    name: "Family",
+    parent: "Eric Fox",
+    children: [
+      { name: "Cindy Fox",   type: "person",        relationship: "Daughter"      },
+      { name: "Edward Fox",  type: "person",        relationship: "Son",        "photo": "https://image.flaticon.com/icons/svg/1149/1149408.svg"      },
+      { name: "Lisa Fox",    type: "person",        relationship: "Spouse"      },
+        ]  };
 
-    .force('collide', d3.forceCollide(function (d) {
-      return d.name === "Eric Fox" ? 150 : 50
-    }))
-    .force("charge", d3.forceManyBody().strength(-300))
-    // .force("center", d3.forceCenter(width / 2, height / 2))
-    .force("xAxis", d3.forceX(width / 2).strength(0.4))
-    .force("yAxis", d3.forceY(height / 2).strength(0.6))
-    .on("tick", ticked);
+
+  var friends_records = {
+      name: "Friends",
+      parent: "Eric Fox",
+      children: [
+          { name: "friend_1",   "type": "", "photo": "https://image.flaticon.com/icons/svg/186/186341.svg"    },
+          { name: "friend_2",   "type": "", "photo": "https://image.flaticon.com/icons/svg/1149/1149408.svg"  },
+          { name: "friend_3",   "type": "", "photo": "https://image.flaticon.com/icons/svg/190/190640.svg"    },
+          { name: "friend_4",   "type": "", "photo": "https://image.flaticon.com/icons/svg/924/924874.svg"    }
+      ]};
+
+  //----------------------------
+  // INIT DATA
+  //----------------------------
+  var graph_data = {
+    nodes: [],
+    links: []
+  };
+
+
+  var ROOT_NODE_NAME = "Eric Fox";
+
+  graph_data.nodes.push(person);
+  var case_record = {    name: "case 1234",    "type": "case"  };
+  addNodeAndCreateLink(case_record, ROOT_NODE_NAME, graph_data);
+  addNodesAndLinks(family_records, graph_data);
+  addNodesAndLinks(friends_records, graph_data);
+  console.log(graph_data);
+ 
+
+    var graph_nodes_count = graph_data.nodes.length;
+
+
+
+
+//custom force to put stuff in a box 
+function box_force(alpha) { 
+  for (var i = 0; i < graph_nodes_count; ++i) {
+    curr_node = graph_data.nodes[i];
+    curr_node.x = Math.max(radius, Math.min(width - radius, curr_node.x));
+    curr_node.y = Math.max(radius, Math.min(height - radius, curr_node.y));
+  }
+}
+
+
+
+  var repelForce = d3.forceManyBody().strength(-3000).distanceMax(450).distanceMin(85);
+  var collide_force = d3.forceCollide(function (d) {
+      return d.name === ROOT_NODE_NAME ? 150 : 50
+    });
+  var linkForce = d3.forceLink(graph_data.links);
+  linkForce.distance(getDistance).strength(2);
+  linkForce.id(getNodeID);
+  var charge_force = d3.forceManyBody().strength(-100);
+  var center_force = d3.forceCenter(width / 2, height / 2);  
+
+  
+    var simulation = d3.forceSimulation(graph_data.nodes)
+    .force("linkForce", linkForce)
+    .force("charge", charge_force)
+    .force("center", center_force)
+    .force("box_force", box_force)
+
+      .force("repelForce", repelForce)
+      .force('collide', collide_force)
+   // .force("xAxis", d3.forceX(width / 2).strength(0.4))
+   // .force("yAxis", d3.forceY(height / 2).strength(0.6))
+    .on("tick", ticked)    ;
 
   /* Nodes are identified by their name
    */
@@ -1020,22 +1063,16 @@ var svg = svg_container
   }
 
   function getDistance(d) {
-    return 100; //d.distance+30;
+    return 30; //d.distance+30;
   }
 
   var links = svg
     .selectAll("links")
-    .data(graphData.links)
+    .data(graph_data.links)
     .enter()
     .append("line")
     .classed("line", true);
 
-
-  var drag = d3
-    .drag()
-    .on("start", dragstarted)
-    .on("drag", dragged)
-    .on("end", dragended);
 
 
   /*
@@ -1043,16 +1080,26 @@ var svg = svg_container
          return d.type === "person";
         })
   */
+  var    radius = 16;
+  var circleColour = "black"
 
   var nodeGroup = svg
     .selectAll("g")
-    .data(graphData.nodes)
+    .data(graph_data.nodes)
     .enter()
     .append("g")
     .on("click", handle_node_click)
-    .on("mouseover", handle_node_mouseover)
+    .on("mouseover", handle_node_mouseover);
 
-    .call(drag);
+
+
+var drag_handler = d3.drag()
+	.on("start", drag_start)
+	.on("drag", drag_drag)
+	.on("end", drag_end);	
+	
+    drag_handler(nodeGroup)
+
 
   var
     grey_Level_One = "#272727",
@@ -1061,61 +1108,65 @@ var svg = svg_container
     grey_Level_Fou = "#b6b6b6";
 
   var node_radius = 10;
-  var image_width = 50;
+  var image_width = 35;
   var image_height = image_width;
+  var node_width = image_width;
+  var node_height = image_width;
+  
 
   var circles = nodeGroup
     .append("circle")
     .attr("r", node_radius)
     .attr("fill", "#eeeeee");
 
+
   // Append images
-  var images = nodeGroup.append("svg:image")
+  var images = nodeGroup.append("image")
     .attr("xlink:href", function (d) {
-      return d.img;
+      
+      if (d.photo) {
+        return d.photo;
+      }
+      if (d.type == "person") {
+        return d.photo;
+      }
+      if (d.type == "case") {
+        return  icon_folder_base64;
+      }
     })
-    .attr("x", function (d) {
-      return -25;
-    })
-    .attr("y", function (d) {
-      return -25;
-    })
+    .attr("x", function (d) {      return - (image_height / 2);    })
+    .attr("y", function (d) {      return - (image_width /2);    })
     .attr("height", image_height)
     .attr("width", image_width);
 
 
   var nodeLabel = nodeGroup
     .append("text")
-    .attr("x", 0) //function(d) { return image_height;})
-    .attr("y", function (d) {
-      return (image_height /2);
-    })
+   // .attr("x", function(d) {       return (image_height / 2);    })
+    .attr("y", function (d) {     
+       return  ( image_height / 2) + 10; 
+     })
     .attr("text-anchor", "middle")
     .classed("nodeLabel", true)
     .text(function (d) {
       return d.name;
     });
 
+
+
+
   function ticked() {
-    //translate(x, y)
-    nodeGroup.attr("transform", function (d) {
-      return "translate(" + d.x + ", " + d.y + ")";
-    });
+
+    nodeGroup.attr("transform", function (d) {      return "translate(" + d.x + ", " + d.y + ")";    });
+
+   // nodeLabel.attr("cx", function(d) { return d.x = Math.max(radius, Math.min(width - radius, d.x)); })
+   //     .attr("cy", function(d) { return d.y = Math.max(radius, Math.min(height - radius, d.y)); });
 
     links
-      .attr("x1", function (d) {
-        return d.source.x;
-      })
-      .attr("y1", function (d) {
-        return d.source.y;
-      })
-      .attr("x2", function (d) {
-        return d.target.x;
-      })
-      .attr("y2", function (d) {
-        return d.target.y;
-      });
-    //console.log(simulation.alpha());
+      .attr("x1", function (d) {        return d.source.x;      })
+      .attr("y1", function (d) {        return d.source.y;      })
+      .attr("x2", function (d) {        return d.target.x;      })
+      .attr("y2", function (d) {        return d.target.y;      });
   }
 
   var object_currently_selected;
@@ -1128,8 +1179,7 @@ var svg = svg_container
     if (d != object_currently_selected) {
       showObjectViewer();
       object_currently_selected = d;
-    }
-    else {
+    } else {
       hideObjectViewer();
       object_currently_selected = null;
     }
@@ -1142,22 +1192,71 @@ var svg = svg_container
 
 
 
-  function dragstarted(d) {
-    //your alpha hit 0 it stops! make it run again
-    simulation.alphaTarget(0.3).restart();
-    d.fx = d3.event.x;
-    d.fy = d3.event.y;
-  }
+  function drag_start(d) {
+    if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+        d.fx = d.x;
+        d.fy = d.y;
+    }
 
-  function dragged(d) {
-    d.fx = d3.event.x;
-    d.fy = d3.event.y;
-  }
 
-  function dragended(d) {
-    // alpha min is 0, head there
-    simulation.alphaTarget(0);
-    d.fx = null;
-    d.fy = null;
-  }
+//make sure you can't drag the circle outside the box
+function drag_drag(d) {
+  //TODO: ideally we would calculate the bounding box of the node
+  d.fx = Math.max(node_width, Math.min(width - node_width, d3.event.x));
+  d.fy = Math.max(node_height, Math.min(height - node_height, d3.event.y));
+}
+
+
+
+
+function drag_end(d) {
+  if (!d3.event.active) simulation.alphaTarget(0);
+  d.fx = null;
+  d.fy = null;
+}
+
+
+  function addNodeAndCreateLink(node, target_name, graph_data) {
+    var source_name = node.name;
+    var link = { source: source_name, target: target_name};
+    graph_data.nodes.push(node);
+    graph_data.links.push(link);
+}
+
+
+/*
+* 
+*
+*/
+function addNodesAndLinks(records, graph_data) {
+    var node_name = records.name;
+    var target_name = records.parent;
+
+    // RECORD CATEGORY
+    // createNodeAndLink ("category", target_name, source_name, graph_data);
+    var node = {
+      name: node_name,
+      type: "category"
+    };
+    addNodeAndCreateLink(node, target_name, graph_data);
+
+
+    /*var node = { name: source_name  ,"type" : "category"};
+    var link = { source: source_name, target: target_name};
+    graph_data.nodes.push(node);
+    graph_data.links.push(link);
+    */
+
+    // CONNECT TO CATEGORY
+    target_name = node_name;
+
+    // RECORDS
+    for (i = 0; i < records.children.length; i++) {
+      var node = records.children[i];
+      //console.log(record);
+      source_name = node.name;
+      //createNodeAndLink("person", target_name, source_name, graph_data);
+      addNodeAndCreateLink(node, target_name, graph_data);
+    }
+}
 </script>
