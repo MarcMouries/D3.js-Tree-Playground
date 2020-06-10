@@ -199,6 +199,13 @@ var json_tree_data =
 
 
 
+d3.json("./tree_box_v5.json")
+  .then(function (json) {
+    json_tree_data = json;
+
+  })
+
+
 treeBoxes('#tree-container', json_tree_data);
 </script>
 </html>

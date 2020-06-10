@@ -58,7 +58,10 @@ var
     "vehicle": Green_Acapulco
   };
 
-  function treeBoxes(container, jsonData) {
+  function treeBoxes(container, json_tree_data) {
+    console.log("treeBoxes");
+
+
 
     // DIMENSIONS
     var rectNode = {
@@ -97,30 +100,18 @@ svg.call(d3.zoom().on('zoom', function () {
 
 
 
-var i = 0,
-  duration = 750,
-  hierarchy;
-
-var json_tree_data;
-
-console.log("before...");
-
-d3.json("./tree_box_v5.json")
-  .then(function (json) {
-    console.log("loading...");
-
-    json_tree_data = json;
-    console.log("loading...DONE");
+var i = 0, duration = 750;
 
     // Assigns parent, children, height, depth
-    hierarchy = d3.hierarchy(json_tree_data, function (d) {
+   var hierarchy = d3.hierarchy(json_tree_data, function (d) {
       return d.children;
     });
     hierarchy.x0 = height / 2;
     hierarchy.y0 = 0;
     console.log(hierarchy);
     update(hierarchy);
-  })
+
+
   /*
   .catch(function (error) {
     // Do some error handling.
