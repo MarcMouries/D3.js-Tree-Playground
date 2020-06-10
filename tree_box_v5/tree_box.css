@@ -110,16 +110,16 @@
   
       .link {
         fill: none;
-        stroke: #000;
+        stroke: rgb(155, 155, 155);
         stroke-width: 1px;
       }
 
       .link text {
         font-family: "Arial";
-        fill: #000;
-        stroke-width: 0.3px;
         font-size: 12px;
         font-weight: normal;
+        fill: #000;
+        stroke-width: 0.3px;
       }
 
       .linkselected {
@@ -127,7 +127,7 @@
         stroke: tomato;
         stroke-width: 2px;
       }
-  
+
       .arrow {
         fill: lightsteelblue;
         stroke-width: 1px;
@@ -213,20 +213,6 @@
         margin-bottom: 2px;
       }
   
-  
-      .linkLine {
-        stroke: #999999;
-        stroke-opacity: 0.6;
-      }
-  
-      .linkLabel {
-        color: #333333;
-        flood-color: #FFFFFF;
-        flood-opacity: 1;
-        font-size: 15px;
-        text-anchor: middle;
-      }
-  
       .node {
         cursor: pointer;
       }
@@ -237,4 +223,3 @@
         text-anchor: middle;
         cursor: pointer;
       }
-  

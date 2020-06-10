@@ -18,7 +18,7 @@
   .svg_container {
     display: inline-block;
     position: relative;
-    width: 800px;
+    width: 100%; 
     height: 800px;
     border:1px solid black;
     background: lightblue;
@@ -920,7 +920,6 @@ var object_viewer = document.getElementById("ObjectViewer");
       tableDiv.innerHTML = table_html;
       this.container.append(tableDiv);
     }
-
   }
   ObjectViewer = new ObjectViewer();
 
@@ -1131,7 +1130,8 @@ var drag_handler = d3.drag()
         return d.photo;
       }
       if (d.type == "case") {
-        return  icon_folder_base64;
+        //return  icon_folder_base64;
+        return icon_case_base64;
       }
     })
     .attr("x", function (d) {      return - (image_height / 2);    })
