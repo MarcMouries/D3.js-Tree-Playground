@@ -1,19 +1,7 @@
 
 
 
-// DIMENSIONS
-var rectNode = {
-  width: 180,
-  height: 90,
-  textMargin: 8
-};
 
-var margin = {
-  top: 20,
-  right: 20,
-  bottom: 20,
-  left: 20
-};
 
 // COLOR PALETTE 
 var
@@ -70,6 +58,25 @@ var
     "vehicle": Green_Acapulco
   };
 
+  function treeBoxes(container, jsonData) {
+
+    // DIMENSIONS
+    var rectNode = {
+      width: 180,
+      height: 90,
+      textMargin: 8
+    };
+
+    var margin = {
+      top: 20,
+      right: 20,
+      bottom: 20,
+      left: 20
+    };
+
+
+  
+
 var clientWidth = document.body.clientWidth;
 var clientHeight = document.body.clientHeight;
 var width = clientWidth - margin.right - margin.left;
@@ -77,7 +84,9 @@ var height = clientHeight - margin.top - margin.bottom;
 
 height = 900;
 
-var svg = d3.select("body").append("svg");
+
+
+var svg = d3.select(container).append('svg');
 svg
   .attr("width", width)
   .attr("height", height);
@@ -595,7 +604,5 @@ return path;
           }
           return box_start + box_content + box_end;
       }
-
-
-
+    }
 }
