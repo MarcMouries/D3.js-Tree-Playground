@@ -3,8 +3,19 @@
 
     }
   
+
+
+    /*Oh Marc, there’s a CSS assignment that’s adding line-height: 0 to all titles - you have 
+    
+    
+    .firstinfo .profileinfo h1, h2, h3 etc { //stuff } 
+    .firstinfo .profileinfo { h1, h2, h3 etc { //stuff } }
+  
+  */
+
+
     /** CARD STYLE */
-    .card {
+    .tree_node_card {
         display: flex;
         flex-direction: column;
         background-color: white;
@@ -20,24 +31,24 @@
         _margin: 5px;
       }
   
-      .card .actions {
+      .tree_node_card .actions {
         background-color: white;
         display: flex;
         flex-direction: row;
         justify-content: space-evenly;
       }
   
-      .card .actions>a {
+      .tree_node_card .actions>a {
         font-size: 10px;
         color: black;
         padding: 5px;
       }
   
-      .card .actions>a:hover {
+      .tree_node_card .actions>a:hover {
         color: #2baae1;
       }
   
-      .firstinfo {
+      .tree_node_card  .firstinfo {
         display: flex;
         align-items: center;
         flex-direction: row;
@@ -45,45 +56,34 @@
   
       }
   
-      .firstinfo img {
+      .tree_node_card  .firstinfo img {
         border-radius: 50%;
         width: 48px;
         height: 48px;
         margin-right: 5px;
       }
   
-      .firstinfo .profileinfo .h1,
-      .h2,
-      .h3,
-      .h4,
-      .h5,
-      .h6,
-      h1,
-      h2,
-      h3,
-      h4,
-      h5,
-      h6 {
+      .tree_node_card  .firstinfo .profileinfo {
         font-weight: 500;
-        line-height: 0;
+        line-height: 0.5em;
         color: inherit;
       }
   
-      .firstinfo .profileinfo h1 {
+      .tree_node_card  .firstinfo .profileinfo h1 {
         font-size: 1.3em;
         font-weight: 600;
       }
   
-      .firstinfo .profileinfo h2 {
+      .tree_node_card  .firstinfo .profileinfo h2 {
         font-size: 1.2em;
       }
   
-      .firstinfo .profileinfo h3 {
+      .tree_node_card  .firstinfo .profileinfo h3 {
         font-size: 1.0em;
         font-style: italic;
       }
   
-      .firstinfo .profileinfo p.bio {
+      .tree_node_card  .firstinfo .profileinfo p.bio {
         padding: 10px 0px;
         color: #5A5A5A;
         line-height: 1.2;
