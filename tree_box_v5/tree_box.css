@@ -165,10 +165,6 @@ scoped the CSS to the tree_node_card
   border-top-right-radius: 0.5em;
 }
 
-p {
-  display: inline;
-}
-
 .textcolored {
   color: orange;
 }
