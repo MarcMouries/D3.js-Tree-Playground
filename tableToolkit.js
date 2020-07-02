@@ -13,23 +13,21 @@ var tableToolkit = {
 	 * @param {*} fields_footer 
 	 * @returns Document
 	 */
-
-
-	createTable: function (table_class, data, fields_header, fields_content, fields_footer) {
+	createTable: function (
+		table_class, data, fields_header, fields_content, fields_footer, nb_of_columns) {
 
 		var html = "<table class=" + table_class + ">";
 
-		var nb_cols_in_table = 4;
 		// HEADER
 		var print_field_name = false;
-		html += this._printFields(data, fields_header, "thead",  print_field_name, nb_cols_in_table);
+		html += this._printFields(data, fields_header, "thead",  print_field_name, nb_of_columns);
 
 		// FIELDS
 		print_field_name = true;
-		html += this._printFields(data, fields_content, "tbody", print_field_name, nb_cols_in_table);
+		html += this._printFields(data, fields_content, "tbody", print_field_name, nb_of_columns);
 
 		// FOOTER
-		html += this._printFields(data, fields_footer, "tfoot", print_field_name, nb_cols_in_table);
+		html += this._printFields(data, fields_footer, "tfoot", print_field_name, nb_of_columns);
 
 		html += "</table>";
 		return html;
@@ -37,14 +35,14 @@ var tableToolkit = {
 
 
 	// print the list of fields from the data in the container specified
-	_printFields: function (data, field_list, container, print_field_name, nb_cols_in_table) {
-		
+	_printFields: function (data, field_list, container, print_field_name, nb_of_columns) {
+
 		var html = "";
 		html += "<" + container + ">";
 
 		var number_of_fields = field_list.length;
 		var number_of_col = (print_field_name ? 2 * number_of_fields : number_of_fields);
-		var number_of_row = Math.round(number_of_col /nb_cols_in_table );
+		var number_of_row = Math.round(number_of_col /nb_of_columns );
 		// there is at leat one row
 		if (number_of_row <1) { number_of_row ++;}
 		var number_of_field_per_row = Math.round(number_of_fields / number_of_row);
@@ -86,9 +84,9 @@ var tableToolkit = {
 
 				//  & 
 				var last_field =  (field_data_id == number_of_fields);
-				var more_column_to_fill = (nb_col_printed < nb_cols_in_table);
+				var more_column_to_fill = (nb_col_printed < nb_of_columns);
 				if (last_field && more_column_to_fill) {
-					var colspan = (nb_cols_in_table - nb_col_printed) + 1;
+					var colspan = (nb_of_columns - nb_col_printed) + 1;
 					//console.log("     colspan=" + colspan);
 					html += column_start + " colspan=" + colspan;
 				} else {

@@ -2,75 +2,81 @@
 <html>
 
 <head>
-  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200;300;400;469;500;600;700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@200;300;400;469;500;600;700&display=swap" rel="stylesheet">
-  
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200;300;400;469;500;600;700&display=swap"
+    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@200;300;400;469;500;600;700&display=swap"
+    rel="stylesheet">
 </head>
-
-
 <style type="text/css">
-
-tr:nth-child(even) {
+  tr:nth-child(even) {
     background-color: #f2f2f2;
-}
+  }
 
-  
   th {
     background-color: #f1f1f1;
     _background-color: #A9A9A9;
     color: #000000;
-    font-family: 'Oswald',Helvetica,sans-serif;
+    font-family: 'Oswald', Helvetica, sans-serif;
     font-weight: bold;
     font-size: 1.25em;
   }
-  
+
   td:nth-child(odd) {
     font-weight: bold;
     width: 25%;
     text-align: left;
   }
+
   td {
     color: #000000;
     font-family: 'Roboto', sans-serif;
     font-size: 0.75em;
   }
-
 </style>
-    <script type="text/javascript" src="tableToolkit.js"></script>
-    <body>
-<script>
-//////////////////////////////////
-// DATA
-//////////////////////////////////
+<script type="text/javascript" src="tableToolkit.js"></script>
 
-var fields_header = ["name"];
-var fields_content = ["Age", "Race", "Sex", "Hair", "Eyes", "Build", "Height"]; //"Weight"
-//var fields_content = ["Age", "Race", "Sex", "Hair", "Eyes", "Build", "Height", "Weight"]; //
-var fields_footer = ["Scars & Marks"];
-var person = {
-        "parent"       : null,
-        "name"         : "Eric Fox",
-        "Age"          : "44",
-        "Race"         : "White",
-        "Sex"          : "Male",
-        "Hair"         : "Black",
-        "Eyes"         : "Brown",
-        "Build"        : "Medium",
-        "Height"       : "5'8",
-        "Weight"       : "180 lbs",
-        "Scars & Marks": "has a mole on his right cheek below the eye"
-      };
+<body>
+  <script>
+    //////////////////////////////////
+    // DATA
+    //////////////////////////////////
 
-      var table_class = "fugitive";
-      var table_html = tableToolkit.createTable(table_class, person, fields_header, fields_content, fields_footer);
- 
-var tableDiv = document.createElement("table");
-tableDiv.innerHTML = table_html;
-document.body.appendChild(tableDiv);
+    var fields_header = ["name"];
+    var fields_content = ["Age", "Race", "Sex", "Hair", "Eyes", "Build", "Height"]; //"Weight"
+    //var fields_content = ["Age", "Race", "Sex", "Hair", "Eyes", "Build", "Height", "Weight"]; //
+    var fields_footer = ["Scars & Marks"];
+    var person = {
+      "name": "Eric Fox",
+      "Age": "44",
+      "Race": "White",
+      "Sex": "Male",
+      "Hair": "Black",
+      "Eyes": "Brown",
+      "Build": "Medium",
+      "Height": "5'8",
+      "Weight": "180 lbs",
+      "Scars & Marks": "has a mole on his right cheek below the eye"
+    };
+
+    var nb_of_columns = 4;
+    var table_class = "fugitive";
+    var table_1_html = tableToolkit.createTable(table_class, person, fields_header, fields_content, fields_footer, nb_of_columns);
 
 
 
-</script>
+    var tableDiv_1 = document.createElement("table");
+    tableDiv_1.innerHTML = table_1_html;
+    document.body.appendChild(tableDiv_1);
 
+
+    var nb_of_columns = 2;
+    var table_class = "fugitive";
+    var table_2_html = tableToolkit.createTable(table_class, person, fields_header, fields_content, fields_footer, nb_of_columns);
+
+    var tableDiv_2 = document.createElement("table");
+    tableDiv_2.innerHTML = table_2_html;
+    document.body.appendChild(tableDiv_2);
+  </script>
 </body>
-  </html>
+
+</html>
