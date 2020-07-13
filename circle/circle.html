@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="apple-mobile-web-app-title" content="CodePen">
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans" />
+    <script src="graph-mm.js"></script>
+
+    <title>Circle - A Pen by Marc</title>
+    <style>
+        #chart_container {
+            position: relative;
+            border: 1px solid #9c9898;
+            width: 900px;
+            height: 900px;
+        }
+
+        form#info {
+            position: absolute;
+            left: 920px;
+            top: 0px;
+            _max-width: 300px;
+            margin: 10px auto;
+            padding: 10px 20px;
+            background: #f4f7f8;
+            border-radius: 8px;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 16px;
+            color: #384047;
+        }
+
+        form#info>fieldset,
+        form#info>fieldset>.field {
+            margin: 6px 0;
+        }
+
+        form#info>fieldset>.field>label {
+            display: inline-block;
+            width: 150px;
+            vertical-align: top;
+        }
+
+        form#info>fieldset>legend {
+            background-color: gray;
+            color: white;
+            padding: 5px 10px;
+        }
+
+        form#info>fieldset>.field>input {
+            padding: 5px;
+            _color: #8a97a0;
+        }
+
+        form#info>fieldset>.field>input:read-only {
+            background-color: #e8eeef;
+        }
+    </style>
+</head>
+
+<body translate="no">
+
+    <div id="chart_container">
+        <canvas id="canvas">
+        </canvas>
+    </div>
+    <form id="info">
+        <fieldset>
+            <legend>Parameters:</legend>
+            <div class="field">
+                <label for="number_of_nodes">Number of nodes:</label>
+                <input type="text" value="4" id="number_of_nodes" name="Number" onblur="draw_chart()">
+            </div>
+            <div class="field">
+                <label for="radius">Radius:</label>
+                <input type="text" value="200" id="radius" name="radius" onblur="draw_chart()">
+            </div>
+        </fieldset>
+        <fieldset>
+            <legend>Computation:</legend>
+            <div class="field">
+                <label for="angle">Angle:</label>
+                <input type="text" id="angle" name="angle" value="N/A" readonly>
+            </div>
+        </fieldset>
+    </form>
+</body>
+
+</html>
+<script>
+    var canvas = document.getElementById("canvas");
+    var context = canvas.getContext('2d');
+
+    //    var parent = canvas.parentNode;
+
+    canvas.style.width = '100%';
+    canvas.style.height = '100%';
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+
+    var canvasToolkit = new CanvasToolkit(canvas);
+    var center_x = canvas.width / 2;
+    var center_y = canvas.height / 2;
+    var orbit_radius = 200;
+    var node_radius = 20;
+
+    draw_chart();
+
+
+    //canvasToolkit.drawGraph(graph);
+
+    function draw_chart() {
+        var number_of_nodes = document.getElementById("number_of_nodes").value;
+        orbit_radius = document.getElementById("radius").value;
+        console.log(number_of_nodes);
+
+        context.clearRect(0, 0, canvas.width, canvas.height);
+     //   canvasToolkit.drawCircle(center_x, center_y, 10, "black");
+        canvasToolkit.drawCircle(center_x, center_y, orbit_radius);
+
+        var graph = new Graph();
+        var rootNode = new Node("root");
+        rootNode.x = center_x;
+        rootNode.y = center_y;
+        graph.setRootNode(rootNode);
+
+        // Root Children Nodes
+/*
+        var nodeA = new Node("A");
+        graph.addNode(nodeA, rootNode.name);
+        var nodeAa = new Node("A-1");
+        graph.addNode(nodeAa, nodeA.name);
+        var nodeAb = new Node("A-2");
+        graph.addNode(nodeAb, nodeA.name);
+        var nodeAc = new Node("A-3");
+        graph.addNode(nodeAc, nodeA.name);
+       
+
+        var nodeB = new Node("B");
+        graph.addNode(nodeB, rootNode.name);
+
+        var nodeC = new Node("C");
+        graph.addNode(nodeC, rootNode.name);
+
+        var node_D = new Node("D");
+        graph.addNode(node_D, rootNode.name);
+*/
+
+        
+        for (var i = 1; i <= number_of_nodes; i++) {
+            var letter =String.fromCharCode(i + 64);
+
+            var node = new Node(letter);
+            graph.addNode(node, rootNode.name);
+            for (var j = 1; j <= 3; j++) {
+                var child_node = new Node(letter + "." + j);
+                graph.addNode(child_node, node.name);
+            }
+        }
+
+
+
+        graph.visit(rootNode, function(node) {
+            console.log("  CONS node " + node );}
+        );
+        
+
+        
+//        console.log(JSON.stringify(graph));
+        console.log(graph);
+
+        var renderer = canvasToolkit;
+        graph.draw(rootNode, renderer);
+    }
+
+
+
+
+
+    function CanvasToolkit(canvas) {
+        this.canvas = canvas;
+        init();
+
+        function init() {
+            this.ctx = this.canvas.getContext("2d");
+        }
+
+        CanvasToolkit.prototype.drawCircle = function (x, y, radius, fillStyle) {
+            ctx.beginPath();
+            //define the colour of the circle
+            ctx.strokeStyle = "grey";
+            // convert start angle '0 degrees' to radians
+            var startAngle = 0 * Math.PI / 180;
+            //convert end angle '360 degrees' to radians
+            var endAngle = 360 * Math.PI / 180;
+            //define the circle
+            ctx.arc(x, y, radius, startAngle, endAngle, false);
+            //draw the circle
+            ctx.lineWidth = 2;
+
+            if (fillStyle) {
+                ctx.fillStyle = fillStyle;
+                ctx.fill();
+            }
+            ctx.stroke();
+        };
+
+        CanvasToolkit.prototype.drawTextInsideCircle = function (text, x, y, ) {
+        var fontWidth = ctx.measureText(text).width;
+        ctx.font = '20px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = "middle";
+        ctx.fillStyle = "#384047"; // darkish
+        ctx.fillText(text, x, y);
+    }
+
+
+    }
+
+
+    function drawGraph(node) {
+        canvasToolkit.drawCircle(node.x, node.y, root_node_radius);
+        canvasToolkit.drawTextInsideCircle(node.name, node.x, node.y);
+
+    }
+
+    // a findAngle method that takes four arguments and returns and angle in degrees
+    var findAngle = function (x1, y1, x2, y2) {
+        return (Math.atan2(y1 - y2, x1 - x2) + Math.PI) / Math.PI * 180;
+    };
+</script>
+</body>
+
+</html>
