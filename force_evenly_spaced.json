@@ -1,15 +1,15 @@
 {
     "nodes":[
       {"name":"File1.exe","colorGroup":0},
-      {"name":"File2.exe","colorGroup":0},
-      {"name":"File3.exe","colorGroup":0},
-      {"name":"File4.exe","colorGroup":0},
-      {"name":"File5.exe","colorGroup":0},
-      {"name":"File6.exe","colorGroup":0},
-      {"name":"File7.exe","colorGroup":0},
-      {"name":"File8.exe","colorGroup":0},
-      {"name":"File8.exe","colorGroup":0},
-      {"name":"File9.exe","colorGroup":0}
+      {"name":"File2.exe","colorGroup":1},
+      {"name":"File3.exe","colorGroup":2},
+      {"name":"File4.exe","colorGroup":3},
+      {"name":"File5.exe","colorGroup":4},
+      {"name":"File6.exe","colorGroup":5},
+      {"name":"File7.exe","colorGroup":6},
+      {"name":"File8.exe","colorGroup":7},
+      {"name":"File9.exe","colorGroup":8},
+      {"name":"File10.exe","colorGroup":9}
     ],
     "links":[
       {"source":1,"target":0,"value":10},
@@ -18,8 +18,8 @@
       {"source":4,"target":0,"value":50},
       {"source":5,"target":0,"value":65},
       {"source":6,"target":0,"value":65},
-      {"source":7,"target":0,"value":81},
-      {"source":8,"target":0,"value":98},
-      {"source":9,"target":0,"value":100}
+      {"source":6,"target":7,"value":65},
+      {"source":6,"target":8,"value":65},
+      {"source":6,"target":9,"value":65}
     ]
 }

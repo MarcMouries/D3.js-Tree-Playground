@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+    </style>
+</head>
+
+<body>
+    <canvas id="myCanvas2" width="500" height="500" style="border:1px solid #d3d3d3;">
+        Your browser does not support the HTML5 canvas tag.</canvas>
+
+    <script>
+        var graphValues = [1, 2, 3, 4];
+
+        var c = document.getElementById("myCanvas2");
+        var ctx = c.getContext("2d");
+
+
+        // setup circle
+        // now onto drawing lines & stuff on a circle
+        var inner_radius = 20;
+        var radius = 200;
+        var point_size = 4;
+        var center_x = c.width / 2;
+        var center_y = c.height / 2;
+        var font_size = "20px";
+
+        // draw the circle
+        function drawCircle() {
+            ctx.beginPath();
+            ctx.arc(center_x, center_y, radius, 0, 2 * Math.PI);
+            ctx.stroke();
+        }
+        //drawCircle();
+
+        // draw the inner circle
+        function drawInnerCircle() {
+            ctx.beginPath();
+            ctx.arc(center_x, center_y, inner_radius, 0, 2 * Math.PI);
+            ctx.stroke();
+        }
+
+
+        _getPointOnArc = function (cx, cy, radius, angle) {
+            return [
+                cx + Math.cos(angle) * radius,
+                cy + Math.sin(angle) * radius
+            ];
+        }
+
+        function getPointOnArc(cx, cy, r, deg) {
+        return {
+            'x': cx + r * Math.cos(deg),
+            'y': cy + r * Math.sin(deg)
+        };
+    }
+
+        function drawPoint(angle, text) {
+
+            var font_size = "20px";
+            var point_size = 40;
+
+            var x = center_x + (radius * Math.cos(angle * Math.PI / 180)); // Calculate the x position of the element.
+            var y = center_y + (radius * Math.sin(angle * Math.PI / 180)); // Calculate the y position of the element.
+
+            ctx.beginPath();
+            ctx.arc(x, y, point_size, 0, 2 * Math.PI);
+            ctx.fill();
+
+            ctx.font = '20px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = "middle";
+            ctx.fillStyle = "#384047"; // darkish
+            ctx.fillText(text, x, y);
+        }
+
+        var number_items = graphValues.length
+        var sectorAngleDegrees = 360/ (number_items); // to gett ful 36° per item
+        // for 4 values:
+        // on 360°         
+        //   0° ->  90°
+        //  90° -> 180°
+        // 180° -> 270°
+        // 270° -> 360°
+
+        // - 180
+        //    0° - 45°
+        //   45° -  90°
+        //   90° -  135°
+        //  135° -  180°
+
+
+        var start_angle_DEG = 0;
+        for (var i = 1; i <= graphValues.length; i++) {
+
+            var end_angle_DEG = sectorAngleDegrees + start_angle_DEG;
+
+            var currAngleRAD = start_angle_DEG * 2 * Math.PI / 360;
+            var nextAngleRAD = end_angle_DEG * 2 * Math.PI / 360;
+
+            // DRAW
+            ctx.beginPath();
+            ctx.arc(center_x, center_y, inner_radius, nextAngleRAD, currAngleRAD, true);
+            ctx.arc(center_x, center_y, radius, currAngleRAD, nextAngleRAD, false);
+            ctx.closePath();
+            ctx.strokeStyle = '#' + ("000000" + Math.random().toString(16).slice(2, 8).toUpperCase()).slice(-6);
+            ctx.stroke();
+
+
+
+            var text_angle =start_angle_DEG /2;
+            var point =getPointOnArc  (center_x, center_y, radius, text_angle);
+
+            var letter = String.fromCharCode(i + 64);
+            ctx.font = '14px Calibri';
+           // ctx.fillText(letter, node_X, node_Y);
+           ctx.fillText(letter,point.x,point.y);
+
+            //drawPoint(  nextAngle_DEG , letter );
+            
+            console.log("" + start_angle_DEG + '° - ' + end_angle_DEG + '°' + "  text_angle=" + text_angle);
+
+            start_angle_DEG = end_angle_DEG; //+= sectorAngleDegrees;
+        };
+    </script>
+</body>
+
+</html>

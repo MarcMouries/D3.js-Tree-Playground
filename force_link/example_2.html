@@ -1,0 +1,32 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <link rel="stylesheet" href="force_link.css" />
+</head>
+
+<body>
+    <div id="chart_container"></div>
+    <script src="http://d3js.org/d3.v3.js" charset="utf-8"></script>
+    <script src="force_link.js"></script>
+    <script>
+        var chart_container = document.getElementById("chart_container");
+        var LinkAnalysis = new LinkAnalysis(chart_container);
+        var root_node = {"number":"FUG00001005","name":"root"};
+        LinkAnalysis.addRootNode(root_node);
+
+        for (var i = 1; i <= 6; i++) {
+                var node = {name: "node" + i};
+                LinkAnalysis.addNode(node, root_node);
+
+
+                for (var j = 1; j < 1; j++) {
+                    var child_node = {  name: "" + i + " - " + j };
+                    LinkAnalysis.addNode(child_node, node);
+                }
+            }
+        
+    </script>
+</body>
+
+</html>

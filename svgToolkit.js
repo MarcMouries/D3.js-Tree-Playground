@@ -2,6 +2,9 @@
  * SVG Helper functions
  */
 
+
+
+
 var svgToolkit = {
 
     attr: function(elem, attr){
