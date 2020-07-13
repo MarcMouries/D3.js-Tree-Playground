@@ -1,0 +1,97 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <link rel="stylesheet" href="force_link.css" />
+</head>
+
+<body>
+    <div id="toolbox">
+    </div>
+    <div id="chart_container"></div>
+    <script src="http://d3js.org/d3.v3.js" charset="utf-8"></script>
+    <script src="force_link.js"></script>
+    <script>
+        console.log("HERE");
+        var chart_container = document.getElementById("chart_container");
+
+        console.log(chart_container);
+        var LinkAnalysis = new LinkAnalysis(chart_container);
+
+
+
+      var person = {
+      "number":"FUG00001005","name":"FOX, Eric","first_name":"Eric","last_name":"Fox","photo":"https://dojopsdemo.service-now.com/69539e541bf45c50f76f20252a4bcb88.iix","type":"person"};
+      var root_node = person;
+      LinkAnalysis.addRootNode(root_node);
+
+      
+
+
+    var node_arrest = {name: "AR-784723", type: "arrest"};
+    LinkAnalysis.addNode(node_arrest, root_node);
+
+    var node_court_case = {name: "Robbery", type: "court_case"};
+    LinkAnalysis.addNode(node_court_case, node_arrest);
+
+    var person_B = {
+          name: "Chris White",
+          type: "person",
+          photo: "https://randomuser.me/api/portraits/men/22.jpg"
+        };
+        LinkAnalysis.addNode(person_B, node_court_case);
+
+    var node_arrest_B = {name: "AR-701526", type: "arrest"};
+    LinkAnalysis.addNode(node_arrest_B, person_B);
+  //  LinkAnalysis.addNode(person_B, node_court_case);
+
+    
+    
+      var vehicle = {   name: "vehicle",    "type": "vehicle"  };
+      LinkAnalysis.addNode(vehicle, root_node);
+
+    var fugitive_case = {   name: "FCS0001089",    "type": "case"  };
+    LinkAnalysis.addNode(fugitive_case, root_node);
+
+        var node_family = {name: "family"};
+        var nodes_family = [ node_Joe, node_Jim, node_Jane  ];
+        var node_Joe = {"name":"FOX, Lisa","relationship":"Wife","age":"42","degree_of_relationship":"0","photo":"https://dojopsdemo.service-now.com/3e81dbe01bf01090f76f20252a4bcb46.iix"};
+        var node_Jim = {"name":"FOX, Edward","relationship":"Son","age":"18","degree_of_relationship":"1","photo":"https://dojopsdemo.service-now.com/2e6fc659db7418103405ce1c29961945.iix"};
+        var node_Jane ={"name":"FOX, Cindy","relationship":"Daughter","age":"16","degree_of_relationship":"1","photo":"https://dojopsdemo.service-now.com/8bc1d3241bf01090f76f20252a4bcbf8.iix"};
+       // {"name":"PARK, Carlos","relationship":"Cousin","age":"38","degree_of_relationship":"3","photo":"https://dojopsdemo.service-now.com/c09393281bf01090f76f20252a4bcb1a.iix"}]
+       LinkAnalysis.addNode(node_family, root_node);
+        LinkAnalysis.addNode(node_Joe, node_family);
+        LinkAnalysis.addNode(node_Jim, node_family);
+        LinkAnalysis.addNode(node_Jane, node_family);
+        
+        
+        var node_known_addresses = {name: "Known Addresses",    "type": "location"  };
+        LinkAnalysis.addNode(node_known_addresses, root_node);
+        var node_place_A = {   name: "808 W. Spokane Blvd., Spokane WA"       ,    "type": "address"  };
+        var node_place_B = {   name: "188 Hunters Drive, Los Angeles CA"       ,    "type": "address"  };
+        var node_place_C = {   name: "3256 East Market Street, Los Angeles CA"   ,    "type": "address"      };
+        LinkAnalysis.addNode(node_place_A, node_known_addresses);
+        LinkAnalysis.addNode(node_place_B, node_known_addresses);
+        LinkAnalysis.addNode(node_place_C, node_known_addresses);
+
+
+
+
+
+                //graphCreator.addNode(nodeF, nodeG);
+/*
+        for (var i = 1; i <= 1; i++) {
+            var node = {name: "node" + i};
+            LinkAnalysis.addNode(node, root_node);
+
+
+            for (var j = 1; j <= 2; j++) {
+                var child_node = {  name: "" + i + " - " + j };
+                LinkAnalysis.addNode(child_node, node);
+            }
+        }
+        */
+    </script>
+</body>
+
+</html>
