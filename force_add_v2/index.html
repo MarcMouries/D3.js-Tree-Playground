@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>D3 Test</title>
+        <script src="https://d3js.org/d3.v5.js"></script>
+        <script type="text/javascript" src="graph.js"></script>
+        <style type="text/css">
+            .links line {
+                stroke: #aaa;
+            }
+
+            .nodes circle {
+              pointer-events: all;
+              stroke: none;
+              stroke-width: 40px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="chart-container" style="max-width: 1000px;"></div>
+
+        <button class="expand">Expand graph</button>
+
+        <script type="text/javascript">
+            //sample graph dataset
+            var graph = {
+                "nodes": [
+                    {"id": "A"},
+                    {"id": "B"},
+                    {"id": "C"},
+                    {"id": "D"},
+                    {"id": "E"},
+                    {"id": "F"}
+                ],
+                "links": [
+                    {"source": "B", "target": "A"},
+                    {"source": "C", "target": "A"},
+                    {"source": "D", "target": "A"},
+                    {"source": "D", "target": "C"},
+                    {"source": "E", "target": "A"},
+                    {"source": "F", "target": "A"}
+                ]
+            }
+            //graph container
+            var targetElement = document.querySelector('.chart-container');
+
+            var graph = new Graph(targetElement, graph);
+
+            d3.selectAll('button.expand').on('click', function (){
+                var nodes = [
+                    {"id": "G", "group": 1}
+                ];
+
+                var links = [
+                    {"source": "F", "target": "G", "value": 1}
+                ];
+
+                graph.expandGraph(links, nodes);
+            });
+
+        </script>
+    </body>
+</html>     

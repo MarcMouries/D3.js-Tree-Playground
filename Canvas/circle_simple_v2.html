@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title></title>
+	<script type="text/javascript" src="trigo.js"></script>
+	<script type="text/javascript" src="links_icons.js"></script>
+	<style type="text/css">
+		html,
+		body {
+			margin: 0px;
+		}
+
+		canvas {
+			display: block;
+		}
+	</style>
+</head>
+
+<body>
+	<canvas id="canvas"></canvas>
+</body>
+
+<script>
+	window.onload = function () {
+
+
+		var color_ring_isActivated = "#3b6978";
+		var color_ring_isBelowMouse = "#84a9ac";
+
+		var icon_width = 50;
+		var icon_heigth = 50;
+
+		drawRing = function (x, y, radius, color) {
+			this.ctx.beginPath();
+			this.ctx.strokeStyle = color;
+			this.ctx.arc(x, y, radius, 0, 2 * Math.PI, false);
+			this.ctx.lineWidth = 5;
+			this.ctx.stroke();
+		};
+
+		function Circle(x, y, radius, fill, stroke) {
+			this.startingAngle = 0;
+			this.endAngle = 2 * Math.PI;
+			this.x = x;
+			this.y = y;
+			this.radius = radius;
+			this.fill = fill;
+			this.stroke = stroke;
+			this.isClicked = false;
+			this.isBelowMouse = false;
+
+
+			Circle.prototype.drawRing = function (context, color) {
+				context.beginPath();
+				context.strokeStyle = color;
+				context.arc(this.x, this.y, this.radius + 5, 0, 2 * Math.PI, false);
+				context.lineWidth = 5;
+				context.stroke();
+			};
+
+			Circle.prototype.drawImage = function (context, image_url) {
+				var image = new Image();
+				image.src = image_url;
+				var icon_x = this.x - icon_width / 2; // to fit into circle
+				var icon_y = this.y - icon_heigth / 2; // to fit into circle
+				context.drawImage(image, icon_x, icon_y, icon_width, icon_heigth);
+			}
+
+
+			Circle.prototype.draw = function (context) {
+
+
+				context.beginPath();
+				context.fillStyle = this.fill;
+				context.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+				context.fill();
+
+				this.drawImage(context, icon_case_base64);
+
+
+				console.log("isBelowMouse: " + this.isBelowMouse);
+				if (this.isClicked) {
+					//this.drawRing(context, color_ring_isActivated);
+					this.drawRing(context, "blue");
+				}
+				else if (this.isBelowMouse) {
+					//this.drawRing(context, color_ring_isBelowMouse);
+					this.drawRing(context, "green");
+				}
+			};
+		}
+
+		var canvas = document.getElementById("canvas"),
+			context = canvas.getContext("2d"),
+			width = canvas.width = window.innerWidth,
+			height = canvas.height = window.innerHeight;
+
+
+		var circle_radius = 33;
+		var c1 = new Circle(300, 300, circle_radius, "#4e79a7", "black");
+		var c2 = new Circle(400, 300, circle_radius, "#f28e2c", "black");
+		var c3 = new Circle(500, 300, circle_radius, "#e15759", "black");
+		var nodes = [c1, c2, c3];
+		var offset = {};
+		var isClicked = false;
+		var current_node;
+
+		draw();
+
+		function draw() {
+			context.clearRect(0, 0, width, height);
+			context.fillStyle = "gray";
+			for (var i = 0; i < nodes.length; i++) {
+				var node = nodes[i];
+				node.draw(context);
+			}
+		}
+
+		document.body.addEventListener("mousemove", onMouseMove);
+		document.body.addEventListener("mousedown", onMouseDown);
+		document.body.addEventListener("mouseup", onMouseUp);
+
+
+
+		function onMouseDown(event) {
+			for (var i = 0; i < nodes.length; i++) {
+				var node = nodes[i];
+				if (pointInCircle(event.clientX, event.clientY, node)) {
+					node.isClicked = true;
+					current_node = node;
+					offset.x = event.clientX - node.x;
+					offset.y = event.clientY - node.y;
+				}
+				else {
+					node.isClicked = false;
+				}
+			}
+			draw();
+		}
+
+		function onMouseMove(event) {
+			for (var i = 0; i < nodes.length; i++) {
+				var node = nodes[i];
+				if (pointInCircle(event.clientX, event.clientY, node)) {
+					node.isBelowMouse = true;
+				}
+				else {
+					node.isBelowMouse = false;
+				}
+			}
+			if (current_node) {
+				current_node.x = event.clientX - offset.x;
+				current_node.y = event.clientY - offset.y;
+			}
+			draw();
+		}
+
+		function onMouseUp(event) {
+			if (current_node != null) {
+				current_node.isClicked = false;
+				current_node = null;
+			}
+			draw();
+		}
+	};
+</script>
+
+</html>

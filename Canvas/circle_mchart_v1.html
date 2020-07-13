@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title> MChart</title>
+    <script type="text/javascript" src="trigo.js"></script>
+    <style>
+        mchart {
+            display: grid;
+            grid-template-columns: 75% 25%;
+            _grid-template-rows: 10vw 30vw 10vw;
+            grid-gap: 1em;
+        }
+
+        header,
+        canvas_container,
+        side_bar,
+        footer {
+            background: #eaeaea;
+            display: flex;
+            _align-items: center;
+            _justify-content: center;
+        }
+
+        .pointer {
+            cursor: pointer;
+        }
+    </style>
+
+</head>
+
+<body>
+    <mchart>
+        <canvas_container id="canvas_container"></canvas_container>
+        <side_bar>
+            <div>
+                <p>Move, press and release the mouse</p>
+                <p id="downlog">Down</p>
+                <p id="mouse_move">Move</p>
+                <p id="node_move">Node</p>
+                <p id="uplog">Up</p>
+                <p id="outlog">Out</p>
+            </div>
+        </side_bar>
+    </mchart>
+    <div>
+    </div>
+</body>
+
+</html>
+
+<script>
+    console.clear();
+
+    // =============================================================
+    //                          MISC FUNCTIONS
+    // =============================================================
+
+    COLORS = [
+        "#4e79a7",
+        "#f28e2c",
+        "#e15759",
+        "#76b7b2",
+        "#59a14f",
+        "#edc949",
+        "#af7aa1",
+        "#ff9da7",
+        "#9c755f",
+        "#bab0ab"];
+
+
+    function log(msg) {
+        if (false) {
+            console.log(msg);
+        }
+    }
+
+    function getRandomInt(max) {
+        return Math.floor(Math.random() * Math.floor(max));
+    }
+    function getColor(shape_id) {
+        var color_number = shape_id % COLORS.length;
+        return COLORS[color_number];
+    }
+    function getRandomColor() {
+        var number_of_colors = COLORS.length;
+        var random_number = getRandomInt(number_of_colors);
+        return COLORS[random_number];
+    }
+
+    // =============================================================
+    //                          MVC
+    // =============================================================
+
+    function Location(x, y) {
+        this.x = x;
+        this.y = y;
+    }
+    function Shape(x, y) {
+        this.selected = false;
+        this.location = new Location(x, y);
+    }
+
+    var app = function (app) {
+        app.Model = function () {
+            var m = this;
+            m.colors = ["blue", "red"];
+        };
+        return app;
+    }(app || {});
+
+    var app = function (app) {
+        app.View = function (data) {
+            var v = this;
+
+            render = function () { };
+        };
+        return app;
+    }(app || {});
+
+    var app = function (app) {
+        app.Controller = function (data, view) {
+            var c = this;
+        };
+        return app;
+    }(app || {});
+
+
+    function MChartModel({ nodes }) {
+        var m = this;
+        m.colors = ["blue", "red"];
+        m.nodes = nodes;
+    }
+
+    function MChartView({ canvas }) {
+        this.canvas = canvas;
+        this.ctx = canvas.getContext("2d");
+
+        MChartView.prototype.drawArc = function () {
+            this.ctx.clearRect(0, 0, canvas.width, canvas.height);
+        };
+
+        MChartView.prototype.drawLine = function (
+            startX,
+            startY,
+            endX,
+            endY,
+            strokeStyle,
+            lineWidth) {
+            if (strokeStyle != null) ctx.strokeStyle = strokeStyle;
+            if (lineWidth != null) ctx.lineWidth = lineWidth;
+            this.ctx.beginPath();
+            this.ctx.moveTo(startX, startY);
+            this.ctx.lineTo(endX, endY);
+            this.ctx.stroke();
+            this.ctx.closePath();
+        };
+
+        MChartView.prototype.drawPoint = function (x, y, radius, text) {
+            this.ctx.beginPath();
+            this.ctx.strokeStyle = "grey";
+            this.ctx.arc(x, y, radius, 0, 2 * Math.PI, false);
+            //draw the circle
+            this.ctx.lineWidth = 3;
+            this.ctx.strokeStyle = "darkgrey";
+            this.ctx.stroke();
+            this.ctx.fillStyle = "darkgrey";
+            //this.ctx.fillStyle = getRandomColor();
+            this.ctx.fill();
+            // text
+            this.ctx.font = "14px sans-serif";
+            this.ctx.textAlign = "center";
+            this.ctx.textBaseline = "middle";
+            this.ctx.fillStyle = "#384047"; // darkish
+            this.ctx.fillText(text, x, y);
+        };
+
+        MChartView.prototype.drawRing = function (x, y, radius, color) {
+            this.ctx.beginPath();
+            this.ctx.strokeStyle = color;
+            this.ctx.arc(x, y, radius, 0, 2 * Math.PI, false);
+            this.ctx.lineWidth = 5;
+            this.ctx.stroke();
+        };
+
+        MChartView.prototype.getCanvas = function () {
+            return this.canvas;
+        };
+        MChartView.prototype.getContext = function () {
+            return this.ctx;
+        };
+        MChartView.prototype.drawArc = function (
+            cx,
+            cy,
+            radius,
+            start_angle,
+            end_angle,
+            color) {
+            this.ctx.beginPath();
+            this.ctx.moveTo(cx, cy);
+            this.ctx.arc(cx, cy, radius, start_angle, end_angle, false);
+            //draw the circle
+            this.ctx.lineWidth = 3;
+            this.ctx.strokeStyle = "darkgrey";
+            this.ctx.stroke();
+            if (color) {
+                this.ctx.fillStyle = color;
+                this.ctx.fill();
+            }
+        };
+    }
+
+    //___ CONTROLLER
+    function MChartController({ model, view }) {
+        this.NODE_RADIUS = 20;
+        this.model = model;
+        this.view = view;
+        c = this;
+        var nodes = c.model.nodes;
+        init_nodes();
+
+        this.canvas = this.view.getCanvas();
+        this.context = this.view.getContext();
+        this.addEventListeners();
+        this.current_node = {};
+
+        function init_nodes() {
+            var root = nodes[0];
+            root.x = this.canvas.width / 2;
+            root.y = this.canvas.height / 2;
+            root.radius = c.NODE_RADIUS;
+        }
+    }
+
+    function onMouseUp(event) {
+        //	document.body.removeEventListener("mousemove", onMouseMove);
+        //	document.body.removeEventListener("mouseup", onMouseUp);
+    }
+
+    function getMouseCoords(canvas, event) {
+        var canvasBound = canvas.getBoundingClientRect();
+        var offsetX = canvasBound.left;
+        var offsetY = canvasBound.top;
+
+        return {
+            x: event.clientX - offsetX,
+            y: event.clientY - offsetY
+        };
+
+    }
+
+    function getOffsetCoords(event, object) {
+        return {
+            x: event.clientX - object.x,
+            y: event.clientY - object.y
+        };
+
+    }
+
+    function setShadow(context, color, ox, oy, blur) {
+        context.shadowColor = color;
+        context.shadowOffsetX = ox;
+        context.shadowOffsetY = oy;
+        context.shadowBlur = blur;
+    }
+    function removeShadow(context) {
+        context.shadowColor = null;
+        context.shadowOffsetX = null;
+        context.shadowOffsetY = null;
+        context.shadowBlur = null;
+    }
+
+    MChartController.prototype.render = function () {
+        // Background
+        var background_color = "#F5F5F5";
+        this.context.fillStyle = background_color;
+        this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+        log("render: nodes = " + nodes.length);
+
+        for (var i = 0; i < nodes.length; i++) {
+            var node = nodes[i];
+
+            //log(node);
+            if (node.isSelected) {
+                c.view.drawRing(node.x, node.y, node.radius + 5, "#3b6978");
+            } else if (node.isActivated) {
+                c.view.drawRing(node.x, node.y, node.radius + 5, "#84a9ac");
+            }
+            c.view.drawPoint(node.x, node.y, node.radius, node.name);
+        }
+    };
+
+    MChartController.prototype.addEventListeners = function () {
+        this.canvas.addEventListener("mousedown", this.handleMouseDown, false);
+        this.canvas.addEventListener("mousemove", this.handleMouseMove, false);
+        this.canvas.addEventListener("mouseup", this.handleMouseUp, false);
+    };
+
+    MChartController.prototype.handleMouseDown = function (event) {
+        var mouse = getMouseCoords(canvas, event);
+
+        for (var i = 0; i < nodes.length; i++) {
+            var node = nodes[i];
+
+            if (pointInCircle(event.clientX, event.clientY, node)) {
+                node.isSelected = true;
+                node.offset = getOffsetCoords(event, node);
+                var node_move = document.getElementById("node_move");
+                node_move.innerHTML =
+                    "NODE: " +
+                    node.x +
+                    " / " +
+                    node.y +
+                    " (" +
+                    node.offset.x +
+                    " / " +
+                    node.offset.y +
+                    ") = DIFF: " +
+                    mouse.x;
+            } else {
+                node.isSelected = false;
+                node.isActivated = false;
+            }
+        }
+        c.render();
+
+    };
+
+    MChartController.prototype.handleMouseMove = function (event) {
+        var mouse = getMouseCoords(canvas, event);
+
+        //var mouse_move = document.getElementById("mouse_move");
+        // mouse_move.innerHTML = "Move: " + mouse.x + " / " + mouse.y;
+        //  var node_move = document.getElementById("node_move");
+
+        for (var i = 0; i < nodes.length; i++) {
+            var node = nodes[i];
+            if (pointInCircle(event.clientX, event.clientY, node)) {
+                if (node.isSelected) {
+                    node.x = event.clientX - node.offset.x;
+                    node.y = event.clientY - node.offset.y;
+
+                    node_move.innerHTML =
+                        "NODE: " +
+                        node.x +
+                        " / " +
+                        node.y +
+                        " (" +
+                        node.offset.x +
+                        " / " +
+                        node.offset.y +
+                        ") = DIFF: " +
+                        node.x -
+                        mouse.x;
+                } else {
+                    node.isActivated = true;
+                    canvas.classList.add("pointer");
+                    node_move.innerHTML = "NODE: ";
+                }
+            } else {
+                node.isActivated = false;
+                canvas.classList.remove("pointer");
+            }
+        }
+        c.render();
+    };
+
+    MChartController.prototype.handleMouseUp = function (event) {
+        var mouse = getMouseCoords(canvas, event);
+        for (var i = 0; i < nodes.length; i++) {
+            var node = nodes[i];
+            node.isSelected = false;
+        }
+        c.render();
+
+    };
+
+    //___ CONTROLLER
+
+    function MChartApp({ canvas, nodes }) {
+        this.canvas = canvas;
+        this.view = new MChartView({ canvas: canvas });
+        this.model = new MChartModel({ nodes: nodes });
+        this.controller = new MChartController({
+            model: this.model,
+            view: this.view
+        });
+
+
+        MChartApp.prototype.render = function () {
+            this.controller.render();
+        };
+
+        //  var data = new app.Model();
+        //var view = new app.View(data);
+        //var controller = new app.Controller(data, view);
+    }
+
+    var circle_radius = 150;
+    var bp_radius = circle_radius + 100;
+    var bp_angle = 90;
+
+    var canvas = document.createElement("canvas");
+    var canvas_container = document.getElementById("canvas_container");
+    canvas_container.appendChild(canvas);
+
+    canvas.width = 800;
+    canvas.height = 600;
+    var cx = canvas.width / 2;
+    var cy = canvas.height / 2;
+
+
+    //}, 10000);
+
+    // Properties _____________________________________________
+    var fps = 60;
+    var interval = 1000 / fps;
+
+    // Test Animation _________________________________________
+
+    // Animation Logic ________________________________________
+
+    setInterval(function () {
+        //turn_and_draw();
+    }, 100);
+
+    var dpr = window.devicePixelRatio;
+
+    // =============================================================
+    //                          MVC
+    // =============================================================
+    var nodes = [];
+    nodes.push({ name: "A" });
+    var mChartApp = new MChartApp({ canvas: canvas, nodes: nodes });
+    mChartApp.render();
+
+//function animate() {
+//  mChartApp.render();
+//  window.requestAnimationFrame(animate);
+//}
+//animate();
+//# sourceURL=pen.js
+</script>
+</body>
+
+</html>

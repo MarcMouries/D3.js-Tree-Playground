@@ -43,7 +43,7 @@ svg .rect {
 }
 
 
-.line {
+.link {
   stroke: #999;
   stroke-opacity: 0.6;
   stroke-width: 0.5;
@@ -51,7 +51,7 @@ svg .rect {
 }
 
 
-.nodes circle {
+.node circle {
   stroke: #fff;
   stroke-width: 1.5px;
 }
