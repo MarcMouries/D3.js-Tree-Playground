@@ -25,83 +25,139 @@
 	window.onload = function () {
 
 
-		var color_ring_isActivated = "#3b6978";
-		var color_ring_isBelowMouse = "#84a9ac";
+		/*
+		* Takes an object that contains keys that identify the images and URL for the images 
+		* and loads the images.
+		* Example:
+		* var ICON_LIST = {
+		*   "case"   : { "url": icon_case_base64  },
+		*   "arrest" : { "url": icon_arrest_base64}
+	    * }
+		*/
+		function loadAllImages(image_config, callback) {
+			var loadcount = 0;
+			var config_element_list = Object.keys(image_config);
+			var image_total = config_element_list.length;
 
-		var icon_width = 50;
-		var icon_heigth = 50;
+			for (var key in image_config) {
+					var config_element = image_config[key];
+					var image = new Image();
+					config_element.image = image;
+					image.onload = function () {
+						loadcount++;
+						if (loadcount == image_total) {
+							callback();
+						}
+					};
+					image.onerror = function () { alert("image load failed"); }
+					image.crossOrigin = "anonymous";
+					image.src = config_element.url;
+			}
+		}
 
-		drawRing = function (x, y, radius, color) {
-			this.ctx.beginPath();
-			this.ctx.strokeStyle = color;
-			this.ctx.arc(x, y, radius, 0, 2 * Math.PI, false);
-			this.ctx.lineWidth = 5;
-			this.ctx.stroke();
+	drawRing = function (x, y, radius, color) {
+		this.ctx.beginPath();
+		this.ctx.strokeStyle = color;
+		this.ctx.arc(x, y, radius, 0, 2 * Math.PI, false);
+		this.ctx.lineWidth = 5;
+		this.ctx.stroke();
+	};
+
+
+	function Link(source, target) {
+		this.source = source;
+		this.target = target;
+	}
+	Link.prototype.draw = function (context, color) {
+		var start_X = this.source.x;
+		var start_Y = this.source.y;
+		var end_X = this.target.x;
+		var end_Y = this.target.y;
+
+		// DRAW
+	}
+
+
+	function Circle(x, y, radius, fill, stroke) {
+		this.startingAngle = 0;
+		this.endAngle = 2 * Math.PI;
+		this.x = x;
+		this.y = y;
+		this.radius = radius;
+		this.fill = fill;
+		this.stroke = stroke;
+		this.isClicked = false;
+		this.isBelowMouse = false;
+
+
+		Circle.prototype.drawRing = function (context, color) {
+			context.beginPath();
+			context.strokeStyle = color;
+			context.arc(this.x, this.y, this.radius + 5, 0, 2 * Math.PI, false);
+			context.lineWidth = 5;
+			context.stroke();
 		};
 
-
-		function Link(source, target) {
-			this.source = source;
-			this.target = target;
-		}
-		Link.prototype.draw = function (context, color) {
-			var start_X = this.source.x;
-			var start_Y = this.source.y;
-			var end_X = this.target.x;
-			var end_Y = this.target.y;
-
-			// DRAW
+		Circle.prototype.drawImage = function (context, image_url) {
+			var image = new Image();
+			image.src = image_url;
+			var icon_x = this.x - icon_width / 2; // to fit into circle
+			var icon_y = this.y - icon_heigth / 2; // to fit into circle
+			context.drawImage(image, icon_x, icon_y, icon_width, icon_heigth);
 		}
 
+		Circle.prototype.draw = function (context) {
+			context.beginPath();
+			context.fillStyle = this.fill;
+			context.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+			context.fill();
 
-		function Circle(x, y, radius, fill, stroke) {
-			this.startingAngle = 0;
-			this.endAngle = 2 * Math.PI;
-			this.x = x;
-			this.y = y;
-			this.radius = radius;
-			this.fill = fill;
-			this.stroke = stroke;
-			this.isClicked = false;
-			this.isBelowMouse = false;
+			var node_type = "case";
+
+			console.log("=====");
+			console.log(ICON_LIST[node_type]);
+			console.log(ICON_LIST);
+			console.log("=====");
+
+			var image_url = icon_case_base64;
+			this.drawImage(context, image_url);
 
 
-			Circle.prototype.drawRing = function (context, color) {
-				context.beginPath();
-				context.strokeStyle = color;
-				context.arc(this.x, this.y, this.radius + 5, 0, 2 * Math.PI, false);
-				context.lineWidth = 5;
-				context.stroke();
-			};
-
-			Circle.prototype.drawImage = function (context, image_url) {
-				var image = new Image();
-				image.src = image_url;
-				var icon_x = this.x - icon_width / 2; // to fit into circle
-				var icon_y = this.y - icon_heigth / 2; // to fit into circle
-				context.drawImage(image, icon_x, icon_y, icon_width, icon_heigth);
+			console.log("isBelowMouse: " + this.isBelowMouse);
+			if (this.isClicked) {
+				//this.drawRing(context, color_ring_isActivated);
+				this.drawRing(context, "blue");
 			}
+			else if (this.isBelowMouse) {
+				//this.drawRing(context, color_ring_isBelowMouse);
+				this.drawRing(context, "green");
+			}
+		};
+	}
 
-			Circle.prototype.draw = function (context) {
-				context.beginPath();
-				context.fillStyle = this.fill;
-				context.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
-				context.fill();
-
-				this.drawImage(context, icon_case_base64);
+	var color_ring_isActivated = "#3b6978";
+	var color_ring_isBelowMouse = "#84a9ac";
 
 
-				console.log("isBelowMouse: " + this.isBelowMouse);
-				if (this.isClicked) {
-					//this.drawRing(context, color_ring_isActivated);
-					this.drawRing(context, "blue");
-				}
-				else if (this.isBelowMouse) {
-					//this.drawRing(context, color_ring_isBelowMouse);
-					this.drawRing(context, "green");
-				}
-			};
+	var ICON_LIST = {
+		"case": {
+			"url": icon_case_base64
+		},
+		"arrest": {
+			"url": icon_arrest_base64
 		}
+	}
+
+	var icon_width = 50;
+	var icon_heigth = 50;
+
+
+	loadAllImages(ICON_LIST, start);
+
+	function start() {
+
+		// the imgs[] array now holds fully loaded images
+		// the imgs[] are in the same order as imageURLs[]
 
 		var canvas = document.getElementById("canvas"),
 			context = canvas.getContext("2d"),
@@ -157,12 +213,14 @@
 				else {
 					node.isBelowMouse = false;
 				}
+
 			}
 			if (current_node) {
 				current_node.x = event.clientX - offset.x;
 				current_node.y = event.clientY - offset.y;
 			}
 			draw();
+
 		}
 
 		function onMouseUp(event) {
@@ -172,6 +230,9 @@
 			}
 			draw();
 		}
+	}
+
+
 	};
 </script>
 
