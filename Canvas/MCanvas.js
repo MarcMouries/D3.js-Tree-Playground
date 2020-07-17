@@ -30,7 +30,6 @@ function getCanvasPixelRatio(canvas) {
 function createHiDPICanvas(w, h) {
 	var canvas = document.createElement("canvas");
 	var ratio = getCanvasPixelRatio(canvas);
-	console.log(ratio);
 	canvas.width = w * ratio;
 	canvas.height = h * ratio;
 	canvas.style.width = w + "px";
@@ -73,14 +72,13 @@ MCanvas.prototype.drawLine = function (
 
 MCanvas.prototype.drawBorder = function () {
 	context.rect(this.margin.left, this.margin.top, this.width, this.height);
-	context.fillStyle = '#F5F5F5';
-	context.shadowColor = 'black';
+	context.fillStyle = "#F5F5F5";
+	context.shadowColor = "black";
 	context.shadowBlur = 2;
 	context.shadowOffsetX = 0;
 	context.shadowOffsetY = 0;
 	context.fill();
-}
-
+};
 
 MCanvas.prototype.drawArc = function (
 	center,
@@ -125,4 +123,15 @@ MCanvas.prototype.drawPoint = function (x, y, radius, text) {
 
 MCanvas.prototype.clear = function () {
 	this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+};
+
+MCanvas.prototype.drawBorder = function () {
+	this.ctx.rect(this.margin.left, this.margin.top, this.width, this.height);
+	this.ctx.fillStyle = "#F5F5F5";
+	//this.ctx.fillStyle = '#FFFFFF';
+	this.ctx.shadowColor = "black";
+	this.ctx.shadowBlur = 2;
+	this.ctx.shadowOffsetX = 0;
+	this.ctx.shadowOffsetY = 0;
+	this.ctx.fill();
 };
