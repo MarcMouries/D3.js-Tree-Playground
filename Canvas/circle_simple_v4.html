@@ -2,20 +2,10 @@
 <html>
 
 <head>
-	<title></title>
 	<script type="text/javascript" src="trigo.js"></script>
 	<script type="text/javascript" src="links_icons.js"></script>
 	<script type="text/javascript" src="image_utils.js"></script>
-	<style type="text/css">
-		html,
-		body {
-			margin: 0px;
-		}
-
-		canvas {
-			display: block;
-		}
-	</style>
+	<script type="text/javascript" src="MCanvas.js"></script>
 </head>
 
 <body>
@@ -26,6 +16,221 @@
 	window.onload = function () {
 
 
+		// =============================================================
+		//                          MChartModel
+		// =============================================================
+		function MChartModel({ nodes }) {
+			var m = this;
+			m.nodes = nodes;
+			var links = [];
+
+		}
+		MChartModel.prototype.addNode = function (node) {
+			nodes.push(node);
+			//this.update();
+		};
+		MChartModel.prototype.getNodes = function (node) {
+			return nodes;
+		};
+
+		// =============================================================
+		//                          MChartLayoutManager
+		// =============================================================
+		function MChartLayoutManager({ model, width, height }) {
+			var nodes = model.nodes;
+			this.width = width;
+			this.height = height;
+		}
+		MChartLayoutManager.prototype.layout = function () {
+			//console.log("MChartLayoutManager : layout");
+
+			// Center the root
+			var root = nodes[0];
+			root.x = this.width / 2;
+			root.y = this.height / 2;
+
+			// replace by layout with Compass
+			for (var i = 1; i < nodes.length; i++) {
+				var node = nodes[i];
+				node.x = root.x + (i*50);
+				node.y = root.y + (i*50);
+			}
+		};
+		// =============================================================
+		//                          MChartController
+		// =============================================================
+		function MChartController({ model, view }) {
+			//	console.log("MChartController()");
+			this.NODE_RADIUS = 20;
+			this.model = model;
+			this.view = view;
+			controller = this;
+			var nodes = model.nodes;
+			this.current_node = null;
+
+			this.canvas = this.view.getCanvas();
+			this.context = this.view.getContext();
+			this.addEventListeners();
+			this.layoutMgr = new MChartLayoutManager({ model: model, width: this.canvas.width, height: this.canvas.height });
+			this.layoutMgr.layout();
+		}
+
+		MChartController.prototype.addEventListeners = function () {
+
+			console.log("addEventListeners");
+
+			this.canvas.addEventListener("mousemove", this._handleMouseMove, false);
+			this.canvas.addEventListener("mousedown", this._handleMouseDown, false);
+			this.canvas.addEventListener("mouseup", this._handleMouseUp, false);
+		};
+
+		MChartController.prototype._handleMouseMove = function (event) {
+			for (var i = 0; i < nodes.length; i++) {
+				var node = nodes[i];
+				if (pointInCircle(event.clientX, event.clientY, node)) {
+					node.isBelowMouse = true;
+				}
+				else {
+					node.isBelowMouse = false;
+				}
+			}
+			if (this.current_node) {
+				this.current_node.x = event.clientX - node.offset.x;
+				this.current_node.y = event.clientY - node.offset.y;
+			}
+			controller.render();
+		}
+
+		MChartController.prototype._handleMouseDown = function (event) {
+			for (var i = 0; i < nodes.length; i++) {
+				var node = nodes[i];
+
+
+				if (pointInCircle(event.clientX, event.clientY, node)) {
+					node.isClicked = true;
+					this.current_node = node;
+					console.log("going to set the offset");
+					node.offset.x = event.clientX - node.x;
+					node.offset.y = event.clientY - node.y;
+				}
+				else {
+					node.isClicked = false;
+				}
+			}
+			controller.render();
+		}
+
+		MChartController.prototype._handleMouseUp = function (event) {
+			if (this.current_node != null) {
+				this.current_node.isClicked = false;
+				this.current_node = null;
+			}
+			controller.render();
+		}
+
+		MChartController.prototype.render = function () {
+			//console.log("MChartController .render");
+			//console.log(nodes);
+			//this.context.clearRect(0, 0, this.width, this.height);
+			this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+
+			for (var i = 0; i < nodes.length; i++) {
+				var node = nodes[i];
+				node.draw(this.context);
+			}
+		}
+
+		// =============================================================
+		//                          MChartView
+		// =============================================================
+		function MChartView({ canvas }) {
+			this.canvas = canvas;
+			this.ctx = canvas.getContext("2d");
+
+			MChartView.prototype.drawArc = function () {
+				this.ctx.clearRect(0, 0, canvas.width, canvas.height);
+			};
+		}
+		MChartView.prototype.getCanvas = function () {
+			return this.canvas;
+		};
+		MChartView.prototype.getContext = function () {
+			return this.ctx;
+		};
+		// =============================================================
+		//                          LinkAnalysis
+		// =============================================================
+		function LinkAnalysis({ in_nodes }) {
+
+			var NODE_GROUP_CLASS = "nodeXXX";
+			var image_width = 35;
+			var image_height = image_width;
+			var node_width = image_width;
+			var node_height = image_width;
+
+			this.margin = { top: 10, right: 10, bottom: 10, left: 10 };
+			var icon_width = 40;
+			var icon_heigth = 40;
+
+			var color_ring_isActivated = "#3b6978";
+			var color_ring_isBelowMouse = "#84a9ac";
+
+			// the imgs[] array now holds fully loaded images
+			this.canvas = document.getElementById("canvas");
+			this.context = this.canvas.getContext("2d");
+			this.width = canvas.width = window.innerWidth;// - margin.left - margin.right;
+			this.height = canvas.height = window.innerHeight;// - margin.top - margin.bottom;
+			this.width = this.width - this.margin.left - this.margin.right;
+			this.height = this.height - this.margin.top - this.margin.bottom;
+
+
+			this.view = new MChartView({ canvas: this.canvas });
+			this.model = new MChartModel({ nodes: nodes });
+			this.controller = new MChartController({
+				model: this.model,
+				view: this.view
+			});
+
+
+			/** move to MCanvas */
+			this.drawBorder = function (context) {
+				context.rect(this.margin.left, this.margin.top, this.width, this.height);
+				context.fillStyle = '#F5F5F5';
+				//context.fillStyle = '#FFFFFF';
+				context.shadowColor = 'black';
+				context.shadowBlur = 2;
+				context.shadowOffsetX = 0;
+				context.shadowOffsetY = 0;
+				context.fill();
+			}
+
+
+			this.draw = function () {
+				this.drawBorder(this.context);
+
+				this.controller.render();
+			}
+		}
+
+		LinkAnalysis.prototype.setIconByNodeType = function (IconByNodeType) {
+			this.IconByNodeType = IconByNodeType;
+		}
+
+		LinkAnalysis.prototype.start = function () {
+			console.log("in start");
+
+
+			//this.canvas.addEventListener("mousemove", this.handleMouseMove);
+
+			//this.canvas.addEventListener("mousemove", this);
+			//	document.body.addEventListener("mousedown", onMouseDown);
+			//	document.body.addEventListener("mouseup", onMouseUp);
+
+			this.draw();
+
+
+		};
 
 		drawRing = function (x, y, radius, color) {
 			this.ctx.beginPath();
@@ -60,6 +265,7 @@
 			this.stroke = stroke;
 			this.isClicked = false;
 			this.isBelowMouse = false;
+			this.offset = { x: 0, y: 0 };
 
 
 			Circle.prototype.drawRing = function (context, color) {
@@ -76,24 +282,36 @@
 				context.drawImage(image, icon_x, icon_y, icon_width, icon_heigth);
 			}
 
-			Circle.prototype.draw = function (context) {
+			this.draw = function (context) {
+				//console.log("Circle.draw()");
 				context.beginPath();
 				context.fillStyle = this.fill;
+
+				//console.log("x=" + this.x + ", y=" + this.y + " r=" + this.radius);
+
 				context.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
 				context.fill();
 
+				// TODO
+				// IconByNodeType does not exist in the class Circle
 				var node_type = "case";
-
-				var image = ICON_LIST[node_type].image;
-				if (!image) {
-					console.log("=====");
-					console.log(ICON_LIST[node_type]);
-					console.log("=====");
+				/*
+				var icon_element = this.IconByNodeType[node_type];
+				if (icon_element) {
+					var image = icon_element.image;
+					if (!image) {
+						console.log("=====");
+						console.log(ICON_LIST[node_type]);
+						console.log("=====");
+					}
+					this.drawImage(context, image);
 				}
-				this.drawImage(context, image);
+				else {
+					console.log("IconByNodeType " + this.IconByNodeType + " does not exist in the class Circle");
 
-
-				console.log("isBelowMouse: " + this.isBelowMouse);
+				}
+*/
+				//console.log("isBelowMouse: " + this.isBelowMouse);
 				if (this.isClicked) {
 					//this.drawRing(context, color_ring_isActivated);
 					this.drawRing(context, "blue");
@@ -102,100 +320,34 @@
 					//this.drawRing(context, color_ring_isBelowMouse);
 					this.drawRing(context, "green");
 				}
-			};
+			}
 		}
-
-		var color_ring_isActivated = "#3b6978";
-		var color_ring_isBelowMouse = "#84a9ac";
-		var ICON_LIST = {
+		// =============================================================
+		//                          MAIN FUNCTIONS
+		// =============================================================
+		var IconByNodeType = {
 			"case": {
 				"url": icon_case_base64
 			},
 			"arrest": {
 				"url": icon_arrest_base64
 			}
-		}
-		var icon_width = 40;
-		var icon_heigth = 40;
+		};
+
 		var circle_radius = 30;
-
-
-		loadAllImages(ICON_LIST, start);
-
-		function start() {
-			// the imgs[] array now holds fully loaded images
-			var canvas = document.getElementById("canvas"),
-				context = canvas.getContext("2d"),
-				width = canvas.width = window.innerWidth,
-				height = canvas.height = window.innerHeight;
-
-
-			var c1 = new Circle(300, 300, circle_radius, "#4e79a7", "black");
-			var c2 = new Circle(400, 300, circle_radius, "#f28e2c", "black");
-			var c3 = new Circle(500, 300, circle_radius, "#e15759", "black");
-			var nodes = [c1, c2, c3];
-			var offset = {};
-			var isClicked = false;
-			var current_node;
-
-			draw();
-
-			function draw() {
-				context.clearRect(0, 0, width, height);
-				context.fillStyle = "gray";
-				for (var i = 0; i < nodes.length; i++) {
-					var node = nodes[i];
-					node.draw(context);
-				}
-			}
-			document.body.addEventListener("mousemove", onMouseMove);
-			document.body.addEventListener("mousedown", onMouseDown);
-			document.body.addEventListener("mouseup", onMouseUp);
-
-			function onMouseDown(event) {
-				for (var i = 0; i < nodes.length; i++) {
-					var node = nodes[i];
-					if (pointInCircle(event.clientX, event.clientY, node)) {
-						node.isClicked = true;
-						current_node = node;
-						offset.x = event.clientX - node.x;
-						offset.y = event.clientY - node.y;
-					}
-					else {
-						node.isClicked = false;
-					}
-				}
-				draw();
-			}
-
-			function onMouseMove(event) {
-				for (var i = 0; i < nodes.length; i++) {
-					var node = nodes[i];
-					if (pointInCircle(event.clientX, event.clientY, node)) {
-						node.isBelowMouse = true;
-					}
-					else {
-						node.isBelowMouse = false;
-					}
-
-				}
-				if (current_node) {
-					current_node.x = event.clientX - offset.x;
-					current_node.y = event.clientY - offset.y;
-				}
-				draw();
-
-			}
-
-			function onMouseUp(event) {
-				if (current_node != null) {
-					current_node.isClicked = false;
-					current_node = null;
-				}
-				draw();
-			}
-		}
-	};
+		var c1 = new Circle(300, 300, circle_radius, "#4e79a7", "black");
+		var c2 = new Circle(400, 300, circle_radius, "#f28e2c", "black");
+		var c3 = new Circle(500, 300, circle_radius, "#e15759", "black");
+		var nodes = [c1, c2, c3];
+		var linkAnalysis = new LinkAnalysis({ in_nodes: nodes });
+		///var person = { id: "p_123", name: "Eric Fox", type: "person", photo: "https://randomuser.me/api/portraits/men/22.jpg" };
+		//////////linkAnalysis.addNode(person);
+		linkAnalysis.setIconByNodeType(IconByNodeType);
+		linkAnalysis.start();
+		//@TODO  LOAD
+		//loadAllImages(ICON_LIST, start);
+		//
+	}
 </script>
 
 </html>
