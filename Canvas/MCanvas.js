@@ -45,11 +45,26 @@ function MCanvas({ container }) {
 	this.ctx = this.canvas.getContext("2d");
 	this.ratio = getCanvasPixelRatio(this.canvas);
 	container.appendChild(this.canvas);
+
+	this.margin = { top: 10, right: 10, bottom: 10, left: 10 };
+	this.width = this.canvas.width  - this.margin.left - this.margin.right;
+	this.height = this.canvas.height - this.margin.top - this.margin.bottom;
 }
 
+MCanvas.prototype.getContext = function () {
+	return this.ctx;
+};
+
+MCanvas.prototype.getHeight = function () {
+	return this.canvas.height / this.ratio;
+};
+MCanvas.prototype.getWidth = function () {
+	return this.canvas.width / this.ratio;
+};
+
 MCanvas.prototype.getCenter = function () {
-	var cx = this.canvas.width / (2 * this.ratio);
-	var cy = this.canvas.height / (2 * this.ratio);
+	var cx = this.getWidth() / 2;
+	var cy = this.getHeight() / 2;
 	return { x: cx, y: cy };
 };
 
@@ -71,13 +86,15 @@ MCanvas.prototype.drawLine = function (
 };
 
 MCanvas.prototype.drawBorder = function () {
-	context.rect(this.margin.left, this.margin.top, this.width, this.height);
-	context.fillStyle = "#F5F5F5";
-	context.shadowColor = "black";
-	context.shadowBlur = 2;
-	context.shadowOffsetX = 0;
-	context.shadowOffsetY = 0;
-	context.fill();
+	console.log("MCanvas .drawBorder");
+	this.ctx.rect(this.margin.left, this.margin.top, this.width, this.height);
+	this.ctx.fillStyle = "#F5F5F5";
+	this.ctx.shadowColor = "black";
+	this.ctx.shadowBlur = 2;
+	this.ctx.shadowOffsetX = 0;
+	this.ctx.shadowOffsetY = 0;
+	this.ctx.fill();
+	console.log("MCanvas .drawBorder - END");
 };
 
 MCanvas.prototype.drawArc = function (
@@ -128,10 +145,13 @@ MCanvas.prototype.clear = function () {
 MCanvas.prototype.drawBorder = function () {
 	this.ctx.rect(this.margin.left, this.margin.top, this.width, this.height);
 	this.ctx.fillStyle = "#F5F5F5";
-	//this.ctx.fillStyle = '#FFFFFF';
 	this.ctx.shadowColor = "black";
 	this.ctx.shadowBlur = 2;
 	this.ctx.shadowOffsetX = 0;
 	this.ctx.shadowOffsetY = 0;
 	this.ctx.fill();
+};
+
+MCanvas.prototype.addEventListener = function (type, listener) {
+	this.canvas.addEventListener(type, listener);
 };
