@@ -65,7 +65,7 @@ function Graph() {
     return null;
   }
 
-  Graph.prototype.visit = function (node, func) {
+  Graph.prototype.visit = function (node, callback) {
     if (!node) {
       console.log("no node");
     }
@@ -76,7 +76,7 @@ function Graph() {
 
     if (node) {
       console.log(" calling func with node =" + node.name);
-      func.call(node);
+      callback(node);
     }
 
 
