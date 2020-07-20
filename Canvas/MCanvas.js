@@ -47,7 +47,7 @@ function MCanvas({ container }) {
 	container.appendChild(this.canvas);
 
 	this.margin = { top: 10, right: 10, bottom: 10, left: 10 };
-	this.width = this.canvas.width  - this.margin.left - this.margin.right;
+	this.width = this.canvas.width - this.margin.left - this.margin.right;
 	this.height = this.canvas.height - this.margin.top - this.margin.bottom;
 }
 
@@ -116,6 +116,15 @@ MCanvas.prototype.drawArc = function (
 	this.ctx.stroke();
 	this.ctx.fill();
 	//   }
+};
+
+
+MCanvas.prototype.drawRing = function (x, y, radius, color) {
+	//context.beginPath();
+	this.ctx.strokeStyle = color;
+	this.ctx.arc(x, y, radius, 0, 2 * Math.PI, false);
+	this.ctx.lineWidth = 5;
+	this.ctx.stroke();
 };
 
 // draw point with text and circle around it.

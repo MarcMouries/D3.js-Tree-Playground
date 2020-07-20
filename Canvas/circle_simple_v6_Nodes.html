@@ -14,14 +14,21 @@
 
 <script>
 	window.onload = function () {
+
+		function log(msg) {
+			if (false) {
+				console.log(msg);
+			}
+		}
+
+
 		// =============================================================
 		//                          MChartModel
 		// =============================================================
-		function MChartModel({ nodes }) {
+		function MChartModel({ nodes, links }) {
 			var m = this;
 			m.nodes = nodes;
-			var links = [];
-
+			m.links = links;
 		}
 		MChartModel.prototype.addNode = function (node) {
 			nodes.push(node);
@@ -32,6 +39,35 @@
 		};
 
 		// =============================================================
+		//                          Link
+		// =============================================================
+		function Link(source, target) {
+			this.source = source;
+			this.target = target;
+			this.start_X = this.source.x;
+			this.start_Y = this.source.y;
+			this.end_X = this.target.x;
+			this.end_Y = this.target.y;
+		}
+
+
+
+		// =============================================================
+		//                          Graph
+		// =============================================================
+		function Graph() {
+			this.nodes = [];
+			this.edges = [];
+
+		}
+		Graph.prototype.addNode = function (node) {
+			this.nodes.push(node);
+			//this.update();
+		};
+		Graph.prototype.getNodes = function (node) {
+			return this.nodes;
+		};
+		// =============================================================
 		//                          MChartView
 		// =============================================================
 		function MChartView({ mcanvas }) {
@@ -41,6 +77,7 @@
 			console.log(this.mcanvas);
 			console.log("getWidth = " + this.getWidth());
 			console.log("getHeight = " + this.getHeight());
+			this.node_radius = 33;
 		}
 		MChartView.prototype.getContext = function () {
 			return this.ctx;
@@ -49,7 +86,7 @@
 			return this.mcanvas.getHeight();
 		};
 		MChartView.prototype.getWidth = function () {
-			return this.mcanvas.getWidth() ;
+			return this.mcanvas.getWidth();
 		};
 		MChartView.prototype.addEventListener = function (type, listener) {
 			this.mcanvas.addEventListener(type, listener);
@@ -58,9 +95,41 @@
 			this.ctx.clearRect(0, 0, this.getWidth(), this.getHeight());
 		};
 		MChartView.prototype.drawBorder = function () {
-			console.log("MChartView .drawBorder");
+			log("MChartView .drawBorder");
 			this.mcanvas.drawBorder();
 		}
+
+		MChartView.prototype.renderLink = function (link) {
+			console.log("renderLink ");
+			console.log(link);
+
+			var strokeStyle = "black";
+			var lineWidth = "2";
+			this.mcanvas.drawLine(link.startX, 	link.startY, link.endX, link.endY, strokeStyle, lineWidth);
+
+		}
+
+		MChartView.prototype.renderNode = function (node) {
+			log("MChartView .renderNode: " + node.name);
+
+			if (node.type == "person") {
+				//console.log("it's  a person");
+			}
+			else if (node.type == "case") {
+				//console.log("it's  a person");
+			}
+			this.mcanvas.drawPoint(node.x, node.y, this.node_radius, node.name);
+
+			if (node.isClicked) {
+				//this.drawRing(context, color_ring_isActivated);
+				this.mcanvas.drawRing(node.x, node.y, this.node_radius + 5, "blue");
+			}
+			else if (node.isBelowMouse) {
+				//this.drawRing(context, color_ring_isBelowMouse);
+				this.mcanvas.drawRing(node.x, node.y, this.node_radius + 5, "green");
+			}
+		}
+
 
 
 		// =============================================================
@@ -75,12 +144,15 @@
 			console.log("height = " + this.height);
 			console.log("this.nodes = ");
 			console.log(this.nodes);
-//			var center = mcanvas.getCenter();
+			//			var center = mcanvas.getCenter();
 
 		}
 		MChartLayoutManager.prototype.layout = function () {
 			//console.log("MChartLayoutManager : layout");
 
+			if (this.nodes.length == 0) {
+				return;
+			}
 			// Center the root
 			var root = this.nodes[0];
 			root.x = this.width / 2;
@@ -104,6 +176,8 @@
 			controller = this;
 			this.nodes = model.nodes;
 			this.current_node = null;
+			this.links = model.links;
+
 
 			console.log(" MChartController() => this.nodes");
 			console.log(this.nodes);
@@ -117,21 +191,19 @@
 		}
 
 		MChartController.prototype.addEventListeners = function () {
-
-			console.log("addEventListeners");
-
+			log("addEventListeners");
 			this.view.addEventListener("mousemove", this._handleMouseMove, false);
 			this.view.addEventListener("mousedown", this._handleMouseDown, false);
 			this.view.addEventListener("mouseup", this._handleMouseUp, false);
 		};
 
 		MChartController.prototype._handleMouseMove = function (event) {
-
-			console.log(" _handleMouseMove() => controller.nodes");
-			console.log(controller.nodes);
+			log(" _handle Mouse Move() => controller.nodes");
+			log(controller.nodes);
 			for (var i = 0; i < controller.nodes.length; i++) {
 				var node = controller.nodes[i];
 				if (pointInCircle(event.clientX, event.clientY, node)) {
+					console.log("node " + node.name + " isBelowMouse");
 					node.isBelowMouse = true;
 				}
 				else {
@@ -145,15 +217,18 @@
 			controller.render();
 		}
 
+
+
+
 		MChartController.prototype._handleMouseDown = function (event) {
+			console.log(" _handle Mouse Down()");
 			for (var i = 0; i < controller.nodes.length; i++) {
 				var node = controller.nodes[i];
 
-
 				if (pointInCircle(event.clientX, event.clientY, node)) {
+					console.log("node " + node.name + " isClicked");
 					node.isClicked = true;
 					this.current_node = node;
-					console.log("going to set the offset");
 					node.offset.x = event.clientX - node.x;
 					node.offset.y = event.clientY - node.y;
 				}
@@ -173,12 +248,23 @@
 		}
 
 		MChartController.prototype.render = function () {
-			console.log("MChartController .render");
+			log("MChartController .render");
 			this.view.clear();
 			this.view.drawBorder();
+
+			log("controller.nodes.length");
+			log(controller.nodes);
+
 			for (var i = 0; i < controller.nodes.length; i++) {
 				var node = controller.nodes[i];
-				node.draw(this.context);
+				this.view.renderNode(node);
+				//node.draw(this.context);
+			}
+			log("controller.links.length = " + controller.links.length);
+
+			for (var i = 0; i < controller.links.length; i++) {
+				var link = controller.links[i];
+				this.view.renderLink(link);
 			}
 		}
 
@@ -199,17 +285,147 @@
 			var color_ring_isActivated = "#3b6978";
 			var color_ring_isBelowMouse = "#84a9ac";
 
+
+			//this.graph = new Graph(); //model
+			var thisGraph = this;
+			thisGraph.idct = 0;
+			thisGraph.nodesLevel = [];
+			thisGraph.nodes = [];
+			thisGraph.links = [];
+
+			this.width = 500;
+			this.height = 500;
+			this.node_radius = 30;
+
+
 			// the imgs[] array now holds fully loaded images
 			this.mcanvas = new MCanvas({ container: chart_container });
-
-			//this.canvas = document.getElementById("canvas");
-			//this.context = this.canvas.getContext("2d");
-
-
+			this.view = new MChartView({ mcanvas: this.mcanvas });
+			this.model = new MChartModel({ nodes: thisGraph.nodes, links: thisGraph.links });
+			this.controller = new MChartController({
+				model: this.model,
+				view: this.view
+			});
 
 			this.render = function () {
 				console.log("LinkAnalysis.render");
 				this.controller.render();
+			}
+			this.init_node = function (node) {
+				console.log("LinkAnalysis.init_node");
+				node.radius = this.node_radius;
+				node.offset = { x: 0, y: 0 };
+
+			}
+		}
+
+		LinkAnalysis.prototype.updateGraph = function () {
+			this.render();
+		}
+
+
+		LinkAnalysis.prototype.setRootNode = function (node) {
+			console.log("TODO: canvas size");
+			var thisGraph = this;
+			var center_x = this.width / 2;
+			var center_y = this.height / 2;
+			node.x = center_x;
+			node.y = center_y;
+			node.id = 0;
+			node.level = 0;
+
+			this.init_node(node);
+
+			thisGraph.nodes.push(node);
+			thisGraph.nodesLevel[0] = [node];
+			//thisGraph.updateGraph();
+		}
+
+
+		LinkAnalysis.prototype.addNode = function (newNode, parentNode) {
+			var thisGraph = this;
+			console.log("LinkAnalysis addNode: " + newNode.name);
+			var numNodes = thisGraph.nodes.length;
+
+			this.init_node(newNode);
+
+			newNode.x = 0;
+			newNode.y = 0;
+			newNode.id = numNodes;
+			newNode.parent = parentNode;
+			newNode.level = this.getNodeLevel(newNode);
+			console.log("  - nodeLevel " + newNode.level);
+
+			var nodesAtThisLvel = thisGraph.nodesLevel[newNode.level];
+			if (nodesAtThisLvel == null) {
+				thisGraph.nodesLevel[newNode.level] = [newNode];
+			}
+			else {
+				thisGraph.nodesLevel[newNode.level].push(newNode);
+			}
+
+			console.log("  - nodesAtThisLevel " + thisGraph.nodesLevel[newNode.level].length);
+
+			if (parentNode.children == null) parentNode.children = [];
+			parentNode.children.push(newNode);
+
+			var link = new Link (newNode, parentNode );
+			thisGraph.links.push(link);
+			thisGraph.nodes.push(newNode);
+
+			var root_node = thisGraph.nodesLevel[0][0];
+			this.setYX(root_node);
+			thisGraph.updateGraph();
+		}
+		LinkAnalysis.prototype.getNodeLevel = function (node) {
+			var level = 0;
+			var parent = node.parent;
+			while (parent) {
+				level++;
+				parent = parent.parent;
+			}
+			return level;
+		}
+
+		LinkAnalysis.prototype.setYX = function (node) {
+			var thisGraph = this;
+
+			console.log("  setYX " + node.name);
+			if (node.children == null) return;
+
+			console.log(node);
+			var num_children = node.children.length;
+			console.log("  children: " + num_children);
+
+			var width = 100;
+			var parentX = node.x;
+			var parentY = node.y;
+
+			for (var i = 0; i < num_children; i++) {
+
+				var child_node = node.children[i];
+				var radius = 200 / (node.level + 1);
+
+				var angle = (i / (num_children / 2)) * (Math.PI) // Calculate the angle at which the element will be placed.
+				// For a semicircle, we would use (i / numNodes) * Math.PI.
+				var x = (radius * Math.cos(angle)); // Calculate the x position of the element.
+				var y = -(radius * Math.sin(angle)); // Calculate the y position of the element.
+
+				// ih which quadrant is the point located?
+
+				child_node.x = x + parentX;
+				child_node.y = y + parentY;
+
+
+				console.log("  node " + child_node.name
+					+ " Level=" + node.level
+					+ " x=" + x
+					+ " y=" + y
+					+ " radius=" + radius
+					+ " parent (x=" + parentX + ", y=" + parentY + ")"
+					+ " angle=" + angle);
+				this.setYX(child_node);
+
 			}
 		}
 
@@ -218,10 +434,8 @@
 		}
 
 
-		LinkAnalysis.prototype.draw = function (data, options) {
-
-			console.log("in start");
-			this.view = new MChartView({ mcanvas: this.mcanvas });
+		LinkAnalysis.prototype.draw____ = function (data, options) {
+			console.log("LinkAnalysis draw");
 			this.model = new MChartModel({ nodes: data });
 			this.controller = new MChartController({
 				model: this.model,
@@ -229,29 +443,6 @@
 			});
 			this.render();
 		};
-
-		drawRing = function (x, y, radius, color) {
-			this.ctx.beginPath();
-			this.ctx.strokeStyle = color;
-			this.ctx.arc(x, y, radius, 0, 2 * Math.PI, false);
-			this.ctx.lineWidth = 5;
-			this.ctx.stroke();
-		};
-
-
-		function Link(source, target) {
-			this.source = source;
-			this.target = target;
-		}
-		Link.prototype.draw = function (context, color) {
-			var start_X = this.source.x;
-			var start_Y = this.source.y;
-			var end_X = this.target.x;
-			var end_Y = this.target.y;
-
-			// DRAW
-		}
-
 
 		function Circle(x, y, radius, fill, stroke) {
 			this.startingAngle = 0;
@@ -340,13 +531,23 @@
 
 		var chart_container = document.getElementById("chart_container");
 		var linkAnalysis = new LinkAnalysis(chart_container);
-		///var person = { id: "p_123", name: "Eric Fox", type: "person", photo: "https://randomuser.me/api/portraits/men/22.jpg" };
-		//////////linkAnalysis.addNode(person);
+		var main_person = { id: "p_123", name: "Eric Fox", type: "person", photo: "https://randomuser.me/api/portraits/men/22.jpg" };
+		linkAnalysis.setRootNode(main_person);
+		var vehicle = { name: "vehicle", "type": "vehicle" };
+		var node_family = { name: "family" };
+		linkAnalysis.addNode(node_family, main_person);
+		linkAnalysis.addNode(vehicle, main_person);   // add a note and add an edge 
+		var node_known_addresses = { name: "Known Addresses", "type": "location" };
+		linkAnalysis.addNode(node_known_addresses, main_person);
+		var node_arrest = { name: "AR-784723", type: "arrest" };
+		linkAnalysis.addNode(node_arrest, main_person);
 		linkAnalysis.setIconByNodeType(IconByNodeType);
 
-		var data = [c1, c2, c3];
+		var graph_data = [
+			c1, c2, c3];
 		var options = {};
-		linkAnalysis.draw(data, options);
+		//	linkAnalysis.draw(graph_data, options);
+		console.log(linkAnalysis);
 
 		//@TODO  LOAD
 		//loadAllImages(ICON_LIST, start);

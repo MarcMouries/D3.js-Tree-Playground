@@ -54,15 +54,15 @@
     LinkAnalysis.addNode(fugitive_case, root_node);
 
         var node_family = {name: "family"};
-        var nodes_family = [ node_Joe, node_Jim, node_Jane  ];
-        var node_Joe = {"name":"FOX, Lisa","relationship":"Wife","age":"42","degree_of_relationship":"0","photo":"https://dojopsdemo.service-now.com/3e81dbe01bf01090f76f20252a4bcb46.iix"};
-        var node_Jim = {"name":"FOX, Edward","relationship":"Son","age":"18","degree_of_relationship":"1","photo":"https://dojopsdemo.service-now.com/2e6fc659db7418103405ce1c29961945.iix"};
-        var node_Jane ={"name":"FOX, Cindy","relationship":"Daughter","age":"16","degree_of_relationship":"1","photo":"https://dojopsdemo.service-now.com/8bc1d3241bf01090f76f20252a4bcbf8.iix"};
+        var nodes_family = [ node_Lisa, node_Edward, node_Cindy  ];
+        var node_Lisa = {"name":"FOX, Lisa","relationship":"Wife","age":"42","degree_of_relationship":"0","photo":"https://dojopsdemo.service-now.com/3e81dbe01bf01090f76f20252a4bcb46.iix"};
+        var node_Edward = {"name":"FOX, Edward","relationship":"Son","age":"18","degree_of_relationship":"1","photo":"https://dojopsdemo.service-now.com/2e6fc659db7418103405ce1c29961945.iix"};
+        var node_Cindy ={"name":"FOX, Cindy","relationship":"Daughter","age":"16","degree_of_relationship":"1","photo":"https://dojopsdemo.service-now.com/8bc1d3241bf01090f76f20252a4bcbf8.iix"};
        // {"name":"PARK, Carlos","relationship":"Cousin","age":"38","degree_of_relationship":"3","photo":"https://dojopsdemo.service-now.com/c09393281bf01090f76f20252a4bcb1a.iix"}]
        LinkAnalysis.addNode(node_family, root_node);
-        LinkAnalysis.addNode(node_Joe, node_family);
-        LinkAnalysis.addNode(node_Jim, node_family);
-        LinkAnalysis.addNode(node_Jane, node_family);
+        LinkAnalysis.addNode(node_Lisa, node_family);
+        LinkAnalysis.addNode(node_Edward, node_family);
+        LinkAnalysis.addNode(node_Cindy, node_family);
         
         
         var node_known_addresses = {name: "Known Addresses",    "type": "location"  };
