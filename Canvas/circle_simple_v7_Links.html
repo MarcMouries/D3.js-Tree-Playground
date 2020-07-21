@@ -44,10 +44,10 @@
 		function Link(source, target) {
 			this.source = source;
 			this.target = target;
-			this.start_X = this.source.x;
-			this.start_Y = this.source.y;
-			this.end_X = this.target.x;
-			this.end_Y = this.target.y;
+		//	this.start_X = this.source.x;
+		//	this.start_Y = this.source.y;
+		//	this.end_X = this.target.x;
+		//	this.end_Y = this.target.y;
 		}
 
 
@@ -77,7 +77,8 @@
 			console.log(this.mcanvas);
 			console.log("getWidth = " + this.getWidth());
 			console.log("getHeight = " + this.getHeight());
-			this.node_radius = 33;
+			this.node_radius = 22;
+			this.background_color = "#F5F5F5";
 		}
 		MChartView.prototype.getContext = function () {
 			return this.ctx;
@@ -96,7 +97,7 @@
 		};
 		MChartView.prototype.drawBorder = function () {
 			log("MChartView .drawBorder");
-			this.mcanvas.drawBorder();
+			this.mcanvas.drawBorder(this.background_color);
 		}
 
 		MChartView.prototype.renderLink = function (link) {
@@ -104,8 +105,8 @@
 			console.log(link);
 
 			var strokeStyle = "black";
-			var lineWidth = "2";
-			this.mcanvas.drawLine(link.startX, 	link.startY, link.endX, link.endY, strokeStyle, lineWidth);
+			var lineWidth = "1";
+			this.mcanvas.drawLine(link.source.x, 	link.source.y, link.target.x, link.target.y, strokeStyle, lineWidth);
 
 		}
 
@@ -119,6 +120,8 @@
 				//console.log("it's  a person");
 			}
 			this.mcanvas.drawPoint(node.x, node.y, this.node_radius, node.name);
+			this.mcanvas.drawTextBG(node.name, node.x, node.y, "14px arial", 0, this.background_color);
+
 
 			if (node.isClicked) {
 				//this.drawRing(context, color_ring_isActivated);
@@ -252,19 +255,19 @@
 			this.view.clear();
 			this.view.drawBorder();
 
+
+			log("controller.links.length = " + controller.links.length);
+			for (var i = 0; i < controller.links.length; i++) {
+				var link = controller.links[i];
+				this.view.renderLink(link);
+			}
+
 			log("controller.nodes.length");
 			log(controller.nodes);
-
 			for (var i = 0; i < controller.nodes.length; i++) {
 				var node = controller.nodes[i];
 				this.view.renderNode(node);
 				//node.draw(this.context);
-			}
-			log("controller.links.length = " + controller.links.length);
-
-			for (var i = 0; i < controller.links.length; i++) {
-				var link = controller.links[i];
-				this.view.renderLink(link);
 			}
 		}
 
@@ -293,8 +296,12 @@
 			thisGraph.nodes = [];
 			thisGraph.links = [];
 
-			this.width = 500;
-			this.height = 500;
+
+
+			this.width = 1200;
+			this.height = 900;
+			this.canvas = createHiDPICanvas(this.width , this.height);
+
 			this.node_radius = 30;
 
 
@@ -457,14 +464,6 @@
 			this.offset = { x: 0, y: 0 };
 
 
-			Circle.prototype.drawRing = function (context, color) {
-				context.beginPath();
-				context.strokeStyle = color;
-				context.arc(this.x, this.y, this.radius + 5, 0, 2 * Math.PI, false);
-				context.lineWidth = 5;
-				context.stroke();
-			};
-
 			Circle.prototype.drawImage = function (context, image) {
 				var icon_x = this.x - icon_width / 2; // to fit into circle
 				var icon_y = this.y - icon_heigth / 2; // to fit into circle
@@ -523,28 +522,52 @@
 			}
 		};
 
-		var circle_radius = 30;
-		var c1 = new Circle(300, 300, circle_radius, "#4e79a7", "black");
-		var c2 = new Circle(400, 300, circle_radius, "#f28e2c", "black");
-		var c3 = new Circle(500, 300, circle_radius, "#e15759", "black");
-
 
 		var chart_container = document.getElementById("chart_container");
 		var linkAnalysis = new LinkAnalysis(chart_container);
 		var main_person = { id: "p_123", name: "Eric Fox", type: "person", photo: "https://randomuser.me/api/portraits/men/22.jpg" };
 		linkAnalysis.setRootNode(main_person);
+
+
+
+
 		var vehicle = { name: "vehicle", "type": "vehicle" };
-		var node_family = { name: "family" };
-		linkAnalysis.addNode(node_family, main_person);
 		linkAnalysis.addNode(vehicle, main_person);   // add a note and add an edge 
-		var node_known_addresses = { name: "Known Addresses", "type": "location" };
-		linkAnalysis.addNode(node_known_addresses, main_person);
+
+
+
+		var fugitive_case = {   name: "FCS0001089",    "type": "case"  };
+		linkAnalysis.addNode(fugitive_case, main_person);
+
 		var node_arrest = { name: "AR-784723", type: "arrest" };
 		linkAnalysis.addNode(node_arrest, main_person);
-		linkAnalysis.setIconByNodeType(IconByNodeType);
 
-		var graph_data = [
-			c1, c2, c3];
+		var node_family = { name: "family" };
+		linkAnalysis.addNode(node_family, main_person);
+
+		var node_Lisa = {"name":"FOX, Lisa","relationship":"Wife","age":"42","degree_of_relationship":"0","photo":"https://dojopsdemo.service-now.com/3e81dbe01bf01090f76f20252a4bcb46.iix"};
+        var node_Edward = {"name":"FOX, Edward","relationship":"Son","age":"18","degree_of_relationship":"1","photo":"https://dojopsdemo.service-now.com/2e6fc659db7418103405ce1c29961945.iix"};
+        var node_Cindy ={"name":"FOX, Cindy","relationship":"Daughter","age":"16","degree_of_relationship":"1","photo":"https://dojopsdemo.service-now.com/8bc1d3241bf01090f76f20252a4bcbf8.iix"};
+        var nodes_family = [ node_Lisa, node_Edward, node_Cindy  ];
+       // {"name":"PARK, Carlos","relationship":"Cousin","age":"38","degree_of_relationship":"3","photo":"https://dojopsdemo.service-now.com/c09393281bf01090f76f20252a4bcb1a.iix"}]
+	   linkAnalysis.addNode(node_Lisa, node_family);
+	   linkAnalysis.addNode(node_Edward, node_family);
+	   linkAnalysis.addNode(node_Cindy, node_family);
+
+
+	   var node_known_addresses = { name: "Known Addresses", "type": "location" };
+		linkAnalysis.addNode(node_known_addresses, main_person);
+        var node_place_A = { name: "808 W. Spokane Blvd., Spokane WA"   , "type": "address"};
+        var node_place_B = { name: "188 Hunters Dr, Los Angeles CA"     , "type": "address"};
+        var node_place_C = { name: "3256 East Market St, Los Angeles CA", "type": "address"};
+        linkAnalysis.addNode(node_place_A, node_known_addresses);
+        linkAnalysis.addNode(node_place_B, node_known_addresses);
+        linkAnalysis.addNode(node_place_C, node_known_addresses);
+
+
+
+
+		linkAnalysis.setIconByNodeType(IconByNodeType);
 		var options = {};
 		//	linkAnalysis.draw(graph_data, options);
 		console.log(linkAnalysis);
