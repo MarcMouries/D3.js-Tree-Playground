@@ -41,7 +41,7 @@ function createHiDPICanvas(w, h) {
 }
 
 function MCanvas({ container }) {
-	this.canvas = createHiDPICanvas(500, 500);
+	this.canvas = createHiDPICanvas(1200, 900);
 	this.ctx = this.canvas.getContext("2d");
 	this.ratio = getCanvasPixelRatio(this.canvas);
 	container.appendChild(this.canvas);
@@ -85,14 +85,36 @@ MCanvas.prototype.drawLine = function (
 	this.ctx.closePath();
 };
 
-MCanvas.prototype.drawBorder = function () {
+MCanvas.prototype.drawTextBG = function (txt, x, y, font, padding, background_color) {
+
+	this.ctx.font = font;
+	this.ctx.textBaseline = "top";
+	this.ctx.fillStyle = background_color;
+	this.ctx.opacity = 0.2;
+
+	var width = this.ctx.measureText(txt).width;
+	var text_height = 25;
+
+	this.ctx.fillRect(x - width /2, y + text_height, width + padding, parseInt(font, 10) + padding);
+
+	//this.ctx.lineWidth = 1;
+	//this.ctx.strokeStyle = "#009ddf";
+	//this.ctx.strokeRect(x - width /2, y + text_height, width + padding, parseInt(font, 10) + padding);
+
+	this.ctx.fillStyle = "#000";
+	//this.ctx.fillText(txt, x - width /2, y + padding / 2);
+	this.ctx.fillText(txt, x - width /2, y + text_height);
+  }
+
+
+MCanvas.prototype.drawBorder = function (background_color) {
 	console.log("MCanvas .drawBorder");
 	this.ctx.rect(this.margin.left, this.margin.top, this.width, this.height);
 	this.ctx.fillStyle = "#F5F5F5";
-	this.ctx.shadowColor = "black";
-	this.ctx.shadowBlur = 2;
-	this.ctx.shadowOffsetX = 0;
-	this.ctx.shadowOffsetY = 0;
+	//this.ctx.shadowColor = "black";
+	//this.ctx.shadowBlur = 2;
+	//this.ctx.shadowOffsetX = 0;
+	//this.ctx.shadowOffsetY = 0;
 	this.ctx.fill();
 	console.log("MCanvas .drawBorder - END");
 };
@@ -120,10 +142,10 @@ MCanvas.prototype.drawArc = function (
 
 
 MCanvas.prototype.drawRing = function (x, y, radius, color) {
-	//context.beginPath();
-	this.ctx.strokeStyle = color;
+	this.ctx.beginPath();
 	this.ctx.arc(x, y, radius, 0, 2 * Math.PI, false);
-	this.ctx.lineWidth = 5;
+	//this.ctx.lineWidth = 3;
+	this.ctx.strokeStyle = color;
 	this.ctx.stroke();
 };
 
@@ -140,26 +162,18 @@ MCanvas.prototype.drawPoint = function (x, y, radius, text) {
 	this.ctx.fillStyle = "darkgrey";
 	this.ctx.fill();
 	// text
-	this.ctx.font = "14px sans-serif";
-	this.ctx.textAlign = "center";
+	this.ctx.font = "12px sans-serif";
+	//this.ctx.textAlign = "center";
 	this.ctx.textBaseline = "middle";
 	this.ctx.fillStyle = "#384047"; // darkish
-	this.ctx.fillText(text, x, y);
+	//this.ctx.fillText(text, x , y + radius + 20) ;
 };
 
 MCanvas.prototype.clear = function () {
 	this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 };
 
-MCanvas.prototype.drawBorder = function () {
-	this.ctx.rect(this.margin.left, this.margin.top, this.width, this.height);
-	this.ctx.fillStyle = "#F5F5F5";
-	this.ctx.shadowColor = "black";
-	this.ctx.shadowBlur = 2;
-	this.ctx.shadowOffsetX = 0;
-	this.ctx.shadowOffsetY = 0;
-	this.ctx.fill();
-};
+
 
 MCanvas.prototype.addEventListener = function (type, listener) {
 	this.canvas.addEventListener(type, listener);
