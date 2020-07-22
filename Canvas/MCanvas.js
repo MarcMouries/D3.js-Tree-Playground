@@ -108,7 +108,6 @@ MCanvas.prototype.drawTextBG = function (txt, x, y, font, padding, background_co
 
 
 MCanvas.prototype.drawBorder = function (background_color) {
-	console.log("MCanvas .drawBorder");
 	this.ctx.rect(this.margin.left, this.margin.top, this.width, this.height);
 	this.ctx.fillStyle = "#F5F5F5";
 	//this.ctx.shadowColor = "black";
@@ -116,7 +115,6 @@ MCanvas.prototype.drawBorder = function (background_color) {
 	//this.ctx.shadowOffsetX = 0;
 	//this.ctx.shadowOffsetY = 0;
 	this.ctx.fill();
-	console.log("MCanvas .drawBorder - END");
 };
 
 MCanvas.prototype.drawArc = function (
