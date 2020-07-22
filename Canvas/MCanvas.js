@@ -40,6 +40,32 @@ function createHiDPICanvas(w, h) {
 	return canvas;
 }
 
+/*
+ *  Calculate the Height of text with the specified font
+ *
+
+ *
+ *   [font style] [font weight] [font size] [font face]
+ *
+ *   Example: f
+*/
+function getLineHeight(txt, font) {
+	var el = document.createElement("div");
+
+	el.style.cssText =
+		"position:fixed;padding:0;left:-9999px;top:-9999px;" +
+		"font: " +
+		font +
+		";";
+	//console.log("cssText= " + el.style.cssText);
+	el.textContent = txt;
+	document.body.appendChild(el);
+	var height = parseInt(getComputedStyle(el).getPropertyValue("height"), 10);
+	document.body.removeChild(el);
+
+	return height;
+}
+
 function MCanvas({ container }) {
 	this.canvas = createHiDPICanvas(1200, 900);
 	this.ctx = this.canvas.getContext("2d");
@@ -85,8 +111,14 @@ MCanvas.prototype.drawLine = function (
 	this.ctx.closePath();
 };
 
-MCanvas.prototype.drawTextBG = function (txt, x, y, font, padding, background_color) {
-
+MCanvas.prototype.drawTextBG = function (
+	txt,
+	x,
+	y,
+	font,
+	padding,
+	background_color
+) {
 	this.ctx.font = font;
 	this.ctx.textBaseline = "top";
 	this.ctx.fillStyle = background_color;
@@ -95,7 +127,12 @@ MCanvas.prototype.drawTextBG = function (txt, x, y, font, padding, background_co
 	var width = this.ctx.measureText(txt).width;
 	var text_height = 25;
 
-	this.ctx.fillRect(x - width /2, y + text_height, width + padding, parseInt(font, 10) + padding);
+	this.ctx.fillRect(
+		x - width / 2,
+		y + text_height,
+		width + padding,
+		parseInt(font, 10) + padding
+	);
 
 	//this.ctx.lineWidth = 1;
 	//this.ctx.strokeStyle = "#009ddf";
@@ -103,9 +140,8 @@ MCanvas.prototype.drawTextBG = function (txt, x, y, font, padding, background_co
 
 	this.ctx.fillStyle = "#000";
 	//this.ctx.fillText(txt, x - width /2, y + padding / 2);
-	this.ctx.fillText(txt, x - width /2, y + text_height);
-  }
-
+	this.ctx.fillText(txt, x - width / 2, y + text_height);
+};
 
 MCanvas.prototype.drawBorder = function (background_color) {
 	this.ctx.rect(this.margin.left, this.margin.top, this.width, this.height);
@@ -138,7 +174,6 @@ MCanvas.prototype.drawArc = function (
 	//   }
 };
 
-
 MCanvas.prototype.drawRing = function (x, y, radius, color) {
 	this.ctx.beginPath();
 	this.ctx.arc(x, y, radius, 0, 2 * Math.PI, false);
@@ -166,12 +201,42 @@ MCanvas.prototype.drawPoint = function (x, y, radius, text) {
 	this.ctx.fillStyle = "#384047"; // darkish
 	//this.ctx.fillText(text, x , y + radius + 20) ;
 };
+MCanvas.prototype.drawText = function (x, y, text, font, text_color, maxWidth, optionalSeparator	) {
+	var word_separator = " ";
+	if (optionalSeparator) {
+		word_separator = optionalSeparator;
+	}
+
+	this.ctx.font = font;
+	this.ctx.textAlign = "center";
+	this.ctx.textBaseline = "top";
+	this.ctx.fillStyle = text_color;
+
+	//      var alphabet = "M"; //"ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz";
+	var lineHeight = getLineHeight(text, font);
+	console.log("lineHeight= " + lineHeight);
+
+	var words = text.split(word_separator);
+	var line = "";
+
+	for (var i = 0; i < words.length; i++) {
+		var testLine = line + words[i] + " ";
+		var metrics = this.ctx.measureText(testLine);
+		var testWidth = metrics.width;
+		if (testWidth > maxWidth && i > 0) {
+			this.ctx.fillText(line, x, y);
+			line = words[i] + " ";
+			y += lineHeight;
+		} else {
+			line = testLine;
+		}
+	}
+	this.ctx.fillText(line, x, y);
+}
 
 MCanvas.prototype.clear = function () {
 	this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 };
-
-
 
 MCanvas.prototype.addEventListener = function (type, listener) {
 	this.canvas.addEventListener(type, listener);
