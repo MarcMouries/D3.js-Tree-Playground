@@ -139,11 +139,11 @@
 
 			//
 			if (node.isClicked) {
-				this.mcanvas.drawRing(node.x, node.y, this.node_radius + 5, this.color_ring_isActivated);
+				this.mcanvas.drawRing(node.x, node.y, this.node_radius + 2, this.color_ring_isActivated);
 				//this.mcanvas.drawRing(node.x, node.y, this.node_radius + 5, "blue");
 			}
 			else if (node.isBelowMouse) {
-				this.mcanvas.drawRing(node.x, node.y, this.node_radius + 5, this.color_ring_isBelowMouse);
+				this.mcanvas.drawRing(node.x, node.y, this.node_radius + 2, this.color_ring_isBelowMouse);
 
 				//this.mcanvas.drawRing(node.x, node.y, this.node_radius + 5, "green");
 			}
@@ -242,7 +242,7 @@
 
 				if (controller.current_node) {
 					console.log("controller.current_node " + controller.current_node.name + " isClicked");
-				    //callback(node)
+					//callback(node)
 				}
 
 			}
@@ -274,8 +274,12 @@
 
 			function handleMouseUp(event) {
 				if (controller.current_node != null) {
-					controller.current_node.isClicked = false;
+					controller.current_node.isClicked = true;
 					controller.current_node = null;
+				}
+				else {
+					controller.current_node.isClicked = false;
+
 				}
 				controller.render();
 			}
@@ -434,33 +438,38 @@
 
 			}
 		}
-		LinkAnalysis.prototype.setNodeClickHandler = function (nodeClickHandler) {
-			this.nodeClickHandler = nodeClickHandler;
-			//var node = {name : "test"};
-			//eventHandler(node);
+
+		LinkAnalysis.prototype = {
+
+
+			setRootNode: function (node) {
+				console.log("TODO: canvas size");
+				var thisGraph = this;
+				var center_x = this.width / 2;
+				var center_y = this.height / 2;
+				node.x = center_x;
+				node.y = center_y;
+				node.id = 0;
+				node.level = 0;
+
+				this.init_node(node);
+
+				thisGraph.nodes.push(node);
+				thisGraph.nodesLevel[0] = [node];
+				//thisGraph.updateGraph();
+			},
+
+			setNodeClickHandler: function (nodeClickHandler) {
+				this.nodeClickHandler = nodeClickHandler;
+				//var node = {name : "test"};
+				//eventHandler(node);
+			}
 		}
+
 
 
 		LinkAnalysis.prototype.updateGraph = function () {
 			this.render();
-		}
-
-
-		LinkAnalysis.prototype.setRootNode = function (node) {
-			console.log("TODO: canvas size");
-			var thisGraph = this;
-			var center_x = this.width / 2;
-			var center_y = this.height / 2;
-			node.x = center_x;
-			node.y = center_y;
-			node.id = 0;
-			node.level = 0;
-
-			this.init_node(node);
-
-			thisGraph.nodes.push(node);
-			thisGraph.nodesLevel[0] = [node];
-			//thisGraph.updateGraph();
 		}
 
 
