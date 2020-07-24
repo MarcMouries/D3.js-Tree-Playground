@@ -10,9 +10,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
 
-  <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-
-
   <style type="text/css">
     #container {
       position: relative;
@@ -203,7 +200,7 @@
 
       // initialize our canvas, add a ghost canvas, set draw loop
       // then add everything we want to intially exist on the canvas
-      function init2() {
+      function init() {
         canvas = document.getElementById('canvas');
         HEIGHT = canvas.height;
         WIDTH = canvas.width;
@@ -498,17 +495,15 @@
       // If you dont want to use <body onLoad='init()'>
       // You could uncomment this init() reference and place the script reference inside the body tag
       //init();
-      window.init2 = init2;
+      window.init = init;
     })(window);
-
-    // Andy added, as a replacement for 
-    // <body onLoad="init2()">
-    $(document).ready(function () {
-      // Your code here
-      init2();
-    });
-
-  //]]></script>
+  </script>
+<script type="text/javascript" language="javascript">
+  window.onload = function()
+  {
+      init();
+  };
+</script>
 </body>
 
 </html>
