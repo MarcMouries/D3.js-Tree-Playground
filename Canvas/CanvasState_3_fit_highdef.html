@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <script type="text/javascript" src="MCanvas.js"></script>
+    <script type="text/javascript" src="trigo.js"></script>
+
+    <title>Canvas Prototypes</title>
+</head>
+
+<style type="text/css">
+	:root {
+		--radius: 3px;
+		--small: 0.5em;
+		--medium: 1em;
+		--large: 1.5em;
+		--shadow: 0 1px 2px rgba(16, 10, 9, 0.15);
+		--gray-400: #d3d0c9;
+	}
+
+	#chart_container {
+	}
+
+	#chart_container_OLD {
+		position: fixed;
+		width: 1200px;
+		height: 1000px;
+		top: 0;
+		left: 0;
+		right: 23em;
+		bottom: 0;
+	}
+
+	body {
+		margin: 0;
+	}
+
+	.wrapper {
+		min-height: 100vh;
+		background: #ccc;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.header,
+	.footer {
+		height: 50px;
+		background: #666;
+		color: #fff;
+	}
+
+	.content {
+		display: flex;
+		flex: 1;
+		background: #999;
+		color: #000;
+	}
+
+	.columns {
+		display: flex;
+		flex: 1;
+	}
+
+
+
+	.main {
+		flex: 1;
+		order: 2;
+		background: #eee;
+	}
+
+	.sidebar-first {
+		width: 20%;
+		background: #ccc;
+		order: 1;
+	}
+
+	.sidebar-second {
+		width: 20%;
+		order: 3;
+		background: #ddd;
+	}
+
+	.box {
+		display: block;
+		background: #fff;
+		border-radius: var(--radius);
+		box-shadow: var(--shadow);
+		padding: var(--medium);
+		transition: box-shadow var(--transition);
+		font: 100%/1.5 Helvtica Neue, Helvetica, sans-serif;
+		margin: 5px;
+	}
+
+	table {
+		width: 100%;
+		text-align: left;
+		border-collapse: collapse;
+		background: #fff;
+		color: var(--gray-800);
+	}
+
+	table input[type=text] {
+		padding: 0 var(--small);
+	}
+
+	tr {
+		border-bottom: thin solid var(--gray-400);
+	}
+
+	tr:focus-within {
+		background: highlight
+	}
+
+	th h3 {
+		padding: 0 var(--small);
+	}
+
+	h3 {
+		font-weight: 500;
+		line-height: 1;
+		font-size: 1em;
+		margin-bottom: var(--radius);
+	}
+
+	.value-column input {
+		font: 100%/1.4 monospace
+	}
+
+	.remove-row {
+		cursor: pointer
+	}
+
+	.add-row {
+		margin-top: var(--small);
+		border: thin solid var(--gray-400);
+		background: var(--white)
+	}
+
+	.browser-support {
+		margin-top: var(--medium)
+	}
+
+	.browser {
+		border-top: thin solid var(--gray-400);
+		line-height: 2em
+	}
+
+	table input {
+		border: 0;
+	}
+
+
+
+	canvas {
+		border: solid 2px red;
+	}
+</style>
+
+
+<body>
+	<div class="wrapper">
+		<header class="header">Header: Fixed height</header>
+		<section class="content">
+			<div class="columns">
+				<main class="box main">
+					<div id="chart_container"></div>
+				</main>
+				<aside class="box sidebar-first">Sidebar first: Fixed width</aside>
+				<aside class="box sidebar-second">
+					<div class="data-table">
+						<table>
+							<thead>
+								<tr>
+									<th class="name-column">
+										<h3>Name</h3>
+									</th>
+									<th class="value-column">
+										<h3>Value</h3>
+									</th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr id="row-7xkan8q5">
+									<td class="name-column"><input type="text" value="First Name"></td>
+									<td class="value-column"><input type="text" value="Joe"></td>
+								</tr>
+								<tr id="row-7xkan8q5">
+									<td class="name-column"><input type="text" value="Last Name"></td>
+									<td class="value-column"><input type="text" value="Smith"></td>
+								</tr>
+
+							</tbody>
+						</table>
+					</div>
+				</aside>
+			</div>
+		</section>
+		<footer class="footer">Footer: Fixed height</footer>
+	</div>
+</body>
+<script>
+
+
+
+    function Circle(x, y, radius, fill, stroke) {
+        this.x = x || 0;
+        this.y = y || 0;
+        this.radius = radius || 10;
+        this.w = radius *2;
+        this.h = radius *2;
+        this.fill = fill || '#AAAAAA';
+
+        Circle.prototype.draw = function (ctx) {
+            ctx.beginPath();
+            ctx.strokeStyle = "grey";
+            ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI, false);
+            //draw the circle
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = this.fill;
+            ctx.fillStyle = this.fill;
+            ctx.stroke();
+            ctx.fill();
+        }
+        Circle.prototype.contains = function (mx, my) {
+            var dx = this.x - mx;
+            var dy = this.y - my;
+            var inside =  (dx * dx + dy * dy < this.radius * this.radius);
+            console.log ("clicked at " + mx + "," + my + " inside: " + inside);
+
+	        return  inside;
+        }
+    }
+
+    function Shape(x, y, w, h, fill) {
+        // This is a very simple and unsafe constructor.
+        // All we're doing is checking if the values exist.
+        // "x || 0" just means "if there is a value for x, use that. Otherwise use 0."
+        this.x = x || 0;
+        this.y = y || 0;
+        this.w = w || 1;
+        this.h = h || 1;
+        this.fill = fill || '#AAAAAA';
+    }
+
+    // Draws this shape to a given context
+    Shape.prototype.draw = function (ctx) {
+        ctx.fillStyle = this.fill;
+        ctx.fillRect(this.x, this.y, this.w, this.h);
+
+        var font = "12px Arial"
+        ctx.font = font;
+        ctx.fillText("here I am", this.x, this.y + this.h + 12);
+    };
+
+    // Determine if a point is inside the shape's bounds
+    Shape.prototype.contains = function (mx, my) {
+        // All we have to do is make sure the Mouse X,Y fall in the area between
+        // the shape's X and (X + Width) and its Y and (Y + Height)
+        return this.x <= mx && this.x + this.w >= mx &&
+            this.y <= my && this.y + this.h >= my;
+    };
+
+
+
+ 
+
+
+    function setupCanvas(canvas) {
+        // Make it visually fill the positioned parent
+        canvas.style.width = '100%';
+        canvas.style.height = '100%';
+        // ...then set the internal size to match
+        //canvas.width = canvas.offsetWidth;
+        //canvas.height = canvas.offsetHeight;
+
+        
+        // Get the device pixel ratio, falling back to 1.
+        var dpr = window.devicePixelRatio || 1;
+        // Get the size of the canvas in CSS pixels.
+        var rect = canvas.getBoundingClientRect();
+        // Give the canvas pixel dimensions of their CSS size * the device pixel ratio.
+        canvas.width = rect.width * dpr;
+        canvas.height = rect.height * dpr;
+        var ctx = canvas.getContext('2d');
+        // Scale all drawing operations by the dpr, so you
+        // don't have to worry about the difference.
+        ctx.scale(dpr, dpr);
+        return ctx;
+    }
+
+    function CanvasState(container) {
+        this.canvas = document.createElement("canvas");
+        container.appendChild(this.canvas);
+        setupCanvas(this.canvas);
+
+        this.width = this.canvas.width;
+        this.height = this.canvas.height;
+        this.ctx = this.canvas.getContext('2d');
+        // This complicates things a little but but fixes mouse co-ordinate problems
+        // when there's a border or padding. See getMouse for more detail
+        var stylePaddingLeft, stylePaddingTop, styleBorderLeft, styleBorderTop;
+        if (document.defaultView && document.defaultView.getComputedStyle) {
+            this.stylePaddingLeft = parseInt(document.defaultView.getComputedStyle(this.canvas, null)['paddingLeft'], 10) || 0;
+            this.stylePaddingTop = parseInt(document.defaultView.getComputedStyle(this.canvas, null)['paddingTop'], 10) || 0;
+            this.styleBorderLeft = parseInt(document.defaultView.getComputedStyle(this.canvas, null)['borderLeftWidth'], 10) || 0;
+            this.styleBorderTop = parseInt(document.defaultView.getComputedStyle(this.canvas, null)['borderTopWidth'], 10) || 0;
+        }
+        // Some pages have fixed-position bars (like the stumbleupon bar) at the top or left of the page
+        // They will mess up mouse coordinates and this fixes that
+        var html = document.body.parentNode;
+        this.htmlTop = html.offsetTop;
+        this.htmlLeft = html.offsetLeft;
+        // **** Keep track of state! ****
+
+        this.valid = false; // when set to true, the canvas will redraw everything
+        this.shapes = []; // the collection of things to be drawn
+        this.dragging = false; // Keep track of when we are dragging
+        // the current selected object.
+        // In the future we could turn this into an array for multiple selection
+        this.selection = null;
+        this.dragoffx = 0; // See mousedown and mousemove events for explanation
+        this.dragoffy = 0;
+
+        var myState = this;
+
+        //fixes a problem where double clicking causes text to get selected on the canvas
+        this.canvas.addEventListener('selectstart', function (e) { e.preventDefault(); return false; }, false);
+        // Up, down, and move are for dragging
+        this.canvas.addEventListener('mousedown', function (e) {
+            var mouse = myState.getMouse(e);
+            var mx = mouse.x;
+            var my = mouse.y;
+            var shapes = myState.shapes;
+            var l = shapes.length;
+            for (var i = l - 1; i >= 0; i--) {
+                if (shapes[i].contains(mx, my)) {
+                    var mySel = shapes[i];
+                    // Keep track of where in the object we clicked
+                    // so we can move it smoothly (see mousemove)
+                    myState.dragoffx = mx - mySel.x;
+                    myState.dragoffy = my - mySel.y;
+                    myState.dragging = true;
+                    myState.selection = mySel;
+                    myState.valid = false;
+                    return;
+                }
+            }
+            // havent returned means we have failed to select anything.
+            // If there was an object selected, we deselect it
+            if (myState.selection) {
+                myState.selection = null;
+                myState.valid = false; // Need to clear the old selection border
+            }
+        }, true);
+
+        this.canvas.addEventListener('mousemove', function (e) {
+            if (myState.dragging) {
+                var mouse = myState.getMouse(e);
+                // We don't want to drag the object by its top-left corner,
+                // we want to drag from where we clicked.
+                // Thats why we saved the offset and use it here
+                myState.selection.x = mouse.x - myState.dragoffx;
+                myState.selection.y = mouse.y - myState.dragoffy;
+                myState.valid = false; // Something's dragging so we must redraw
+            }
+        }, true);
+
+        this.canvas.addEventListener('mouseup', function (e) {
+            myState.dragging = false;
+        }, true);
+
+        // double click for making new Shapesf
+        this.canvas.addEventListener('dblclick', function (e) {
+            var mouse = myState.getMouse(e);
+            var rVal = Math.round(Math.random() * 100) + 100;
+            var colorVal = 'rgba(32,120,' + rVal + ',.6)';
+            myState.addShape(new Circle(mouse.x - 10, mouse.y - 10, 30, colorVal, colorVal));
+        }, true);
+
+        this.selectionColor = '#CC0000';
+        this.selectionWidth = 2;
+        this.interval = 30;
+        setInterval(function () { myState.draw(); }, myState.interval);
+
+    }
+
+    CanvasState.prototype.addShape = function (shape) {
+        this.shapes.push(shape);
+        this.valid = false;
+    };
+
+    CanvasState.prototype.clear = function () {
+        this.ctx.clearRect(0, 0, this.width, this.height);
+    };
+
+    // While draw is called as often as the INTERVAL variable demands,
+    // It only ever does something if the canvas gets invalidated by our code
+    CanvasState.prototype.draw = function () {
+        // if our state is invalid, redraw and validate!
+        if (!this.valid) {
+            var ctx = this.ctx;
+            var shapes = this.shapes;
+            this.clear();
+
+            // ** Add stuff you want drawn in the background all the time here **
+
+            // draw all shapes
+            var l = shapes.length;
+            for (var i = 0; i < l; i++) {
+                var shape = shapes[i];
+                // We can skip the drawing of elements that have moved off the screen:
+                //if (shape.x > this.width || shape.y > this.height || shape.x + shape.w < 0 || shape.y + shape.h < 0) continue;
+                shapes[i].draw(ctx);
+            }
+
+            // draw selection
+            // right now this is just a stroke along the edge of the selected Shape
+     /*       if (this.selection != null) {
+                ctx.strokeStyle = this.selectionColor;
+                ctx.lineWidth = this.selectionWidth;
+                var mySel = this.selection;
+                ctx.strokeRect(mySel.x, mySel.y, mySel.w, mySel.h);
+            }
+*/
+            // ** Add stuff you want drawn on top all the time here **
+
+            this.valid = true;
+        }
+    };
+
+
+    // Creates an object with x and y defined,
+    // set to the mouse position relative to the state's canvas
+    // If you wanna be super-correct this can be tricky,
+    // we have to worry about padding and borders
+    CanvasState.prototype.getMouse = function (e) {
+        var element = this.canvas, offsetX = 0, offsetY = 0, mx, my;
+
+        // Compute the total offset
+        if (element.offsetParent !== undefined) {
+            do {
+                offsetX += element.offsetLeft;
+                offsetY += element.offsetTop;
+            } while (element = element.offsetParent);
+        }
+
+        // Add padding and border style widths to offset
+        // Also add the offsets in case there's a position:fixed bar
+        offsetX += this.stylePaddingLeft + this.styleBorderLeft + this.htmlLeft;
+        offsetY += this.stylePaddingTop + this.styleBorderTop + this.htmlTop;
+
+        mx = e.pageX - offsetX;
+        my = e.pageY - offsetY;
+
+        // We return a simple javascript object (a hash) with x and y defined
+        return { x: mx, y: my };
+    };
+
+    function init() {
+
+        var blue = "#4e79a7";
+        var orange = "#f28e2c";
+        var red = "#e15759";
+        var light_blue = "#76b7b2";
+
+        var s = new CanvasState(document.getElementById('chart_container'));
+        s.addShape(new Shape(0, 0, 50, 50)); // The default is gray
+        s.addShape(new Shape(60, 140, 40, 60, blue));
+        // Lets make some partially transparent
+        s.addShape(new Shape(80, 150, 60, 30, orange));
+        s.addShape(new Circle(200, 200, 30, red, red));
+
+    };
+
+    init();
+</script>
+</body>
+
+</html>
