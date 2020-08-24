@@ -8,6 +8,8 @@ function Compass({ center, radius, bearing_point }) {
 	this.cy = center.y;
 	this.center = center;
 	this.radius = radius;
+	this.startDegrees = 0;
+	this.endDegrees = 360;
 	c = this;
 
 	this.modes = {
@@ -26,16 +28,19 @@ function Compass({ center, radius, bearing_point }) {
 }
 
 Compass.prototype.setBearingPoint = function (bearing_point) {
-	if (!bearing_point) {
-		log("none: bearing_point");
-		this.startDegrees = 0;
-		this.endDegrees = 360;
-	} else {
+
+
+
+//	if (!bearing_point) {
+//		log("none: bearing_point");
+//		this.startDegrees = 0;
+//		this.endDegrees = 360;
+//	} else {
 		this.bearing_point = bearing_point;
 		this.bearing = this.findBearingAngle(bearing_point);
 		this.startDegrees = this.bearing + 180;
 		this.endDegrees = this.bearing + 360;
-	}
+//	}
 };
 Compass.prototype.findBearingAngle = function (bearing_point) {
 	var angle = findAngle(
@@ -76,9 +81,9 @@ Compass.prototype.calculateOrientation = function () {
 	for (var i = 0; i < number_of_points; i++) {
 		var object = this.object_list[i];
     var mid_point_angle = start_angle + slice_angle / 2;
-    
 
-//		var mid_point_angle = start_angle;
+	//
+	//		var mid_point_angle = start_angle;
 		var point = getPointOnArc(
 			this.center,
 			this.radius + distance_from_arc,

@@ -15,7 +15,6 @@ COLORS = [
 //                          CANVAS
 // =============================================================
 
-
 /*
  *  Calculate the Height of text with the specified font
  *
@@ -42,15 +41,14 @@ function getLineHeight(txt, font) {
 	return height;
 }
 
-  function drawLine(x1, y1, x2, y2) {
+function drawLine(x1, y1, x2, y2) {
 	thisCanvas.ctx.beginPath();
 	thisCanvas.ctx.moveTo(x1, y1);
 	thisCanvas.ctx.lineTo(x2, y2);
 	thisCanvas.ctx.stroke();
-  }
+}
 
-
-  resizeCanvas = function () {
+resizeCanvas = function () {
 	var rect = thisCanvas.getBoundingClientRect();
 	thisCanvas.width = rect.width * mcanvas.dpr;
 	thisCanvas.height = rect.height * mcanvas.dpr;
@@ -60,33 +58,31 @@ function getLineHeight(txt, font) {
 	thisCanvas.ctx.scale(mcanvas.dpr, mcanvas.dpr);
 	//      this.canvas.style.width = this.rect.width + 'px';
 	//    this.canvas.style.height = this.rect.height + 'px';
-  
+
 	var rect_info = "rect width: " + rect.width + "x" + rect.height;
 	console.log(rect_info);
 	console.log(mcanvas.canvas);
-  
+
 	//Redraw & reposition content
 	var width = rect.width;
 	var height = rect.height;
 	mcanvas.ctx.font = "50px Calibri";
 	mcanvas.ctx.fillStyle = "#DDDDDD"; //black
 	//this.ctx.fillRect(0, 0, width, height); //fill the canvas
-  
+
 	var resizeText =
-	  "Canvas (px): " + mcanvas.canvas.width + " x " + mcanvas.canvas.height;
+		"Canvas (px): " + mcanvas.canvas.width + " x " + mcanvas.canvas.height;
 	console.log(resizeText);
 	mcanvas.ctx.textAlign = "center";
 	mcanvas.ctx.fillStyle = "white"; //white
 	mcanvas.ctx.fillText(resizeText, width / 2, height / 2);
-  
+
 	drawLine(0, 0, width, height);
 	drawLine(0, height, width, 0);
-
-  }
-
+};
 
 function MCanvas({ container }) {
-	var thisCanvas = this.canvas = document.createElement("canvas");
+	var thisCanvas = (this.canvas = document.createElement("canvas"));
 	this.canvas.style.width = "100%";
 	this.canvas.style.height = "100%";
 	container.appendChild(this.canvas);
@@ -97,31 +93,27 @@ function MCanvas({ container }) {
 	thisCanvas.width = rect.width * this.dpr;
 	thisCanvas.height = rect.height * this.dpr;
 	this.ctx.scale(this.dpr, this.dpr);
-	    this.canvas.style.width = rect.width + 'px';
-	    this.canvas.style.height = rect.height + 'px';
+	this.canvas.style.width = rect.width + "px";
+	this.canvas.style.height = rect.height + "px";
 	//
 	console.log("MCanvas");
 	console.log(container);
-	console.log ("MCanvas = " + thisCanvas.width + "x" + thisCanvas.height);
-
+	console.log("MCanvas = " + thisCanvas.width + "x" + thisCanvas.height);
 
 	this.margin = { top: 00, right: 00, bottom: 00, left: 00 };
 	this.width = this.canvas.width - this.margin.left - this.margin.right;
 	this.height = this.canvas.height - this.margin.top - this.margin.bottom;
-	
 }
-
-
 
 MCanvas.prototype.getContext = function () {
 	return this.ctx;
 };
 
 MCanvas.prototype.getHeight = function () {
-	return this.canvas.height / this.dpr ;
+	return this.canvas.height / this.dpr;
 };
 MCanvas.prototype.getWidth = function () {
-	return this.canvas.width / this.dpr ;
+	return this.canvas.width / this.dpr;
 };
 
 MCanvas.prototype.getCenter = function () {
@@ -189,33 +181,47 @@ MCanvas.prototype.drawBorder = function (background_color) {
 	this.ctx.fill();
 };
 
+function apply_styles (ctx, color_stroke, color_fill, line_width) {
+	if (line_width != "") {
+		ctx.lineWidth = line_width;
+	}
+	if (color_stroke != "") {
+		ctx.strokeStyle = color_stroke;
+		ctx.stroke();
+	}
+	if (color_fill != "") {
+		ctx.fillStyle = color_fill;
+		ctx.fill();
+	}
+
+}
 MCanvas.prototype.drawArc = function (
 	center,
 	radius,
 	start_angle,
 	end_angle,
 	color_stroke,
-	color_fill
+	color_fill,
+	line_width
 ) {
 	this.ctx.beginPath();
 	this.ctx.moveTo(center.x, center.y);
 	this.ctx.arc(center.x, center.y, radius, start_angle, end_angle, false);
-	//draw the circle
 	this.ctx.lineWidth = 3;
-	// if (color_stroke) {
-	this.ctx.strokeStyle = color_stroke;
-	this.ctx.fillStyle = color_fill;
-	this.ctx.stroke();
-	this.ctx.fill();
-	//   }
+
+	apply_styles(this.ctx, color_stroke, color_fill, line_width);
+
 };
 
-MCanvas.prototype.drawRing = function (x, y, radius, color) {
+MCanvas.prototype.drawCircle = function (x, y, radius, color_stroke, color_fill, line_width) {
 	this.ctx.beginPath();
 	this.ctx.arc(x, y, radius, 0, 2 * Math.PI, false);
-	//this.ctx.lineWidth = 3;
-	this.ctx.strokeStyle = color;
-	this.ctx.stroke();
+
+	apply_styles(this.ctx, color_stroke, color_fill, line_width);
+};
+
+MCanvas.prototype.drawRing = function (x, y, radius, color_stroke, color_fill, line_width) {
+	this.drawCircle(x, y, radius, color_stroke);
 };
 
 // draw point with text and circle around it.
@@ -237,7 +243,15 @@ MCanvas.prototype.drawPoint = function (x, y, radius, text) {
 	this.ctx.fillStyle = "#384047"; // darkish
 	//this.ctx.fillText(text, x , y + radius + 20) ;
 };
-MCanvas.prototype.drawText = function (x, y, text, font, text_color, maxWidth, optionalSeparator	) {
+MCanvas.prototype.drawText = function (
+	x,
+	y,
+	text,
+	font,
+	text_color,
+	maxWidth,
+	optionalSeparator
+) {
 	var word_separator = " ";
 	if (optionalSeparator) {
 		word_separator = optionalSeparator;
@@ -267,7 +281,7 @@ MCanvas.prototype.drawText = function (x, y, text, font, text_color, maxWidth, o
 		}
 	}
 	this.ctx.fillText(line, x, y);
-}
+};
 
 MCanvas.prototype.clear = function () {
 	this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -282,8 +296,11 @@ MCanvas.prototype.addEventListener = function (type, listener) {
 /*
 window.addEventListener("resize", resizeCanvas, false);
 */
-window.addEventListener('load', function(){
-	console.log('Canvas is fully loaded');
-//	resizeCanvas();
-
-}, false);
+window.addEventListener(
+	"load",
+	function () {
+		console.log("Canvas is fully loaded");
+		//	resizeCanvas();
+	},
+	false
+);
