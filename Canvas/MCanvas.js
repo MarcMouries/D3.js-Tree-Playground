@@ -15,30 +15,6 @@ COLORS = [
 //                          CANVAS
 // =============================================================
 
-function getCanvasPixelRatio(canvas) {
-	var ctx = canvas.getContext("2d"),
-		dpr = window.devicePixelRatio || 1,
-		bsr =
-			ctx.webkitBackingStorePixelRatio ||
-			ctx.mozBackingStorePixelRatio ||
-			ctx.msBackingStorePixelRatio ||
-			ctx.oBackingStorePixelRatio ||
-			ctx.backingStorePixelRatio ||
-			1;
-	return dpr / bsr;
-}
-function createHiDPICanvas(w, h) {
-	var canvas = document.createElement("canvas");
-	var ratio = getCanvasPixelRatio(canvas);
-	canvas.width = w * ratio;
-	canvas.height = h * ratio;
-	canvas.style.width = w + "px";
-	canvas.style.height = h + "px";
-
-	var ctx = canvas.getContext("2d");
-	ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
-	return canvas;
-}
 
 /*
  *  Calculate the Height of text with the specified font
@@ -66,26 +42,86 @@ function getLineHeight(txt, font) {
 	return height;
 }
 
-function MCanvas({ container }) {
-	this.canvas = createHiDPICanvas(1200, 900);
-	this.ctx = this.canvas.getContext("2d");
-	this.ratio = getCanvasPixelRatio(this.canvas);
-	container.appendChild(this.canvas);
+  function drawLine(x1, y1, x2, y2) {
+	thisCanvas.ctx.beginPath();
+	thisCanvas.ctx.moveTo(x1, y1);
+	thisCanvas.ctx.lineTo(x2, y2);
+	thisCanvas.ctx.stroke();
+  }
 
-	this.margin = { top: 10, right: 10, bottom: 10, left: 10 };
+
+  resizeCanvas = function () {
+	var rect = thisCanvas.getBoundingClientRect();
+	thisCanvas.width = rect.width * mcanvas.dpr;
+	thisCanvas.height = rect.height * mcanvas.dpr;
+	var mcanvas = this;
+	//  this.canvas.width = this.rect.width;
+	//  this.canvas.height = this.rect.height;
+	thisCanvas.ctx.scale(mcanvas.dpr, mcanvas.dpr);
+	//      this.canvas.style.width = this.rect.width + 'px';
+	//    this.canvas.style.height = this.rect.height + 'px';
+  
+	var rect_info = "rect width: " + rect.width + "x" + rect.height;
+	console.log(rect_info);
+	console.log(mcanvas.canvas);
+  
+	//Redraw & reposition content
+	var width = rect.width;
+	var height = rect.height;
+	mcanvas.ctx.font = "50px Calibri";
+	mcanvas.ctx.fillStyle = "#DDDDDD"; //black
+	//this.ctx.fillRect(0, 0, width, height); //fill the canvas
+  
+	var resizeText =
+	  "Canvas (px): " + mcanvas.canvas.width + " x " + mcanvas.canvas.height;
+	console.log(resizeText);
+	mcanvas.ctx.textAlign = "center";
+	mcanvas.ctx.fillStyle = "white"; //white
+	mcanvas.ctx.fillText(resizeText, width / 2, height / 2);
+  
+	drawLine(0, 0, width, height);
+	drawLine(0, height, width, 0);
+
+  }
+
+
+function MCanvas({ container }) {
+	var thisCanvas = this.canvas = document.createElement("canvas");
+	this.canvas.style.width = "100%";
+	this.canvas.style.height = "100%";
+	container.appendChild(this.canvas);
+	this.ctx = this.canvas.getContext("2d");
+	this.dpr = window.devicePixelRatio || 1;
+	//  this.dpr = 1;
+	var rect = thisCanvas.getBoundingClientRect();
+	thisCanvas.width = rect.width * this.dpr;
+	thisCanvas.height = rect.height * this.dpr;
+	this.ctx.scale(this.dpr, this.dpr);
+	    this.canvas.style.width = rect.width + 'px';
+	    this.canvas.style.height = rect.height + 'px';
+	//
+	console.log("MCanvas");
+	console.log(container);
+	console.log ("MCanvas = " + thisCanvas.width + "x" + thisCanvas.height);
+
+
+	this.margin = { top: 00, right: 00, bottom: 00, left: 00 };
 	this.width = this.canvas.width - this.margin.left - this.margin.right;
 	this.height = this.canvas.height - this.margin.top - this.margin.bottom;
+	
 }
+
+
 
 MCanvas.prototype.getContext = function () {
 	return this.ctx;
 };
 
 MCanvas.prototype.getHeight = function () {
-	return this.canvas.height / this.ratio;
+	return this.canvas.height / this.dpr ;
 };
 MCanvas.prototype.getWidth = function () {
-	return this.canvas.width / this.ratio;
+	return this.canvas.width / this.dpr ;
 };
 
 MCanvas.prototype.getCenter = function () {
@@ -214,7 +250,6 @@ MCanvas.prototype.drawText = function (x, y, text, font, text_color, maxWidth, o
 
 	//      var alphabet = "M"; //"ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz";
 	var lineHeight = getLineHeight(text, font);
-	console.log("lineHeight= " + lineHeight);
 
 	var words = text.split(word_separator);
 	var line = "";
@@ -241,3 +276,14 @@ MCanvas.prototype.clear = function () {
 MCanvas.prototype.addEventListener = function (type, listener) {
 	this.canvas.addEventListener(type, listener);
 };
+
+//this.resizeCanvas();
+
+/*
+window.addEventListener("resize", resizeCanvas, false);
+*/
+window.addEventListener('load', function(){
+	console.log('Canvas is fully loaded');
+//	resizeCanvas();
+
+}, false);
