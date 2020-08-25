@@ -28,20 +28,13 @@ function Compass({ center, radius, bearing_point }) {
 }
 
 Compass.prototype.setBearingPoint = function (bearing_point) {
-
-
-
-//	if (!bearing_point) {
-//		log("none: bearing_point");
-//		this.startDegrees = 0;
-//		this.endDegrees = 360;
-//	} else {
 		this.bearing_point = bearing_point;
 		this.bearing = this.findBearingAngle(bearing_point);
 		this.startDegrees = this.bearing + 180;
 		this.endDegrees = this.bearing + 360;
-//	}
 };
+
+
 Compass.prototype.findBearingAngle = function (bearing_point) {
 	var angle = findAngle(
 		{ x: this.cx, y: -this.cy },

@@ -20,13 +20,13 @@
     }
 
     #canvas_container {
-      width: 100%;
-      height: 100%;
+      width: 400px;
+      height: 400px;
       background: white;
     }
 
     canvas {
-      _border: solid 2px red;
+      border: solid 2px red;
     }
   </style>
 </head>
@@ -50,6 +50,26 @@
   //                          TEST
   // =============================================================
 
+  var circle_radius = 200;
+  var radius_ring = 200;
+  var bp_angle = 180; // In degrees
+  var bp_radius = 200;
+  var center = {
+    x: 100,
+    y: 100
+  };
+  var bearing_point = getPointOnArc(center, bp_radius, to_radians(bp_angle));
+  var canvas_container = document.getElementById("canvas_container");
+  var mcanvas = new MCanvas({
+    container: canvas_container
+  });
+  var center = mcanvas.getCenter();
+
+
+  console.log("COMPASS - Center = " + center.x + "x" + center.y);
+
+
+
   var modes = ["FULL"]; //, "HALF_NORTH", "HALF_EAST", "HALF_SOUTH", "HALF_WEST"];
   //"SOUTH_EAST", "SOUTH_WEST", "NORTH_WEST"];
 
@@ -58,114 +78,122 @@
   //  ("FULL: 180 - 270 point:180° 50, 200");
   //  ("FULL: 270 - 360 point:270° 200, 50");
 
-  /*
-  var p1 = { x: 350, y: 200 };
+
+  var p1 = {    x: 350,    y: 200,    name: "A"  };
   //compass.drawPoint(p1.x, p1.y, 20, "p1");
-  var p2 = { x: 200, y: 350 };
+  var p2 = {    x: 200,    y: 350,    name: "B"  };
   //compass.drawPoint(p2.x, p2.y, 20, "p2");
-  var p3 = { x: 50, y: 200 };
+  var p3 = {    x: 50,    y: 200,    name: "C"  };
   //compass.drawPoint(p3.x, p3.y, 20, "p3");
-  var p4 = { x: 200, y: 50 };
+  var p4 = {    x: 200,    y: 50,    name: "D"  };
   //compass.drawPoint(p4.x, p4.y, 20, "p4");
   //console.log("p1: "+compass.getBearing(p1));
   //console.log("p2: "+compass.getBearing(p2));
   //console.log("p3: "+compass.getBearing(p3));
   //console.log("p4: "+compass.getBearing(p4));
-  
+
   var points = [p1, p2, p3, p4];
-  
+
   for (var i = 0; i < points.length; i++) {
-    var p = points[i];
-  
-    var canvas_id = "canvas" + i;
-    var canvas = document.createElement("canvas");
-    document.body.appendChild(canvas);
-    canvas.width = 400;
-    canvas.height = 400;
-    var cx = canvas.width / 2;
-    var cy = canvas.height / 2;
+    var point = points[i];
+
+
+
+
+   // var canvas_id = "canvas" + i;
+   // var canvas = document.createElement("canvas");
+   // document.body.appendChild(canvas);
+  //  canvas.width = 400;
+  //  canvas.height = 400;
+  //  var cx = canvas.width / 2;
+  //  var cy = canvas.height / 2;
+
     var compass = new Compass({
-      canvas: canvas,
-      cx: cx,
-      cy: cy,
+      center: mcanvas.getCenter(),
       radius: circle_radius,
-      bearing_point: p
+      bearing_point: bearing_point
     });
-  
-    compass.drawPoint(p.x, p.y, 20, "p");
-  
+
+    console.log("point: "+ point.name + ": " + compass.findBearingAngle(point));
+
+
+    //compass.drawPoint(p.x, p.y, 20, "p");
+    mcanvas.drawCircle(point.x, point.y, 20, "lightgrey", "", 1);
+    mcanvas.drawText(point.x, point.y, point.name, "18px Arial", "#333", 10, ",");
+
+
     //  compass.setNumberOfPointsAroundArc()
-    compass.draw();
-    }
-  */
-
-  var circle_radius = 200;
-  var radius_ring = 200;
-
-  var canvas_container = document.getElementById("canvas_container");
-  var mcanvas = new MCanvas({ container: canvas_container });
-  var center = mcanvas.getCenter();
-
-
-  console.log("COMPASS - Center = " + center.x + "x" + center.y);
-  var bp_angle = 180; // In degrees
-  var bp_radius = 200;
-  var bearing_point = getPointOnArc(center, bp_radius, to_radians(bp_angle));
-  var bearing_point = center;
-  var compass = new Compass({
-    center: center,
-    radius: circle_radius,
-    bearing_point: { x: bearing_point.x, y: bearing_point.y }
-  });
-  var node_list = [];
-  node_list.push(
-    { name: "A" },
-    { name: "B" },
-    { name: "C" },
-    { name: "D" }
-  );
-  compass.setObjectList({ object_list: node_list });
-
-  // Test Animation _________________________________________
-  function turn_and_draw() {
-    mcanvas.clear();
-    // REFERENCE POINT bearing_point.angle_middle
-    var bearing_point = getPointOnArc(center, bp_radius, to_radians(bp_angle));
-    compass.setBearingPoint(bearing_point);
-    mcanvas.drawCircle(bearing_point.x, bearing_point.y, 20, "grey", "lightgrey", 1);
-
-    // The ARCs
-    compass.calculateOrientation();
-    var number_of_points = node_list.length;
-    for (var i = 0; i < number_of_points; i++) {
-      var point = this.node_list[i];
-
-
-      mcanvas.drawArc(
-        center,
-        circle_radius,
-        to_radians(point.angle_start),
-        to_radians(point.angle_end),
-        COLORS[i],
-        COLORS[i]);
-
-
-      // Line
-      mcanvas.drawLine(center.x, center.y, point.x, point.y, "black", 1);
-      // Point
-      // CENTER TEXT
-      mcanvas.drawText(point.x, point.y, point.name, "18px Arial", "#333", 10, ",");
-      // The RING
-      mcanvas.drawCircle(center.x, center.y, radius_ring, "lightgrey", "", 1);
-    }
-    bp_angle = (bp_angle + 1) % 360;
+    // compass.draw();
   }
-  turn_and_draw();
 
-  // Animation Logic ________________________________________
-  setInterval(function () {
-     //turn_and_draw();
-  }, 1000);
+  /*
+
+
+
+    var bearing_point = center;
+    var compass = new Compass({
+      center: center,
+      radius: circle_radius,
+      bearing_point: {
+        x: bearing_point.x,
+        y: bearing_point.y
+      }
+    });
+    var node_list = createNodeList (5);
+    compass.setObjectList({
+      object_list: node_list
+    });
+
+    // Test Animation _________________________________________
+    function turn_and_draw() {
+      mcanvas.clear();
+      // REFERENCE POINT bearing_point.angle_middle
+      var bearing_point = getPointOnArc(center, bp_radius, to_radians(bp_angle));
+      compass.setBearingPoint(bearing_point);
+      mcanvas.drawCircle(bearing_point.x, bearing_point.y, 20, "grey", "lightgrey", 1);
+
+      // The ARCs
+      compass.calculateOrientation();
+      var number_of_points = node_list.length;
+      for (var i = 0; i < number_of_points; i++) {
+        var point = this.node_list[i];
+
+
+        mcanvas.drawArc(
+          center,
+          circle_radius,
+          to_radians(point.angle_start),
+          to_radians(point.angle_end),
+          COLORS[i],
+          COLORS[i]);
+
+
+        // Line
+        mcanvas.drawLine(center.x, center.y, point.x, point.y, "black", 1);
+        // Point
+        // CENTER TEXT
+        mcanvas.drawText(point.x, point.y, point.name, "18px Arial", "#333", 10, ",");
+        // The RING
+        mcanvas.drawCircle(center.x, center.y, radius_ring, "lightgrey", "", 1);
+      }
+      bp_angle = (bp_angle + 1) % 360;
+    }
+    turn_and_draw();
+
+    // Animation Logic ________________________________________
+    setInterval(function () {
+      //turn_and_draw();
+    }, 1000);
+
+
+    function createNodeList(number_of_points){
+      var node_list = [];
+      for (var i = 1; i <= number_of_points ; i++) {
+       // var node = this.node_list[i];
+        node_list.push({ name: "" + i });
+    }
+    return node_list;
+    }*/
 </script>
 
 </html>
