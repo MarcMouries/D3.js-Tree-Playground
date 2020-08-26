@@ -20,6 +20,9 @@
 	}
 
 	#chart_container {
+        border: solid 2px blue;
+        height:100%;
+
 	}
 
 	#chart_container_OLD {
@@ -154,7 +157,7 @@
 
 
 	canvas {
-		border: solid 2px red;
+        border: solid 2px red;
 	}
 </style>
 
@@ -293,26 +296,64 @@
 
     function CanvasState(container) {
         this.canvas = document.createElement("canvas");
+        this.canvas.style.width = '100%';
+        this.canvas.style.height = '100%';
         container.appendChild(this.canvas);
-        setupCanvas(this.canvas);
-
+        // Get the device pixel ratio, falling back to 1.
+        this.dpr = window.devicePixelRatio || 1;
+        // Get the size of the canvas in CSS pixels.
+        this.rect = this.canvas.getBoundingClientRect();
+        // Give the canvas pixel dimensions of their CSS size * the device pixel ratio.
+        this.canvas.width = this.rect.width * this.dpr;
+        this.canvas.height = this.rect.height * this.dpr;
+        this.ctx = this.canvas.getContext('2d');
+        // Scale all drawing operations by the dpr, so you
+        // don't have to worry about the difference.
+        this.ctx.scale(this.dpr, this.dpr);
         this.width = this.canvas.width;
         this.height = this.canvas.height;
-        this.ctx = this.canvas.getContext('2d');
-        // This complicates things a little but but fixes mouse co-ordinate problems
-        // when there's a border or padding. See getMouse for more detail
-        var stylePaddingLeft, stylePaddingTop, styleBorderLeft, styleBorderTop;
-        if (document.defaultView && document.defaultView.getComputedStyle) {
+
+        // fixes mouse co-ordinate problems when there's a border or padding. 
+        
+//        if (document.defaultView && document.defaultView.getComputedStyle) {
+    /*
             this.stylePaddingLeft = parseInt(document.defaultView.getComputedStyle(this.canvas, null)['paddingLeft'], 10) || 0;
             this.stylePaddingTop = parseInt(document.defaultView.getComputedStyle(this.canvas, null)['paddingTop'], 10) || 0;
             this.styleBorderLeft = parseInt(document.defaultView.getComputedStyle(this.canvas, null)['borderLeftWidth'], 10) || 0;
             this.styleBorderTop = parseInt(document.defaultView.getComputedStyle(this.canvas, null)['borderTopWidth'], 10) || 0;
-        }
+  //      }
+*/
+        console.log("getComputedStyle");
+        console.log("----------------");
+
+        const style = document.defaultView.getComputedStyle(this.canvas, null);
+        this.stylePaddingLeft = parseInt(style['paddingLeft'], 10);
+        this.stylePaddingTop = parseInt(style['paddingTop'], 10);
+        this.styleBorderLeft = parseInt(style['borderLeftWidth'], 10);
+        this.styleBorderTop = parseInt(style['borderTopWidth'], 10);
+       // console.log("new_paddingLeft " + new_paddingLeft);
+       // console.log("new_paddingTop " + new_paddingTop);
+       // console.log("new_borderLeftWidth " + new_borderLeftWidth);
+       // console.log("new_borderTopWidth " + new_borderTopWidth);
+
+
+        console.log(" stylePaddingLeft: " + this.stylePaddingLeft );
+        console.log(" stylePaddingTop: " + this.stylePaddingTop );
+        console.log(" styleBorderLeft: " + this.styleBorderLeft );
+        console.log(" styleBorderTop: " + this.styleBorderTop );
+
+
+
+
         // Some pages have fixed-position bars (like the stumbleupon bar) at the top or left of the page
         // They will mess up mouse coordinates and this fixes that
         var html = document.body.parentNode;
         this.htmlTop = html.offsetTop;
         this.htmlLeft = html.offsetLeft;
+
+        console.log(" this.htmlTop: " + this.htmlTop );
+        console.log(" this.htmlTop: " + this.htmlTop );
+
         // **** Keep track of state! ****
 
         this.valid = false; // when set to true, the canvas will redraw everything
@@ -325,6 +366,10 @@
         this.dragoffy = 0;
 
         var myState = this;
+
+
+        window.addEventListener('resize', resizeGame, false);
+
 
         //fixes a problem where double clicking causes text to get selected on the canvas
         this.canvas.addEventListener('selectstart', function (e) { e.preventDefault(); return false; }, false);
@@ -386,6 +431,13 @@
         setInterval(function () { myState.draw(); }, myState.interval);
 
     }
+
+    function resizeGame() {
+        console.log ("resize");
+
+    }
+
+
 
     CanvasState.prototype.addShape = function (shape) {
         this.shapes.push(shape);

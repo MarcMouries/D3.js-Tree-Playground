@@ -6,12 +6,7 @@
 //var trigo = {
 
 
-function getPointOnArc(cx, cy, r, deg) {
-    return {
-      x: cx + r * Math.cos(deg),
-      y: cy + r * Math.sin(deg)
-    };
-  }
+
   function to_radians(degrees) {
     return degrees * (Math.PI / 180);
   }
@@ -36,27 +31,35 @@ function getPointOnArc(cx, cy, r, deg) {
 
 
 // TRIGO FUNCTIONS
+function getPointOnArc(cx, cy, r, deg) {
+  return {
+    x: cx + r * Math.cos(deg),
+    y: cy + r * Math.sin(deg)
+  };
+}
 function getPointOnArc(point, r, deg) {
     return {
       x: point.x + r * Math.cos(deg),
       y: point.y + r * Math.sin(deg) };
-  
+
   }
   function to_radians(degrees) {
     return degrees * (Math.PI / 180);
   }
-  
+
   function to_degrees(radians) {
     return radians * (180 / Math.PI);
   }
-  
-  // returns angle in degrees
+
+  /*
+   * Returns angle in degrees
+   */
   function findAngle(p1, p2) {
     var angleRAD = Math.atan2(p1.x - p2.x, p1.y - p2.y);
     return to_degrees(angleRAD);
   }
-  
-  
+
+
   //bearing between the compass'center point and the specified point
   function __getBearing(point) {
     var compass_points = ["N", "NE", "E", "SE", "S", "SW", "W", "NW", "N"];

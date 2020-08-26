@@ -8,15 +8,196 @@
 	<script type="text/javascript" src="MCanvas.js"></script>
 </head>
 
+<style type="text/css">
+	:root {
+		--radius: 3px;
+		--small: 0.5em;
+		--medium: 1em;
+		--large: 1.5em;
+		--shadow: 0 1px 2px rgba(16, 10, 9, 0.15);
+		--gray-400: #d3d0c9;
+	}
+
+	#chart_container {
+		width: 100%;
+		height: 100%;
+		background: white;
+	}
+
+	#chart_container_OLD {
+		position: fixed;
+		width: 1200px;
+		height: 1000px;
+		top: 0;
+		left: 0;
+		right: 23em;
+		bottom: 0;
+	}
+
+	body {
+		margin: 0;
+	}
+
+	.wrapper {
+		min-height: 100vh;
+		_background: #ccc;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.header,
+	.footer {
+		height: 50px;
+		background: #666;
+		color: #fff;
+	}
+
+	.content {
+		display: flex;
+		flex: 1;
+		background: #999;
+		color: #000;
+	}
+
+	.columns {
+		display: flex;
+		flex: 1;
+	}
+
+
+
+	.main {
+		flex: 1;
+		order: 2;
+		background: #eee;
+	}
+
+	.sidebar-first {
+		width: 20%;
+		background: #ccc;
+		order: 1;
+	}
+
+	.sidebar-second {
+		width: 20%;
+		order: 3;
+		background: #ddd;
+	}
+
+	.box {
+		display: block;
+		background: #fff;
+		border-radius: var(--radius);
+		box-shadow: var(--shadow);
+		padding: var(--small);
+		transition: box-shadow var(--transition);
+		font: 100%/1.5 Helvtica Neue, Helvetica, sans-serif;
+		margin: 5px;
+	}
+
+	table {
+		width: 100%;
+		text-align: left;
+		border-collapse: collapse;
+		background: #fff;
+		color: var(--gray-800);
+	}
+
+	table input[type=text] {
+		padding: 0 var(--small);
+	}
+
+	tr {
+		border-bottom: thin solid var(--gray-400);
+	}
+
+	tr:focus-within {
+		background: highlight
+	}
+
+	th h3 {
+		padding: 0 var(--small);
+	}
+
+	h3 {
+		font-weight: 500;
+		line-height: 1;
+		font-size: 1em;
+		margin-bottom: var(--radius);
+	}
+
+	.value-column input {
+		font: 100%/1.4 monospace
+	}
+
+
+
+	.box header {
+		font-size: 1.2em;
+		margin: 0;
+		font-weight: 400;
+	}
+
+	table input {
+		border: 0;
+	}
+
+	canvas {
+		width: 100%;
+		min-height: 400px;
+		border: solid 2px red;
+	}
+</style>
+
 <body>
-	<div id="chart_container"></div>
+	<div class="wrapper">
+		<header class="header">Header: Fixed height</header>
+		<section class="content">
+			<div class="columns">
+				<main class="box main">
+					<div id="chart_container"></div>
+				</main>
+				<aside class="box sidebar-first">Sidebar first: Fixed width</aside>
+				<aside class="box sidebar-second">
+					<header>Data</header>
+					<div class="data-table">
+						<table>
+							<thead>
+								<tr>
+									<th class="name-column">
+										<h3>Name</h3>
+									</th>
+									<th class="value-column">
+										<h3>Value</h3>
+									</th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr id="row-7xkan8q5">
+									<td class="name-column"><input type="text" value="First Name"></td>
+									<td class="value-column"><input type="text" value="Joe"></td>
+								</tr>
+								<tr id="row-7xkan8q5">
+									<td class="name-column"><input type="text" value="Last Name"></td>
+									<td class="value-column"><input type="text" value="Smith"></td>
+								</tr>
+
+							</tbody>
+						</table>
+					</div>
+				</aside>
+			</div>
+		</section>
+		<footer class="footer">Footer: Fixed height</footer>
+	</div>
 </body>
 
 <script>
 	window.onload = function () {
 
 		function log(msg) {
-			if (false) {
+			if (true) {
 				console.log(msg);
 			}
 		}
@@ -38,16 +219,30 @@
 			return nodes;
 		};
 
+
+		// =============================================================
+		//                          Node
+		// =============================================================
+		function Node() {
+			this.x = 0;
+			this.y = 0;
+			this.radius = 20;
+			this.offset = { x: 0, y: 0 };
+			this.type = "";
+			this.name = "";
+		}
+
+
 		// =============================================================
 		//                          Link
 		// =============================================================
 		function Link(source, target) {
 			this.source = source;
 			this.target = target;
-			//	this.start_X = this.source.x;
-			//	this.start_Y = this.source.y;
-			//	this.end_X = this.target.x;
-			//	this.end_Y = this.target.y;
+			this.start_X = this.source.x;
+			this.start_Y = this.source.y;
+			this.end_X = this.target.x;
+			this.end_Y = this.target.y;
 		}
 
 
@@ -62,11 +257,11 @@
 		}
 		Graph.prototype.addNode = function (node) {
 			this.nodes.push(node);
-			//this.update();
 		};
 		Graph.prototype.getNodes = function (node) {
 			return this.nodes;
 		};
+
 		// =============================================================
 		//                          MChartView
 		// =============================================================
@@ -77,8 +272,7 @@
 			console.log(this.mcanvas);
 			console.log("getWidth = " + this.getWidth());
 			console.log("getHeight = " + this.getHeight());
-			this.node_radius = 22;
-			this.background_color = "#F5F5F5";
+			this.background_color = "#FFFFFF";//"#F5F5F5";
 
 			this.color_ring_isActivated = "#3b6978";
 			this.color_ring_isBelowMouse = "#84a9ac";
@@ -101,7 +295,7 @@
 		};
 		MChartView.prototype.drawBorder = function () {
 			log("MChartView .drawBorder");
-			this.mcanvas.drawBorder(this.background_color);
+			//this.mcanvas.drawBorder(this.background_color);
 		}
 
 		MChartView.prototype.renderLink = function (link) {
@@ -126,7 +320,7 @@
 
 			var font = "12px Arial"
 			var text_color = "#333";
-			this.mcanvas.drawPoint(node.x, node.y, this.node_radius, node.name);
+			this.mcanvas.drawPoint(node.x, node.y, node.radius, node.name);
 			//this.mcanvas.drawTextBG(node.name, node.x, node.y, font, 0, this.background_color);
 
 			var padding_node_title = 0;
@@ -137,38 +331,39 @@
 			this.mcanvas.drawText(node.x, y, node.name, font, text_color, maxLineWidth, ",");
 
 
-			//
 			if (node.isClicked) {
-				this.mcanvas.drawRing(node.x, node.y, this.node_radius + 2, this.color_ring_isActivated);
-				//this.mcanvas.drawRing(node.x, node.y, this.node_radius + 5, "blue");
+				this.mcanvas.drawRing(node.x, node.y, node.radius + 2, this.color_ring_isActivated);
 			}
 			else if (node.isBelowMouse) {
-				this.mcanvas.drawRing(node.x, node.y, this.node_radius + 2, this.color_ring_isBelowMouse);
-
-				//this.mcanvas.drawRing(node.x, node.y, this.node_radius + 5, "green");
+				this.mcanvas.drawRing(node.x, node.y, node.radius + 2, this.color_ring_isBelowMouse);
 			}
 		}
 
 
 
 		// =============================================================
-		//                          MChartLayoutManager
+		//                          MRadialLayout
 		// =============================================================
-		function MChartLayoutManager({ model, width, height }) {
-			this.nodes = model.nodes;
+		function MRadialLayout({ graph, width, height }) {
+		//	this.nodes = graph.nodes;
 			this.width = width;
 			this.height = height;
-			console.log("MChartLayoutManager()");
-			console.log("width = " + this.width);
-			console.log("height = " + this.height);
+			console.log("MRadialLayout()");
+			console.log("width = " + width);
+			console.log("height = " + height);
 			console.log("this.nodes = ");
-			console.log(this.nodes);
-			//			var center = mcanvas.getCenter();
+		//	console.log(this.nodes);
+			//var center = mcanvas.getCenter();
 
 		}
-		MChartLayoutManager.prototype.layout = function () {
-			//console.log("MChartLayoutManager : layout");
+		MRadialLayout.prototype.layout = function () {
+			//console.log("MRadialLayout : layout");
 
+			if (! this.nodes) {
+				console.error("MRadialLayout : can't run on an empty graph.");
+				return;
+
+			}
 			if (this.nodes.length == 0) {
 				return;
 			}
@@ -184,207 +379,7 @@
 				node.y = root.y + (i * 50);
 			}
 		};
-		// =============================================================
-		//                          MChartController
-		// =============================================================
 
-
-
-		//---
-		// THIS IS IN CONTROLLER and the callback / listener is defined in  LinkAnalysis
-		// listener see Fabric.js
-
-		//---
-		function MChartController({ model, view }) {
-			//	console.log("MChartController()");
-			this.NODE_RADIUS = 20;
-			this.model = model;
-			this.view = view;
-			controller = this;
-			this.nodes = model.nodes;
-			this.current_node = null;
-			this.links = model.links;
-
-			this.nodeClickHandler = null;
-			log(" MChartController() => this.nodes");
-			log(this.nodes);
-
-
-			this.context = this.view.getContext();
-			var width = view.getWidth();
-			this.addEventListeners();
-			this.layoutMgr = new MChartLayoutManager({ model: model, width: view.getWidth(), height: view.getHeight() });
-			this.layoutMgr.layout();
-
-
-			function handleMouseDown(event, callback) {
-				console.log("in handleClick");
-				console.log("callback = ");
-				console.log(callback);
-				var node = { name: "test in handleClick" };
-
-
-				for (var i = 0; i < controller.nodes.length; i++) {
-					var node = controller.nodes[i];
-
-					if (pointInCircle(event.clientX, event.clientY, node)) {
-						console.log("node " + node.name + " isClicked");
-						node.isClicked = true;
-						controller.current_node = node;
-						node.offset.x = event.clientX - node.x;
-						node.offset.y = event.clientY - node.y;
-					}
-					else {
-						node.isClicked = false;
-					}
-				}
-				controller.render();
-
-				if (controller.current_node) {
-					console.log("controller.current_node " + controller.current_node.name + " isClicked");
-					//callback(node)
-				}
-
-			}
-
-			function handleMouseMove(event) {
-				console.log(" _handle Mouse Move() => controller.nodes");
-				console.log(controller);
-
-				if (controller.current_node) {
-					console.log("controller.current_node " + controller.current_node.name + " isClicked");
-				}
-
-				for (var i = 0; i < controller.nodes.length; i++) {
-					var node = controller.nodes[i];
-					if (pointInCircle(event.clientX, event.clientY, node)) {
-						console.log("node " + node.name + " isBelowMouse");
-						node.isBelowMouse = true;
-					}
-					else {
-						node.isBelowMouse = false;
-					}
-				}
-				if (controller.current_node) {
-					controller.current_node.x = event.clientX - node.offset.x;
-					controller.current_node.y = event.clientY - node.offset.y;
-				}
-				controller.render();
-			}
-
-			function handleMouseUp(event) {
-				if (controller.current_node != null) {
-					controller.current_node.isClicked = true;
-					controller.current_node = null;
-				}
-				else {
-					controller.current_node.isClicked = false;
-
-				}
-				controller.render();
-			}
-
-
-
-			this.view.addEventListener("mouseup", handleMouseUp, false);
-			this.view.addEventListener("mousemove", handleMouseMove, false);
-			this.view.addEventListener("mousedown", function (event) {
-				console.log("in addEventListener");
-				console.log("callback = ");
-				console.log(this.nodeClickHandler);
-				handleMouseDown(event, this.nodeClickHandler);
-			});
-		}
-
-
-		MChartController.prototype._handleMouseDown = function (event) {
-			console.log(" _handle Mouse Down()");
-			for (var i = 0; i < controller.nodes.length; i++) {
-				var node = controller.nodes[i];
-
-				if (pointInCircle(event.clientX, event.clientY, node)) {
-					console.log("node " + node.name + " isClicked");
-					node.isClicked = true;
-					this.current_node = node;
-					node.offset.x = event.clientX - node.x;
-					node.offset.y = event.clientY - node.y;
-				}
-				else {
-					node.isClicked = false;
-				}
-			}
-			controller.render();
-		}
-
-
-
-		MChartController.prototype.addEventListeners = function () {
-			log("addEventListeners");
-
-			//this.view.addEventListener("mousedown", this._handleMouseDown);
-
-
-			//this.view.addEventListener("mousemove", this._handleMouseMove, false);
-			//this.view.addEventListener("mouseup", this._handleMouseUp, false);
-		};
-
-
-		MChartController.prototype._handleMouseMove = function (event) {
-			console.log(" _handle Mouse Move() => controller.nodes");
-			log(controller.nodes);
-
-			if (this.current_node) {
-				console.log("this.current_node " + this.current_node.name + " isClicked");
-			}
-
-
-
-			for (var i = 0; i < controller.nodes.length; i++) {
-				var node = controller.nodes[i];
-				if (pointInCircle(event.clientX, event.clientY, node)) {
-					console.log("node " + node.name + " isBelowMouse");
-					node.isBelowMouse = true;
-				}
-				else {
-					node.isBelowMouse = false;
-				}
-			}
-			if (this.current_node) {
-				this.current_node.x = event.clientX - node.offset.x;
-				this.current_node.y = event.clientY - node.offset.y;
-			}
-			controller.render();
-		}
-
-
-		MChartController.prototype._handleMouseUp = function (event) {
-			if (this.current_node != null) {
-				this.current_node.isClicked = false;
-				this.current_node = null;
-			}
-			controller.render();
-		}
-
-		MChartController.prototype.render = function () {
-			log("MChartController .render");
-			this.view.clear();
-			this.view.drawBorder();
-
-
-			log("controller.links.length = " + controller.links.length);
-			for (var i = 0; i < controller.links.length; i++) {
-				var link = controller.links[i];
-				this.view.renderLink(link);
-			}
-
-			log("controller.nodes.length");
-			log(controller.nodes);
-			for (var i = 0; i < controller.nodes.length; i++) {
-				var node = controller.nodes[i];
-				this.view.renderNode(node);
-				//node.draw(this.context);
-			}
-		}
 
 		// =============================================================
 		//                          LinkAnalysis
@@ -403,111 +398,276 @@
 			// COLORS ???
 
 			//this.graph = new Graph(); //model
-			var thisGraph = this;
-			thisGraph.idct = 0;
-			thisGraph.nodesLevel = [];
-			thisGraph.nodes = [];
-			thisGraph.links = [];
+			var me = this;
+			var thisLinkAnalysis = this;
 
+			me.idct = 0;
+			me.nodesLevel = [];
+			me.nodes = [];
+			me.links = [];
 
+			log(" MChartController() => this.nodes");
+			log(this.nodes);
 
-			this.width = 1200;
-			this.height = 900;
-			this.canvas = createHiDPICanvas(this.width, this.height);
-
-			this.node_radius = 30;
 
 
 			// the imgs[] array now holds fully loaded images
 			this.mcanvas = new MCanvas({ container: chart_container });
 			this.view = new MChartView({ mcanvas: this.mcanvas });
-			this.model = new MChartModel({ nodes: thisGraph.nodes, links: thisGraph.links });
-			this.controller = new MChartController({
-				model: this.model,
-				view: this.view
+			this.model = new MChartModel({ nodes: me.nodes, links: me.links });
+			controller = this;
+
+			this.nodes = this.model.nodes;
+			this.current_node = null;
+			this.links = this.model.links;
+
+			this.context = this.view.getContext();
+			var width = this.view.getWidth();
+			//			this.addEventListeners();
+			this.layout = new MRadialLayout({ model: this.model, width: this.view.getWidth(), height: this.view.getHeight() });
+			this.layout.layout();
+
+
+
+			/////////////
+			console.log("getComputedStyle");
+			console.log("----------------");
+
+			const style = document.defaultView.getComputedStyle(this.mcanvas.canvas, null);
+			this.stylePaddingLeft = parseInt(style['paddingLeft'], 10);
+			this.stylePaddingTop = parseInt(style['paddingTop'], 10);
+			this.styleBorderLeft = parseInt(style['borderLeftWidth'], 10);
+			this.styleBorderTop = parseInt(style['borderTopWidth'], 10);
+			// Some pages have fixed-position bars (like the stumbleupon bar) at the top or left of the page
+			// They will mess up mouse coordinates and this fixes that
+			var html = document.body.parentNode;
+			this.htmlTop = html.offsetTop;
+			this.htmlLeft = html.offsetLeft;
+			console.log(" this.htmlTop: " + this.htmlTop);
+			console.log(" this.htmlTop: " + this.htmlTop);
+			//////////////
+
+
+			function handleMouseDown(event, callback) {
+				console.log("in handleMouseDown");
+				event.preventDefault();
+
+				var mouse = me.getMouse(event);
+				console.log("mouse @ " + mouse.x + "," + mouse.y);
+
+
+				for (var i = 0; i < controller.nodes.length; i++) {
+					var node = me.nodes[i];
+
+					if (pointInCircle(mouse.x, mouse.y, node)) {
+
+						//	if (pointInCircle(event.clientX, event.clientY, node)) {
+						console.log("node " + node.name + " isClicked");
+						node.isClicked = true;
+
+						// Keep track of where in the object we clicked
+						// so we can move it smoothly (see mousemove)
+						me.selection = node;
+						me.dragoffx = mouse.x - node.x;
+						me.dragoffy = mouse.y - node.y;
+						me.dragging = true;
+						me.valid = false;
+
+						// @TODO: Add Callback to listerer(node);
+						return;
+					}
+					else {
+						node.isClicked = false;
+					}
+				}
+				controller.render();
+			}
+
+			function handleMouseMove(event) {
+				event.stopPropagation();
+				var mouse = me.getMouse(event);
+
+				// Highlight Node when mouse over
+				for (var i = 0; i < controller.nodes.length; i++) {
+					var node = controller.nodes[i];
+					if (pointInCircle(mouse.x, mouse.y, node)) {
+						//					if (pointInCircle(event.clientX, event.clientY, node)) {
+						console.log("node " + node.name + " isBelowMouse");
+						node.isBelowMouse = true;
+					}
+					else {
+						node.isBelowMouse = false;
+					}
+				}
+
+				if (me.dragging) {
+					// We don't want to drag the object by its top-left corner,
+					// we want to drag from where we clicked.
+					// Thats why we saved the offset and use it here
+					me.selection.x = mouse.x - me.dragoffx;
+					me.selection.y = mouse.y - me.dragoffy;
+					me.valid = false; // Something's dragging so we must redraw
+				}
+				controller.render();
+			}
+
+			function handleMouseUp(event) {
+				console.log(" handleMouse UP");
+				me.dragging = false;
+
+				/*
+				if (controller.current_node != null) {
+					controller.current_node.isClicked = true;
+					//controller.current_node = null;
+				}
+				else {
+					controller.current_node.isClicked = false;
+					controller.current_node = null;
+				}
+*/
+				if (controller.current_node) {
+					console.log("controller.current_node " + controller.current_node.name + " isClicked");
+					me.nodeClickHandler(controller.current_node);
+				}
+				controller.render();
+
+			}
+
+			this.view.addEventListener("mouseup", handleMouseUp, false);
+			this.view.addEventListener("mousemove", handleMouseMove, false);
+			this.view.addEventListener("mousedown", function (event) {
+				console.log("in addEventListener");
+				console.log(this.nodeClickHandler);
+				handleMouseDown(event, this.nodeClickHandler);
 			});
 
 			this.render = function () {
 				console.log("LinkAnalysis.render");
-				this.controller.render();
-			}
-			this.init_node = function (node) {
-				console.log("LinkAnalysis.init_node");
-				node.radius = this.node_radius;
-				node.offset = { x: 0, y: 0 };
+				//this.controller.render();
 
+				log("MChartController .render");
+				this.view.clear();
+				this.view.drawBorder();
+
+
+				log("controller.links.length = " + controller.links.length);
+				for (var i = 0; i < controller.links.length; i++) {
+					var link = controller.links[i];
+					this.view.renderLink(link);
+				}
+
+				log("controller.nodes.length");
+				log(controller.nodes);
+				for (var i = 0; i < controller.nodes.length; i++) {
+					var node = controller.nodes[i];
+					this.view.renderNode(node);
+					//node.draw(this.context);
+				}
 			}
 		}
 
 		LinkAnalysis.prototype = {
 
 
+			addNode: function (newNodeObject, parentNodeObject) {
+				var me = this;
+				console.log("LinkAnalysis addNode: " + newNodeObject);
+				var numNodes = me.nodes.length;
+
+				newNode = new Node();
+				//newNode.x = 0;
+				//newNode.y = 0;
+				newNode.id = numNodes;
+				newNode.name = newNodeObject.name;
+				newNode.parent = parentNodeObject;
+				newNode.level = this.getNodeLevel(newNodeObject);
+				console.log("  - nodeLevel " + newNode.level);
+
+				var nodesAtThisLvel = me.nodesLevel[newNode.level];
+				if (nodesAtThisLvel == null) {
+					me.nodesLevel[newNode.level] = [newNode];
+				}
+				else {
+					me.nodesLevel[newNode.level].push(newNode);
+				}
+
+				console.log("  - nodesAtThisLevel " + me.nodesLevel[newNode.level].length);
+
+				if (parentNodeObject.children == null) parentNodeObject.children = [];
+				parentNodeObject.children.push(newNode);
+
+				var link = new Link(newNode, parentNodeObject);
+				me.links.push(link);
+				me.nodes.push(newNode);
+
+				var root_node = me.nodesLevel[0][0];
+				this.setXY(root_node);
+				me.updateGraph();
+			},
+
+
 			setRootNode: function (node) {
-				console.log("TODO: canvas size");
-				var thisGraph = this;
-				var center_x = this.width / 2;
-				var center_y = this.height / 2;
-				node.x = center_x;
-				node.y = center_y;
+				console.log("TODO: setRootNode canvas size");
+				var me = this;
+				var center = this.mcanvas.getCenter();
+				console.log("CENTER: " + center.x + "/" + center.y);
+
+				node.x = center.x;
+				node.y = center.y;
 				node.id = 0;
 				node.level = 0;
 
-				this.init_node(node);
 
-				thisGraph.nodes.push(node);
-				thisGraph.nodesLevel[0] = [node];
-				//thisGraph.updateGraph();
+				me.nodes.push(node);
+				me.nodesLevel[0] = [node];
+				//me.updateGraph();
+
+				console.log("setRootNode: size = ");
+				console.log(node);
 			},
 
 			setNodeClickHandler: function (nodeClickHandler) {
 				this.nodeClickHandler = nodeClickHandler;
-				//var node = {name : "test"};
-				//eventHandler(node);
+				console.log("nodeClickHandler=" + this.nodeClickHandler);
+			},
+
+			// Creates an object with x and y defined,
+			// set to the mouse position relative to the state's canvas
+			// If you wanna be super-correct this can be tricky,
+			// we have to worry about padding and borders
+
+			getMouse: function (e) {
+				var element = this.mcanvas.canvas, offsetX = 0, offsetY = 0, mx, my;
+
+				// Compute the total offset
+				if (element.offsetParent !== undefined) {
+					do {
+						offsetX += element.offsetLeft;
+						offsetY += element.offsetTop;
+					} while (element = element.offsetParent);
+				}
+
+				// Add padding and border style widths to offset
+				// Also add the offsets in case there's a position:fixed bar
+				offsetX += this.stylePaddingLeft + this.styleBorderLeft + this.htmlLeft;
+				offsetY += this.stylePaddingTop + this.styleBorderTop + this.htmlTop;
+
+				mx = e.pageX - offsetX;
+				my = e.pageY - offsetY;
+
+				//mx = e.pageX ;
+				//my = e.pageY ;
+
+				// We return a simple javascript object (a hash) with x and y defined
+				return { x: mx, y: my };
+			},
+
+			updateGraph: function () {
+				this.render();
 			}
 		}
 
 
-
-		LinkAnalysis.prototype.updateGraph = function () {
-			this.render();
-		}
-
-
-		LinkAnalysis.prototype.addNode = function (newNode, parentNode) {
-			var thisGraph = this;
-			console.log("LinkAnalysis addNode: " + newNode.name);
-			var numNodes = thisGraph.nodes.length;
-
-			this.init_node(newNode);
-
-			newNode.x = 0;
-			newNode.y = 0;
-			newNode.id = numNodes;
-			newNode.parent = parentNode;
-			newNode.level = this.getNodeLevel(newNode);
-			console.log("  - nodeLevel " + newNode.level);
-
-			var nodesAtThisLvel = thisGraph.nodesLevel[newNode.level];
-			if (nodesAtThisLvel == null) {
-				thisGraph.nodesLevel[newNode.level] = [newNode];
-			}
-			else {
-				thisGraph.nodesLevel[newNode.level].push(newNode);
-			}
-
-			console.log("  - nodesAtThisLevel " + thisGraph.nodesLevel[newNode.level].length);
-
-			if (parentNode.children == null) parentNode.children = [];
-			parentNode.children.push(newNode);
-
-			var link = new Link(newNode, parentNode);
-			thisGraph.links.push(link);
-			thisGraph.nodes.push(newNode);
-
-			var root_node = thisGraph.nodesLevel[0][0];
-			this.setYX(root_node);
-			thisGraph.updateGraph();
-		}
 		LinkAnalysis.prototype.getNodeLevel = function (node) {
 			var level = 0;
 			var parent = node.parent;
@@ -518,10 +678,10 @@
 			return level;
 		}
 
-		LinkAnalysis.prototype.setYX = function (node) {
-			var thisGraph = this;
+		LinkAnalysis.prototype.setXY = function (node) {
+			//			var me = this;
 
-			console.log("  setYX " + node.name);
+			console.log("  setXY " + node.name);
 			if (node.children == null) return;
 
 			console.log(node);
@@ -555,7 +715,7 @@
 					+ " radius=" + radius
 					+ " parent (x=" + parentX + ", y=" + parentY + ")"
 					+ " angle=" + angle);
-				this.setYX(child_node);
+				this.setXY(child_node);
 
 			}
 		}
@@ -607,7 +767,7 @@
 				// TODO
 				// IconByNodeType does not exist in the class Circle
 				var node_type = "case";
-				/*
+
 				var icon_element = this.IconByNodeType[node_type];
 				if (icon_element) {
 					var image = icon_element.image;
@@ -620,9 +780,9 @@
 				}
 				else {
 					console.log("IconByNodeType " + this.IconByNodeType + " does not exist in the class Circle");
-	
+
 				}
-	*/
+
 				//console.log("isBelowMouse: " + this.isBelowMouse);
 				if (this.isClicked) {
 					//this.drawRing(context, color_ring_isActivated);
@@ -649,16 +809,13 @@
 
 		var chart_container = document.getElementById("chart_container");
 		var linkAnalysis = new LinkAnalysis(chart_container);
+
+
 		var main_person = { id: "p_123", name: "Eric Fox", type: "person", photo: "https://randomuser.me/api/portraits/men/22.jpg" };
 		linkAnalysis.setRootNode(main_person);
 
-
-
-
 		var vehicle = { name: "vehicle", "type": "vehicle" };
 		linkAnalysis.addNode(vehicle, main_person);   // add a note and add an edge 
-
-
 
 		var fugitive_case = { name: "FCS0001089", "type": "case" };
 		linkAnalysis.addNode(fugitive_case, main_person);
@@ -666,13 +823,13 @@
 		var node_arrest = { name: "AR-784723", type: "arrest" };
 		linkAnalysis.addNode(node_arrest, main_person);
 
-		var node_family = { name: "family" };
+		var node_family = { name: "Family" };
 		linkAnalysis.addNode(node_family, main_person);
 
-		var node_Lisa = { "name": "FOX, Lisa", "relationship": "Wife", "age": "42", "degree_of_relationship": "0", "photo": "https://dojopsdemo.service-now.com/3e81dbe01bf01090f76f20252a4bcb46.iix" };
-		var node_Edward = { "name": "FOX, Edward", "relationship": "Son", "age": "18", "degree_of_relationship": "1", "photo": "https://dojopsdemo.service-now.com/2e6fc659db7418103405ce1c29961945.iix" };
-		var node_Cindy = { "name": "FOX, Cindy", "relationship": "Daughter", "age": "16", "degree_of_relationship": "1", "photo": "https://dojopsdemo.service-now.com/8bc1d3241bf01090f76f20252a4bcbf8.iix" };
-		var nodes_family = [node_Lisa, node_Edward, node_Cindy];
+		var node_Lisa = { "name": "FOX, Lisa", "relationship": "Wife", "age": "42", "degree_of_relationship": "0", "photo": "https://randomuser.me/api/portraits/women/33.jpg" };
+		var node_Edward = { "name": "FOX, Edward", "relationship": "Son", "age": "18", "degree_of_relationship": "1", "photo": "https://randomuser.me/api/portraits/men/22.jpg" };
+		var node_Cindy = { "name": "FOX, Cindy", "relationship": "Daughter", "age": "16", "degree_of_relationship": "1", "photo": "https://randomuser.me/api/portraits/women/33.jpg" };
+		//var nodes_family = [node_Lisa, node_Edward, node_Cindy];
 		// {"name":"PARK, Carlos","relationship":"Cousin","age":"38","degree_of_relationship":"3","photo":"https://dojopsdemo.service-now.com/c09393281bf01090f76f20252a4bcb1a.iix"}]
 		linkAnalysis.addNode(node_Lisa, node_family);
 		linkAnalysis.addNode(node_Edward, node_family);
@@ -688,14 +845,16 @@
 		linkAnalysis.addNode(node_place_B, node_known_addresses);
 		linkAnalysis.addNode(node_place_C, node_known_addresses);
 
-		linkAnalysis.setNodeClickHandler(handleNodeClicked);
 
 		linkAnalysis.setIconByNodeType(IconByNodeType);
 
 
 		function handleNodeClicked(node) {
-			alert("in handleNodeClicked: " + node.name);
+			console.log("NODE CLICKED: " + node.name);
 		}
+
+		linkAnalysis.setNodeClickHandler(handleNodeClicked);
+
 
 		var options = {};
 		//	linkAnalysis.draw(graph_data, options);
