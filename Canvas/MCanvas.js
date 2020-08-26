@@ -181,7 +181,7 @@ MCanvas.prototype.drawBorder = function (background_color) {
 	this.ctx.fill();
 };
 
-function apply_styles (ctx, color_stroke, color_fill, line_width) {
+function apply_styles(ctx, color_stroke, color_fill, line_width) {
 	if (line_width != "") {
 		ctx.lineWidth = line_width;
 	}
@@ -193,7 +193,6 @@ function apply_styles (ctx, color_stroke, color_fill, line_width) {
 		ctx.fillStyle = color_fill;
 		ctx.fill();
 	}
-
 }
 MCanvas.prototype.drawArc = function (
 	center,
@@ -210,18 +209,31 @@ MCanvas.prototype.drawArc = function (
 	this.ctx.lineWidth = 3;
 
 	apply_styles(this.ctx, color_stroke, color_fill, line_width);
-
 };
 
-MCanvas.prototype.drawCircle = function (x, y, radius, color_stroke, color_fill, line_width) {
+MCanvas.prototype.drawCircle = function (
+	x,
+	y,
+	radius,
+	color_stroke,
+	color_fill,
+	line_width
+) {
 	this.ctx.beginPath();
 	this.ctx.arc(x, y, radius, 0, 2 * Math.PI, false);
 
 	apply_styles(this.ctx, color_stroke, color_fill, line_width);
 };
 
-MCanvas.prototype.drawRing = function (x, y, radius, color_stroke, color_fill, line_width) {
-	this.drawCircle(x, y, radius, color_stroke);
+MCanvas.prototype.drawRing = function (
+	x,
+	y,
+	radius,
+	color_stroke,
+	color_fill,
+	line_width
+) {
+	this.drawCircle(x, y, radius, color_stroke, color_fill, line_width);
 };
 
 // draw point with text and circle around it.
@@ -241,26 +253,26 @@ MCanvas.prototype.drawPoint = function (x, y, radius, text) {
 	//this.ctx.textAlign = "center";
 	this.ctx.textBaseline = "middle";
 	this.ctx.fillStyle = "#384047"; // darkish
-	//this.ctx.fillText(text, x , y + radius + 20) ;
+	this.ctx.fillText(text, x, y + radius + 20);
 };
 MCanvas.prototype.drawText = function (
 	x,
 	y,
 	text,
 	font,
-	text_color,
+	color,
 	maxWidth,
-	optionalSeparator
+	separator
 ) {
 	var word_separator = " ";
-	if (optionalSeparator) {
-		word_separator = optionalSeparator;
+	if (separator) {
+		word_separator = separator;
 	}
 
 	this.ctx.font = font;
 	this.ctx.textAlign = "center";
-	this.ctx.textBaseline = "top";
-	this.ctx.fillStyle = text_color;
+	this.ctx.textBaseline = "middle";
+	this.ctx.fillStyle = color;
 
 	//      var alphabet = "M"; //"ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz";
 	var lineHeight = getLineHeight(text, font);
