@@ -31,16 +31,16 @@
 
 
 // TRIGO FUNCTIONS
-function getPointOnArc(cx, cy, r, deg) {
+function getPointOnArc(cx, cy, r, angle) {
   return {
-    x: cx + r * Math.cos(deg),
-    y: cy + r * Math.sin(deg)
+    x: cx + r * Math.cos(angle),
+    y: cy + r * Math.sin(angle)
   };
 }
-function getPointOnArc(point, r, deg) {
+function getPointOnArc(point, r, angle) {
     return {
-      x: point.x + r * Math.cos(deg),
-      y: point.y + r * Math.sin(deg) };
+      x: point.x + r * Math.cos(angle),
+      y: point.y + r * Math.sin(angle) };
 
   }
   function to_radians(degrees) {
