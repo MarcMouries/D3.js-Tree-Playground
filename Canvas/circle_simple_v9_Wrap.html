@@ -1013,13 +1013,17 @@
 
 
 		linkAnalysis.addObject(ceo_smith);
+
 		linkAnalysis.addObject(vp_west);
-		linkAnalysis.addObject(vp_east);
-		linkAnalysis.addObject(vp_south);
-		linkAnalysis.addObject(vp_north);
-		linkAnalysis.addLink("CEO Smith", "VP East");
-		linkAnalysis.addLink("CEO Smith", "VP South");
 		linkAnalysis.addLink("CEO Smith", "VP West");
+
+		linkAnalysis.addObject(vp_east);
+		linkAnalysis.addLink("CEO Smith", "VP East");
+
+		linkAnalysis.addObject(vp_south);
+		linkAnalysis.addLink("CEO Smith", "VP South");
+
+		linkAnalysis.addObject(vp_north);
 		linkAnalysis.addLink("CEO Smith", "VP North");
 
 
@@ -1027,6 +1031,24 @@
 	 	add_objects_and_links(linkAnalysis, 3, "West", "VP West");
 	 	add_objects_and_links(linkAnalysis, 3, "South", "VP South");
 	 	add_objects_and_links(linkAnalysis, 3, "North", "VP North");
+
+/*  SCENARIO 
+
+could work by making the link line a curve
+- if line intersects with another line -> increase curvature 
+
+	 digraph {
+		a -> b
+		a -> c
+		b -> d
+		c -> d
+	}
+		var dir_east_west = { id: "East_West", name: "East_West", type: "person" };
+		linkAnalysis.addObject(dir_east_west);
+		linkAnalysis.addLink("VP East", "East_West");
+		linkAnalysis.addLink("VP West", "East_West");
+*/
+
 
 		linkAnalysis.render();
 
