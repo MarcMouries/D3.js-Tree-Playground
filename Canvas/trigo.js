@@ -30,14 +30,21 @@
   }
 
 
-// TRIGO FUNCTIONS
 function getPointOnArc(cx, cy, r, angle) {
   return {
     x: cx + r * Math.cos(angle),
     y: cy + r * Math.sin(angle)
   };
 }
-function getPointOnArc(point, r, angle) {
+
+function rotate(x, y, angle) {
+  return {
+    x: x * Math.cos(angle) - y * Math.sin(angle),
+    y: x * Math.sin(angle) + y * Math.cos(angle)
+  };
+}
+
+function __getPointOnArc(point, r, angle) {
     return {
       x: point.x + r * Math.cos(angle),
       y: point.y + r * Math.sin(angle) };

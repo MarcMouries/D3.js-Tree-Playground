@@ -219,48 +219,251 @@
 			return nodes;
 		};
 
+		//----------
+		// Node
+		// Graph
+		//
 
 		// =============================================================
 		//                          Node
 		// =============================================================
-		function Node() {
-			this.x = 0;
-			this.y = 0;
-			this.radius = 20;
-			this.offset = { x: 0, y: 0 };
-			this.type = "";
-			this.name = "";
+		function Node(id, data) {
+			this.id = id;
+			this.data = data;
+			this.depth = -1;
+			this.adjacentList = [];
 		}
 
+		Node.prototype.addAdjacent = function (node) {
+			this.adjacentList.push(node);
+		};
+
+		Node.prototype.getAdjacents = function (node) {
+			return this.adjacentList;
+		};
+
+		Node.prototype.isAdjacent = function (node) {
+			return this.adjacentList.indexOf(node) > -1;
+		};
 
 		// =============================================================
 		//                          Link
 		// =============================================================
 		function Link(source, target) {
+			this.id = source.id + "-" + target.id;
 			this.source = source;
 			this.target = target;
-			this.start_X = this.source.x;
-			this.start_Y = this.source.y;
-			this.end_X = this.target.x;
-			this.end_Y = this.target.y;
 		}
-
-
 
 		// =============================================================
 		//                          Graph
 		// =============================================================
 		function Graph() {
-			this.nodes = [];
-			this.edges = [];
-
+			this.graph = {};
+			this.nodeList = [];
+			this.linkList = [];
+			this.adjacency = {};
 		}
+
+		/**
+		 *
+		 */
+		Graph.prototype.addObject = function (object) {
+			var node = new Node(object.id, object);
+			//console.log("added node : " + node.id);
+			//console.log(node);
+			this.addNode(node);
+			return node;
+		};
+
 		Graph.prototype.addNode = function (node) {
-			this.nodes.push(node);
+			if (!(node.id in this.graph)) {
+				this.nodeList.push(node);
+				this.graph[node.id] = node;
+			}
+
+			return node;
 		};
+
+		/**
+		 * Check if the specified node is a target in the list of links
+		 */
+		Graph.prototype.isRoot = function (node) {
+			//  console.log(" IS ROOT ?");
+			//  console.log("node: " + node_id);
+			var exist = false;
+			this.linkList.forEach(function (link, index) {
+				if (link.target.id === node.id) {
+					exist = true;
+					// console.log("link source: " + link.source.id);
+					// console.log("link target: " + link.target.id);
+				}
+			});
+			return (is_root = !exist);
+		};
+
+		Graph.prototype.addLink = function (sourceNode_id, targetNode_id) {
+			var sourceNode = this.getNode(sourceNode_id);
+			if (sourceNode == undefined) {
+				throw new TypeError(
+					"Trying to add a link to the non-existent node with id: " + sourceNode_id
+				);
+			}
+			var targetNode = this.getNode(targetNode_id);
+			if (targetNode == undefined) {
+				throw new TypeError(
+					"Trying to add a link to the non-existent node with id: " + targetNode_id
+				);
+			}
+
+			var link = new Link(sourceNode, targetNode);
+			var exists = false;
+
+			this.linkList.forEach(function (item) {
+				if (link.id === item.id) {
+					exists = true;
+					//console.log("link " + link.id + " exists? = " + exists);
+				}
+			});
+
+			if (!exists) {
+				this.linkList.push(link);
+				sourceNode.addAdjacent(targetNode);
+			}
+
+			if (!(link.source.id in this.adjacency)) {
+				this.adjacency[link.source.id] = {};
+			}
+			if (!(link.target.id in this.adjacency[link.source.id])) {
+				this.adjacency[link.source.id][link.target.id] = [];
+			}
+
+			//console.log("link source: " + link.source.id);
+			//console.log("link target: " + link.target.id);
+			this.adjacency[link.source.id][link.target.id].push(link);
+		};
+
+		Graph.prototype.getNode = function (nodeID) {
+			var node = this.graph[nodeID];
+			return node;
+		};
+
+		Graph.prototype._getAdjacents = function (nodeID) {
+			var node = this.graph[nodeID];
+			return this.adjacency[node.id];
+		};
+
+
 		Graph.prototype.getNodes = function (node) {
-			return this.nodes;
+			return this.nodeList;
+		}
+		Graph.prototype.getLinks = function () {
+			return this.linkList;
+		}
+
+		function printNode(node) {
+			var adjacentsRepresentation = "";
+			if (node.getAdjacents() == 0) {
+				adjacentsRepresentation = "∅";
+			} else {
+				adjacentsRepresentation = node
+					.getAdjacents()
+					.map(function (item) {
+						return item.id;
+					})
+					.join(", ");
+			}
+			return node.id + " => " + adjacentsRepresentation;
+		}
+		Graph.prototype.toString = function () {
+			return this.nodeList.map(printNode);
 		};
+
+		Graph.prototype.loadJSON = function () {
+			console.error("Graph.prototype.loadJSON  NOT IMPLEMENTED");
+		};
+
+		//
+		Graph.prototype.getNodesAtLevel = function (level) {
+			return [];
+		};
+
+		Graph.prototype.visit_breadth_first = function (starting_node, callback) {
+			var max = 0;
+
+			if (starting_node && starting_node.getAdjacents().length > 0) {
+				var depth = -1;
+				var fifo = [];
+				var nodes_at_level = [];
+
+				fifo.push(starting_node);
+				while (fifo.length > 0) {
+					var node = fifo.shift();
+
+					if (node.depth >= depth) {
+						if (depth > -1) {
+							callback(depth, nodes_at_level);
+						}
+						depth++;
+						max = Math.max(max, nodes_at_level.length);
+						nodes_at_level = [];
+					}
+					node.depth = depth;
+					nodes_at_level.push(node);
+					node.getAdjacents().forEach(function (item, index) {
+						item.depth = depth;
+						fifo.push(item);
+						//  console.log("item #: " + item.id + " (level: " + level);
+					});
+				}
+				callback(depth, nodes_at_level);
+				return Math.max(max, nodes_at_level.length);
+			}
+			return 0;
+		};
+
+		// =============================================================
+		//                          Graph Utils
+		// =============================================================
+
+		function visit_nodes_at_level(level, nodes_at_level) {
+			maxDepth++;
+			var to_string = nodes_at_level
+				.map(function (item) {
+					return item.id + " (" + item.depth + ")";
+				})
+				.join(", ");
+			console.log("Level " + level + ": " + to_string);
+		}
+
+		function to_string_node_list(node_list) {
+			var to_string = node_list
+				.map(function (item) {
+					return item.id + " (" + item.depth + ")";
+				})
+				.join(", ");
+
+			return to_string;
+		}
+
+
+
+
+		function build_nodes_at_level() {
+			var nodes_by_level = [];
+
+			graph.visit_breadth_first(root_node, function (
+				level,
+				nodes_at_current_level
+			) {
+				// console.log("Level " + level + ": " + to_string);
+				nodes_by_level[level] = nodes_at_current_level;
+			});
+			return nodes_by_level;
+		}
+
+
+
 
 		// =============================================================
 		//                          MChartView
@@ -269,9 +472,9 @@
 			console.log("MChartView()");
 			this.mcanvas = mcanvas;
 			this.ctx = mcanvas.getContext();
-			console.log(this.mcanvas);
-			console.log("getWidth = " + this.getWidth());
-			console.log("getHeight = " + this.getHeight());
+			log(this.mcanvas);
+			log("MChartView.getWidth = " + this.getWidth());
+			log("MChartView.getHeight = " + this.getHeight());
 			this.background_color = "#FFFFFF";//"#F5F5F5";
 
 			this.color_ring_isActivated = "#3b6978";
@@ -297,19 +500,16 @@
 			log("MChartView .drawBorder");
 			//this.mcanvas.drawBorder(this.background_color);
 		}
-
 		MChartView.prototype.renderLink = function (link) {
 			log("renderLink ");
 			log(link);
-
 			var strokeStyle = "grey";
 			var lineWidth = "1";
 			this.mcanvas.drawLine(link.source.x, link.source.y, link.target.x, link.target.y, strokeStyle, lineWidth);
-
 		}
-
 		MChartView.prototype.renderNode = function (node) {
-			log("MChartView .renderNode: " + node.name);
+
+			log(`MChartView.renderNode: ${node.data.name}: ${node.x},${node.y} `);
 
 			if (node.type == "person") {
 				//console.log("it's  a person");
@@ -320,15 +520,15 @@
 
 			var font = "12px Arial"
 			var text_color = "#333";
-			this.mcanvas.drawPoint(node.x, node.y, node.radius, node.name);
-			//this.mcanvas.drawTextBG(node.name, node.x, node.y, font, 0, this.background_color);
+			this.mcanvas.drawPoint(node.x, node.y, node.radius, "A. " + node.data.name);
+			//this.mcanvas.drawTextBG("B. " + node.data.name, node.x, node.y, font, 0, this.background_color);
 
 			var padding_node_title = 0;
-			var circle_width = 2 * node.radius;
-			var maxLineWidth = 1.5 * circle_width;
+			var maxLineWidth = 1.5 * (2 * node.radius);
 			// CENTER TEXT
-			var y = node.y + node.radius + padding_node_title;
-			this.mcanvas.drawText(node.x, y, node.name, font, text_color, maxLineWidth, ",");
+			var y = node.y + padding_node_title;
+			log(node);
+			//this.mcanvas.drawText(node.x, y, "C. " + node.data.name, font, text_color, maxLineWidth, ",");
 
 
 			if (node.isClicked) {
@@ -344,39 +544,67 @@
 		// =============================================================
 		//                          MRadialLayout
 		// =============================================================
-		function MRadialLayout({ graph, width, height }) {
-		//	this.nodes = graph.nodes;
-			this.width = width;
-			this.height = height;
-			console.log("MRadialLayout()");
-			console.log("width = " + width);
-			console.log("height = " + height);
-			console.log("this.nodes = ");
-		//	console.log(this.nodes);
-			//var center = mcanvas.getCenter();
-
+		function MRadialLayout() {
 		}
-		MRadialLayout.prototype.layout = function () {
-			//console.log("MRadialLayout : layout");
 
-			if (! this.nodes) {
-				console.error("MRadialLayout : can't run on an empty graph.");
+		MRadialLayout.Calculate_Positions = function (graph, starting_vertex, center) {
+			log(`MRadialLayout.Calculate_Positions: ${starting_vertex.data.name}`);
+
+			var RADIUS_LEVEL = 150;
+
+			if (!graph || graph.getNodes().length == 0) {
+				console.error("MRadialLayout: can't run on an empty graph.");
 				return;
+			}
+			if (starting_vertex == 'undefined') {
+				console.error("MRadialLayout: can't run without a starting vertex. Which node should be the center?");
+				return;
+			}
+			if (center == 'undefined') {
+				console.error("MRadialLayout: can't run without a center set.");
+				return;
+			}
+
+			var nodes = graph.getNodes();
+			var children_number = starting_vertex.getAdjacents().length;
+			if (children_number > 0) {
+				console.log(`*** MRadialLayout vertex id=${starting_vertex.id}: # children=${children_number}`);
+			}
+			else {
+				return;
+			}
+
+			if (graph.isRoot(starting_vertex)) {
+				starting_vertex.x = center.x;
+				starting_vertex.y = center.y;
+				starting_vertex.angle = 0;
+				starting_vertex.angleRange = 2 * Math.PI; //
+				log(`*** MRadialLayout ROOT id=${starting_vertex.id}, x=${starting_vertex.x}, y=${starting_vertex.y},depth=${starting_vertex.depth},
+                            angle=${to_degrees(starting_vertex.angle)}°- angleRange=${to_degrees(starting_vertex.angleRange)}°`);
 
 			}
-			if (this.nodes.length == 0) {
-				return;
-			}
-			// Center the root
-			var root = this.nodes[0];
-			root.x = this.width / 2;
-			root.y = this.height / 2;
 
-			// replace by layout with Compass
-			for (var i = 1; i < this.nodes.length; i++) {
-				var node = this.nodes[i];
-				node.x = root.x + (i * 50);
-				node.y = root.y + (i * 50);
+			for (var c = 0; c < children_number; c++) {
+				var child = starting_vertex.getAdjacents()[c];
+				var slice_angle = starting_vertex.angleRange / children_number;
+				//console.log("slice_angle = " + slice_angle);
+				//console.log("child _angle = " + slice_angle * c);
+				child.angle = starting_vertex.angle + slice_angle * c;
+				child.angleRange = slice_angle;
+				var cx = RADIUS_LEVEL ; //* child.depth;
+				var cy = 0;
+
+				//var location = getPointOnArc(cx, cy, RADIUS, child.angle);
+				var rotation = rotate(cx, cy, child.angle);
+				log(`*** MRadialLayout rotation =${rotation.x},${rotation.y}`);
+				child.x = starting_vertex.x + rotation.x;
+				child.y = starting_vertex.y + rotation.y;
+
+				log(`*** MRadialLayout child id=${child.id}, x=${child.x}, y=${child.y},depth=${child.depth},
+                            angle=${to_degrees(child.angle)}°- angleRange=${to_degrees(child.angleRange)}°`);
+
+				//  RECURSIVE CALL on children
+				MRadialLayout.Calculate_Positions(graph, child, center);
 			}
 		};
 
@@ -392,43 +620,37 @@
 			var node_width = image_width;
 			var node_height = image_width;
 
+
+			this.NODE_RADIUS = 20;
+
+			//
+			//
+			// set node.radius
+			// set nodes_by_level
+
+			//
+			//
+			//
+
+
+
 			var icon_width = 40;
 			var icon_heigth = 40;
 
 			// COLORS ???
 
-			//this.graph = new Graph(); //model
-			var me = this;
-			var thisLinkAnalysis = this;
-
-			me.idct = 0;
-			me.nodesLevel = [];
-			me.nodes = [];
-			me.links = [];
-
-			log(" MChartController() => this.nodes");
-			log(this.nodes);
-
+			this.graph = new Graph();
+			var linkAnalysis = this;
 
 
 			// the imgs[] array now holds fully loaded images
 			this.mcanvas = new MCanvas({ container: chart_container });
 			this.view = new MChartView({ mcanvas: this.mcanvas });
-			this.model = new MChartModel({ nodes: me.nodes, links: me.links });
-			controller = this;
 
-			this.nodes = this.model.nodes;
+
 			this.current_node = null;
-			this.links = this.model.links;
-
 			this.context = this.view.getContext();
-			var width = this.view.getWidth();
 			//			this.addEventListeners();
-			this.layout = new MRadialLayout({ model: this.model, width: this.view.getWidth(), height: this.view.getHeight() });
-			this.layout.layout();
-
-
-
 			/////////////
 			console.log("getComputedStyle");
 			console.log("----------------");
@@ -449,15 +671,16 @@
 
 
 			function handleMouseDown(event, callback) {
-				console.log("in handleMouseDown");
-				event.preventDefault();
+				console.log("in handleMouse_Down");
+				//event.preventDefault();
 
-				var mouse = me.getMouse(event);
+				var mouse = linkAnalysis.getMouse(event);
 				console.log("mouse @ " + mouse.x + "," + mouse.y);
 
-
-				for (var i = 0; i < controller.nodes.length; i++) {
-					var node = me.nodes[i];
+				var nodes = linkAnalysis.graph.getNodes();
+				log("nodes.length = " + nodes.length);
+				for (var i = 0; i < nodes.length; i++) {
+					var node = nodes[i];
 
 					if (pointInCircle(mouse.x, mouse.y, node)) {
 
@@ -467,11 +690,11 @@
 
 						// Keep track of where in the object we clicked
 						// so we can move it smoothly (see mousemove)
-						me.selection = node;
-						me.dragoffx = mouse.x - node.x;
-						me.dragoffy = mouse.y - node.y;
-						me.dragging = true;
-						me.valid = false;
+						linkAnalysis.selection = node;
+						linkAnalysis.dragoffx = mouse.x - node.x;
+						linkAnalysis.dragoffy = mouse.y - node.y;
+						linkAnalysis.dragging = true;
+						linkAnalysis.valid = false;
 
 						// @TODO: Add Callback to listerer(node);
 						return;
@@ -480,16 +703,18 @@
 						node.isClicked = false;
 					}
 				}
-				controller.render();
+				linkAnalysis.render();
 			}
 
 			function handleMouseMove(event) {
-				event.stopPropagation();
-				var mouse = me.getMouse(event);
+				console.log("in handleMouse_Move");
+				//event.stopPropagation();
+				var mouse = linkAnalysis.getMouse(event);
 
 				// Highlight Node when mouse over
-				for (var i = 0; i < controller.nodes.length; i++) {
-					var node = controller.nodes[i];
+				var nodes = linkAnalysis.graph.getNodes();
+				for (var i = 0; i < nodes.length; i++) {
+					var node = nodes[i];
 					if (pointInCircle(mouse.x, mouse.y, node)) {
 						//					if (pointInCircle(event.clientX, event.clientY, node)) {
 						console.log("node " + node.name + " isBelowMouse");
@@ -500,20 +725,20 @@
 					}
 				}
 
-				if (me.dragging) {
+				if (linkAnalysis.dragging) {
 					// We don't want to drag the object by its top-left corner,
 					// we want to drag from where we clicked.
 					// Thats why we saved the offset and use it here
-					me.selection.x = mouse.x - me.dragoffx;
-					me.selection.y = mouse.y - me.dragoffy;
-					me.valid = false; // Something's dragging so we must redraw
+					linkAnalysis.selection.x = mouse.x - linkAnalysis.dragoffx;
+					linkAnalysis.selection.y = mouse.y - linkAnalysis.dragoffy;
+					linkAnalysis.valid = false; // Something's dragging so we must redraw
 				}
-				controller.render();
+				linkAnalysis.render();
 			}
 
 			function handleMouseUp(event) {
 				console.log(" handleMouse UP");
-				me.dragging = false;
+				linkAnalysis.dragging = false;
 
 				/*
 				if (controller.current_node != null) {
@@ -525,12 +750,11 @@
 					controller.current_node = null;
 				}
 */
-				if (controller.current_node) {
-					console.log("controller.current_node " + controller.current_node.name + " isClicked");
-					me.nodeClickHandler(controller.current_node);
+				if (linkAnalysis.current_node) {
+					console.log("linkAnalysis.current_node " + linkAnalysis.current_node.data.name + " isClicked");
+					linkAnalysis.nodeClickHandler(controller.current_node);
 				}
-				controller.render();
-
+				linkAnalysis.render();
 			}
 
 			this.view.addEventListener("mouseup", handleMouseUp, false);
@@ -540,90 +764,69 @@
 				console.log(this.nodeClickHandler);
 				handleMouseDown(event, this.nodeClickHandler);
 			});
-
-			this.render = function () {
-				console.log("LinkAnalysis.render");
-				//this.controller.render();
-
-				log("MChartController .render");
-				this.view.clear();
-				this.view.drawBorder();
-
-
-				log("controller.links.length = " + controller.links.length);
-				for (var i = 0; i < controller.links.length; i++) {
-					var link = controller.links[i];
-					this.view.renderLink(link);
-				}
-
-				log("controller.nodes.length");
-				log(controller.nodes);
-				for (var i = 0; i < controller.nodes.length; i++) {
-					var node = controller.nodes[i];
-					this.view.renderNode(node);
-					//node.draw(this.context);
-				}
-			}
 		}
 
 		LinkAnalysis.prototype = {
 
+			addObject: function (object) {
+				console.log("LinkAnalysis addNode: " + object);
 
-			addNode: function (newNodeObject, parentNodeObject) {
-				var me = this;
-				console.log("LinkAnalysis addNode: " + newNodeObject);
-				var numNodes = me.nodes.length;
+				var node = this.graph.addObject(object);
+				node.radius = this.NODE_RADIUS;
 
-				newNode = new Node();
-				//newNode.x = 0;
-				//newNode.y = 0;
-				newNode.id = numNodes;
-				newNode.name = newNodeObject.name;
-				newNode.parent = parentNodeObject;
-				newNode.level = this.getNodeLevel(newNodeObject);
-				console.log("  - nodeLevel " + newNode.level);
-
-				var nodesAtThisLvel = me.nodesLevel[newNode.level];
-				if (nodesAtThisLvel == null) {
-					me.nodesLevel[newNode.level] = [newNode];
-				}
-				else {
-					me.nodesLevel[newNode.level].push(newNode);
-				}
-
-				console.log("  - nodesAtThisLevel " + me.nodesLevel[newNode.level].length);
-
-				if (parentNodeObject.children == null) parentNodeObject.children = [];
-				parentNodeObject.children.push(newNode);
-
-				var link = new Link(newNode, parentNodeObject);
-				me.links.push(link);
-				me.nodes.push(newNode);
-
-				var root_node = me.nodesLevel[0][0];
-				this.setXY(root_node);
-				me.updateGraph();
+				//linkAnalysis.updateGraph();
 			},
 
 
-			setRootNode: function (node) {
-				console.log("TODO: setRootNode canvas size");
-				var me = this;
-				var center = this.mcanvas.getCenter();
-				console.log("CENTER: " + center.x + "/" + center.y);
+			addLink: function (sourceNode_id, targetNode_id) {
+				console.log("LinkAnalysis addLink: " + sourceNode_id + " / " + targetNode_id);
+				this.graph.addLink(sourceNode_id, targetNode_id);
+				//linkAnalysis.updateGraph();
+			},
 
-				node.x = center.x;
-				node.y = center.y;
-				node.id = 0;
-				node.level = 0;
+			render: function () {
+				console.log("LinkAnalysis.render");
+				console.log("==> LinkAnalysis this.graph = ");
+				console.log(this.graph);
 
 
-				me.nodes.push(node);
-				me.nodesLevel[0] = [node];
-				//me.updateGraph();
+				// RADIAL
+				var starting_vertex = this.graph.getNode("CEO Smith");
+				console.log("==> LinkAnalysis starting_vertex = " + starting_vertex.id);
 
-				console.log("setRootNode: size = ");
-				console.log(node);
+
+				// calculate the depth of each node from the starting vertex
+				this.graph.visit_breadth_first(starting_vertex, function (level, nodes_at_current_level) {
+					// console.log("Level " + level + ": " + to_string);
+					//nodes_at_level[level] = nodes_at_current_level;
+				});
+
+
+				this.center = { x: this.view.getWidth() / 2, y: this.view.getHeight() / 2 };
+				MRadialLayout.Calculate_Positions(this.graph, starting_vertex, this.center);
+
+				log("MChartController.render");
+				this.view.clear();
+				this.view.drawBorder();
+
+
+				// LINKS 
+				var links = this.graph.getLinks();
+				log("links.length = " + links.length);
+				for (var i = 0; i < links.length; i++) {
+					var link = links[i];
+					this.view.renderLink(link);
+				}
+
+				// NODES
+				var nodes = this.graph.getNodes();
+				log("nodes.length = " + nodes.length);
+				for (var i = 0; i < nodes.length; i++) {
+					var node = nodes[i];
+					log("LinkAnalysis render node");
+					log(node);
+					this.view.renderNode(node);
+				}
 			},
 
 			setNodeClickHandler: function (nodeClickHandler) {
@@ -668,17 +871,7 @@
 		}
 
 
-		LinkAnalysis.prototype.getNodeLevel = function (node) {
-			var level = 0;
-			var parent = node.parent;
-			while (parent) {
-				level++;
-				parent = parent.parent;
-			}
-			return level;
-		}
-
-		LinkAnalysis.prototype.setXY = function (node) {
+		LinkAnalysis.prototype.___setXY = function (node) {
 			//			var me = this;
 
 			console.log("  setXY " + node.name);
@@ -696,9 +889,9 @@
 
 				var child_node = node.children[i];
 				var radius = 200 / (node.level + 1);
-
-				var angle = (i / (num_children / 2)) * (Math.PI) // Calculate the angle at which the element will be placed.
+				// Calculate the angle at which the element will be placed.
 				// For a semicircle, we would use (i / numNodes) * Math.PI.
+				var angle = (i / (num_children / 2)) * (Math.PI)
 				var x = (radius * Math.cos(angle)); // Calculate the x position of the element.
 				var y = -(radius * Math.sin(angle)); // Calculate the y position of the element.
 
@@ -809,42 +1002,72 @@
 
 		var chart_container = document.getElementById("chart_container");
 		var linkAnalysis = new LinkAnalysis(chart_container);
+		var options = {};
+		//	linkAnalysis.draw(graph_data, options);
+
+		var ceo_smith = { id: "CEO Smith", name: "CEO Smith", type: "person" };
+		var vp_north = { id: "VP North", name: "VP North", type: "person" };
+		var vp_east = { id: "VP East", name: "VP East", type: "person" };
+		var vp_south = { id: "VP South", name: "VP South", type: "person" };
+		var vp_west = { id: "VP West", name: "VP West", type: "person" };
 
 
-		var main_person = { id: "p_123", name: "Eric Fox", type: "person", photo: "https://randomuser.me/api/portraits/men/22.jpg" };
-		linkAnalysis.setRootNode(main_person);
-
-		var vehicle = { name: "vehicle", "type": "vehicle" };
-		linkAnalysis.addNode(vehicle, main_person);   // add a note and add an edge 
-
-		var fugitive_case = { name: "FCS0001089", "type": "case" };
-		linkAnalysis.addNode(fugitive_case, main_person);
-
-		var node_arrest = { name: "AR-784723", type: "arrest" };
-		linkAnalysis.addNode(node_arrest, main_person);
-
-		var node_family = { name: "Family" };
-		linkAnalysis.addNode(node_family, main_person);
-
-		var node_Lisa = { "name": "FOX, Lisa", "relationship": "Wife", "age": "42", "degree_of_relationship": "0", "photo": "https://randomuser.me/api/portraits/women/33.jpg" };
-		var node_Edward = { "name": "FOX, Edward", "relationship": "Son", "age": "18", "degree_of_relationship": "1", "photo": "https://randomuser.me/api/portraits/men/22.jpg" };
-		var node_Cindy = { "name": "FOX, Cindy", "relationship": "Daughter", "age": "16", "degree_of_relationship": "1", "photo": "https://randomuser.me/api/portraits/women/33.jpg" };
-		//var nodes_family = [node_Lisa, node_Edward, node_Cindy];
-		// {"name":"PARK, Carlos","relationship":"Cousin","age":"38","degree_of_relationship":"3","photo":"https://dojopsdemo.service-now.com/c09393281bf01090f76f20252a4bcb1a.iix"}]
-		linkAnalysis.addNode(node_Lisa, node_family);
-		linkAnalysis.addNode(node_Edward, node_family);
-		linkAnalysis.addNode(node_Cindy, node_family);
+		linkAnalysis.addObject(ceo_smith);
+		linkAnalysis.addObject(vp_west);
+		linkAnalysis.addObject(vp_east);
+		linkAnalysis.addObject(vp_south);
+		linkAnalysis.addObject(vp_north);
+		linkAnalysis.addLink("CEO Smith", "VP East");
+		linkAnalysis.addLink("CEO Smith", "VP South");
+		linkAnalysis.addLink("CEO Smith", "VP West");
+		linkAnalysis.addLink("CEO Smith", "VP North");
 
 
-		var node_known_addresses = { name: "Known Addresses", "type": "location" };
-		linkAnalysis.addNode(node_known_addresses, main_person);
-		var node_place_A = { name: "808 W. Spokane Blvd., Spokane WA", "type": "address" };
-		var node_place_B = { name: "188 Hunters Dr, Los Angeles CA", "type": "address" };
-		var node_place_C = { name: "3256 East Market St, Los Angeles CA", "type": "address" };
-		linkAnalysis.addNode(node_place_A, node_known_addresses);
-		linkAnalysis.addNode(node_place_B, node_known_addresses);
-		linkAnalysis.addNode(node_place_C, node_known_addresses);
+	 	add_objects_and_links(linkAnalysis, 3, "East", "VP East");
+	 	add_objects_and_links(linkAnalysis, 3, "West", "VP West");
+	 	add_objects_and_links(linkAnalysis, 3, "South", "VP South");
+	 	add_objects_and_links(linkAnalysis, 3, "North", "VP North");
 
+		linkAnalysis.render();
+
+
+
+		/*
+				var main_person = {id: "p_123", name: "Eric Fox", type: "person", photo: "https://randomuser.me/api/portraits/men/22.jpg" };
+				linkAnalysis.addObject(main_person);
+		
+				var vehicle = { name: "vehicle", type: "vehicle" };
+		
+				linkAnalysis.addLink(vehicle, main_person);
+		
+				var fugitive_case = { name: "FCS0001089", type: "case" };
+				linkAnalysis.addLink(fugitive_case, main_person);
+		
+				var node_arrest = { name: "AR-784723", type: "arrest" };
+				linkAnalysis.addLink(node_arrest, main_person);
+		
+				var node_family = { name: "Family" };
+				linkAnalysis.addLink(node_family, main_person);
+		
+				var node_Lisa = { "name": "FOX, Lisa", "relationship": "Wife", "age": "42", "degree_of_relationship": "0", "photo": "https://randomuser.me/api/portraits/women/33.jpg" };
+				var node_Edward = { "name": "FOX, Edward", "relationship": "Son", "age": "18", "degree_of_relationship": "1", "photo": "https://randomuser.me/api/portraits/men/22.jpg" };
+				var node_Cindy = { "name": "FOX, Cindy", "relationship": "Daughter", "age": "16", "degree_of_relationship": "1", "photo": "https://randomuser.me/api/portraits/women/33.jpg" };
+				//var nodes_family = [node_Lisa, node_Edward, node_Cindy];
+				// {"name":"PARK, Carlos","relationship":"Cousin","age":"38","degree_of_relationship":"3","photo":"https://dojopsdemo.service-now.com/c09393281bf01090f76f20252a4bcb1a.iix"}]
+				linkAnalysis.addLink(node_Lisa, node_family);
+				linkAnalysis.addLink(node_Edward, node_family);
+				linkAnalysis.addLink(node_Cindy, node_family);
+		
+		
+				var node_known_addresses = { name: "Known Addresses", "type": "location" };
+				linkAnalysis.addLink(node_known_addresses, main_person);
+				var node_place_A = { name: "808 W. Spokane Blvd., Spokane WA", "type": "address" };
+				var node_place_B = { name: "188 Hunters Dr, Los Angeles CA", "type": "address" };
+				var node_place_C = { name: "3256 East Market St, Los Angeles CA", "type": "address" };
+				linkAnalysis.addLink(node_place_A, node_known_addresses);
+				linkAnalysis.addLink(node_place_B, node_known_addresses);
+				linkAnalysis.addLink(node_place_C, node_known_addresses);
+		*/
 
 		linkAnalysis.setIconByNodeType(IconByNodeType);
 
@@ -856,13 +1079,23 @@
 		linkAnalysis.setNodeClickHandler(handleNodeClicked);
 
 
-		var options = {};
-		//	linkAnalysis.draw(graph_data, options);
+
 		console.log(linkAnalysis);
 
 		//@TODO  LOAD
 		//loadAllImages(ICON_LIST, start);
 		//
+	}
+
+
+	function add_objects_and_links(linkAnalysis, object_count, prefix, target) {
+		for (var index = 0; index < object_count; index++) {
+			var object_id = prefix + " " + index;
+			var object = { id: object_id, name: object_id, type: "person" };
+			linkAnalysis.addObject(object);
+			linkAnalysis.addLink(target, object_id);
+
+		}
 	}
 </script>
 
