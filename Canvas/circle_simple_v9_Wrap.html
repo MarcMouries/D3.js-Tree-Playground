@@ -476,7 +476,7 @@
 			this.ctx.clearRect(0, 0, this.getWidth(), this.getHeight());
 		};
 		MChartView.prototype.drawBorder = function () {
-			log("MChartView .drawBorder");
+			//log("MChartView.drawBorder");
 			//this.mcanvas.drawBorder(this.background_color);
 		}
 		MChartView.prototype.renderLink = function (link) {
@@ -526,7 +526,7 @@
 		}
 
 		MRadialLayout.Calculate_Positions = function (graph, starting_vertex, center) {
-			log(`MRadialLayout.Calculate_Positions: ${starting_vertex.data.name}`);
+			//log(`MRadialLayout.Calculate_Positions: ${starting_vertex.data.name}`);
 
 			var RADIUS_LEVEL = 150;
 
@@ -548,14 +548,14 @@
 				starting_vertex.y = center.y;
 				starting_vertex.angle = 0;
 				starting_vertex.angleRange = 2 * Math.PI;
-				log(`*** MRadialLayout ROOT id=${starting_vertex.id}, 
-							x=${starting_vertex.x}, y=${starting_vertex.y}, depth=${starting_vertex.depth},
-                            angle=${to_degrees(starting_vertex.angle)}°- angleRange=${to_degrees(starting_vertex.angleRange)}°`);
+				//log(`*** MRadialLayout ROOT id=${starting_vertex.id}, 
+				//			x=${starting_vertex.x}, y=${starting_vertex.y}, depth=${starting_vertex.depth},
+                //            angle=${to_degrees(starting_vertex.angle)}°- angleRange=${to_degrees(starting_vertex.angleRange)}°`);
 			}
 
 			var nodes = graph.getNodes();
 			var children_count = starting_vertex.getAdjacents().length;
-			console.log(`*** MRadialLayout vertex id=${starting_vertex.id}: # children=${children_count}`);
+			//console.log(`*** MRadialLayout vertex id=${starting_vertex.id}: # children=${children_count}`);
 
 			for (var i = 0; i < children_count; i++) {
 				var child = starting_vertex.getAdjacents()[i];
@@ -575,12 +575,12 @@
 
 				//var location = getPointOnArc(cx, cy, RADIUS, child.angle);
 				var rotation = rotate(cx, cy, child.angle);
-				log(`*** MRadialLayout rotation =${rotation.x},${rotation.y}`);
+				//log(`*** MRadialLayout rotation =${rotation.x},${rotation.y}`);
 				child.x = starting_vertex.x + rotation.x;
 				child.y = starting_vertex.y + rotation.y;
 
-				log(`*** MRadialLayout child id=${child.id}, x=${child.x}, y=${child.y},depth=${child.depth},
-                            angle=${to_degrees(child.angle)}°- angleRange=${to_degrees(child.angleRange)}°`);
+				//log(`*** MRadialLayout child id=${child.id}, x=${child.x}, y=${child.y},depth=${child.depth},
+                //           angle=${to_degrees(child.angle)}°- angleRange=${to_degrees(child.angleRange)}°`);
 
 				//  RECURSIVE CALL on children
 				MRadialLayout.Calculate_Positions(graph, child, center);
@@ -659,7 +659,7 @@
 						linkAnalysis.valid = false;
 
 						// @TODO: Add Callback to listerer(node);
-						//callback.handleNodeClicked(node);
+						callback.call(node);
 						return;
 					}
 					else {
@@ -724,16 +724,15 @@
 			this.view.addEventListener("mouseup", handleMouseUp, false);
 			this.view.addEventListener("mousemove", handleMouseMove, false);
 			this.view.addEventListener("mousedown", function (event) {
-				console.log("in addEventListener");
-				console.log(this.nodeClickHandler);
-				handleMouseDown(event, this.nodeClickHandler);
+				console.log("nodeClickHandler=" + linkAnalysis.nodeClickHandler);
+				handleMouseDown(event, linkAnalysis.nodeClickHandler);
 			});
 		}
 
 		LinkAnalysis.prototype = {
 
 			addObject: function (object) {
-				console.log("LinkAnalysis addNode: " + object);
+				//console.log("LinkAnalysis addNode: " + object);
 
 				var node = this.graph.addObject(object);
 				node.radius = this.NODE_RADIUS;
@@ -743,20 +742,20 @@
 
 
 			addLink: function (sourceNode_id, targetNode_id) {
-				console.log("LinkAnalysis addLink: " + sourceNode_id + " / " + targetNode_id);
+				//console.log("LinkAnalysis addLink: " + sourceNode_id + " / " + targetNode_id);
 				this.graph.addLink(sourceNode_id, targetNode_id);
 				//linkAnalysis.updateGraph();
 			},
 
 			render: function () {
-				console.log("LinkAnalysis.render");
-				console.log("==> LinkAnalysis this.graph = ");
-				console.log(this.graph);
+				//console.log("LinkAnalysis.render");
+				//console.log("==> LinkAnalysis this.graph = ");
+				//console.log(this.graph);
 
 
 				// RADIAL
 				var starting_vertex = this.graph.getNode("CEO Smith");
-				console.log("==> LinkAnalysis starting_vertex = " + starting_vertex.id);
+				//console.log("==> LinkAnalysis starting_vertex = " + starting_vertex.id);
 
 
 				if (this.nodes_at_level.length == 0) {
@@ -961,6 +960,10 @@
 				linkAnalysis.addLink("VP West", "East_West");
 		*/
 
+		function handleNodeClicked(node) {
+			console.log("NODE CLICKED: " + node);
+		}
+		linkAnalysis.setNodeClickHandler(handleNodeClicked);
 
 		linkAnalysis.render();
 
@@ -1006,15 +1009,10 @@
 		linkAnalysis.setIconByNodeType(IconByNodeType);
 
 
-		function handleNodeClicked(node) {
-			console.log("NODE CLICKED: " + node.name);
-		}
-
-		linkAnalysis.setNodeClickHandler(handleNodeClicked);
 
 
 
-		console.log(linkAnalysis);
+
 
 		//@TODO  LOAD
 		//loadAllImages(ICON_LIST, start);
