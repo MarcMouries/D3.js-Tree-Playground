@@ -550,7 +550,7 @@
 				starting_vertex.angleRange = 2 * Math.PI;
 				//log(`*** MRadialLayout ROOT id=${starting_vertex.id}, 
 				//			x=${starting_vertex.x}, y=${starting_vertex.y}, depth=${starting_vertex.depth},
-                //            angle=${to_degrees(starting_vertex.angle)}°- angleRange=${to_degrees(starting_vertex.angleRange)}°`);
+				//            angle=${to_degrees(starting_vertex.angle)}°- angleRange=${to_degrees(starting_vertex.angleRange)}°`);
 			}
 
 			var nodes = graph.getNodes();
@@ -580,7 +580,7 @@
 				child.y = starting_vertex.y + rotation.y;
 
 				//log(`*** MRadialLayout child id=${child.id}, x=${child.x}, y=${child.y},depth=${child.depth},
-                //           angle=${to_degrees(child.angle)}°- angleRange=${to_degrees(child.angleRange)}°`);
+				//           angle=${to_degrees(child.angle)}°- angleRange=${to_degrees(child.angleRange)}°`);
 
 				//  RECURSIVE CALL on children
 				MRadialLayout.Calculate_Positions(graph, child, center);
@@ -659,7 +659,7 @@
 						linkAnalysis.valid = false;
 
 						// @TODO: Add Callback to listerer(node);
-						callback.call(node);
+						callback(node);
 						return;
 					}
 					else {
@@ -701,7 +701,7 @@
 			}
 
 			function handleMouseUp(event) {
-				console.log(" handleMouse UP");
+				//console.log(" handleMouse UP");
 				linkAnalysis.dragging = false;
 
 				/*
@@ -772,12 +772,8 @@
 					MRadialLayout.Calculate_Positions(this.graph, starting_vertex, this.center);
 				}
 
-
-
-				log("MChartController.render");
 				this.view.clear();
 				this.view.drawBorder();
-
 
 				// LINKS 
 				var links = this.graph.getLinks();
@@ -960,10 +956,10 @@
 				linkAnalysis.addLink("VP West", "East_West");
 		*/
 
-		function handleNodeClicked(node) {
-			console.log("NODE CLICKED: " + node);
-		}
-		linkAnalysis.setNodeClickHandler(handleNodeClicked);
+
+		linkAnalysis.setNodeClickHandler(function (node) {
+			console.log("NODE CLICKED: " + node.id);
+		});
 
 		linkAnalysis.render();
 
