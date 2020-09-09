@@ -204,28 +204,9 @@
 
 
 		// =============================================================
-		//                          MChartModel
-		// =============================================================
-		function MChartModel({ nodes, links }) {
-			var m = this;
-			m.nodes = nodes;
-			m.links = links;
-		}
-		MChartModel.prototype.addNode = function (node) {
-			nodes.push(node);
-			//this.update();
-		};
-		MChartModel.prototype.getNodes = function (node) {
-			return nodes;
-		};
-
-		//----------
-		// Node
-		// Graph
-		//
-
-		// =============================================================
 		//                          Node
+		// -------------------------------------------------------------
+		// 
 		// =============================================================
 		function Node(id, data) {
 			this.id = id;
@@ -281,7 +262,6 @@
 				this.nodeList.push(node);
 				this.graph[node.id] = node;
 			}
-
 			return node;
 		};
 
@@ -469,12 +449,11 @@
 		//                          MChartView
 		// =============================================================
 		function MChartView({ mcanvas }) {
-			console.log("MChartView()");
 			this.mcanvas = mcanvas;
 			this.ctx = mcanvas.getContext();
-			log(this.mcanvas);
-			log("MChartView.getWidth = " + this.getWidth());
-			log("MChartView.getHeight = " + this.getHeight());
+			//log(this.mcanvas);
+			//log("MChartView.getWidth = " + this.getWidth());
+			//log("MChartView.getHeight = " + this.getHeight());
 			this.background_color = "#FFFFFF";//"#F5F5F5";
 
 			this.color_ring_isActivated = "#3b6978";
@@ -501,15 +480,14 @@
 			//this.mcanvas.drawBorder(this.background_color);
 		}
 		MChartView.prototype.renderLink = function (link) {
-			log("renderLink ");
-			log(link);
+			//log("renderLink " + link.id);
 			var strokeStyle = "grey";
 			var lineWidth = "1";
 			this.mcanvas.drawLine(link.source.x, link.source.y, link.target.x, link.target.y, strokeStyle, lineWidth);
 		}
 		MChartView.prototype.renderNode = function (node) {
 
-			log(`MChartView.renderNode: ${node.data.name}: ${node.x},${node.y} `);
+			//log(`MChartView.renderNode: ${node.data.name}: ${node.x},${node.y} `);
 
 			if (node.type == "person") {
 				//console.log("it's  a person");
@@ -527,9 +505,7 @@
 			var maxLineWidth = 1.5 * (2 * node.radius);
 			// CENTER TEXT
 			var y = node.y + padding_node_title;
-			log(node);
 			//this.mcanvas.drawText(node.x, y, "C. " + node.data.name, font, text_color, maxLineWidth, ",");
-
 
 			if (node.isClicked) {
 				this.mcanvas.drawRing(node.x, node.y, node.radius + 5, this.color_ring_isActivated, "", 5);
@@ -566,7 +542,6 @@
 				console.error("MRadialLayout: can't run without a center set.");
 				return;
 			}
-
 
 			if (graph.isRoot(starting_vertex)) {
 				starting_vertex.x = center.x;
@@ -684,6 +659,7 @@
 						linkAnalysis.valid = false;
 
 						// @TODO: Add Callback to listerer(node);
+						//callback.handleNodeClicked(node);
 						return;
 					}
 					else {
@@ -806,7 +782,6 @@
 
 				// LINKS 
 				var links = this.graph.getLinks();
-				log("links.length = " + links.length);
 				for (var i = 0; i < links.length; i++) {
 					var link = links[i];
 					this.view.renderLink(link);
@@ -814,11 +789,9 @@
 
 				// NODES
 				var nodes = this.graph.getNodes();
-				log("nodes.length = " + nodes.length);
 				for (var i = 0; i < nodes.length; i++) {
 					var node = nodes[i];
-					log("LinkAnalysis render node");
-					log(node);
+					//log("LinkAnalysis render node: " + node.id);
 					this.view.renderNode(node);
 				}
 			},
@@ -882,7 +855,7 @@
 			this.offset = { x: 0, y: 0 };
 
 
-			Circle.prototype.drawImage = function (context, image) {
+			Circle.prototype.drawImage__ = function (context, image) {
 				var icon_x = this.x - icon_width / 2; // to fit into circle
 				var icon_y = this.y - icon_heigth / 2; // to fit into circle
 				context.drawImage(image, icon_x, icon_y, icon_width, icon_heigth);
@@ -1055,7 +1028,6 @@
 			var object = { id: object_id, name: object_id, type: "person" };
 			linkAnalysis.addObject(object);
 			linkAnalysis.addLink(target, object_id);
-
 		}
 	}
 </script>
