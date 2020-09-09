@@ -211,28 +211,14 @@ MCanvas.prototype.drawArc = function (
 	apply_styles(this.ctx, color_stroke, color_fill, line_width);
 };
 
-MCanvas.prototype.drawCircle = function (
-	x,
-	y,
-	radius,
-	color_stroke,
-	color_fill,
-	line_width
-) {
+MCanvas.prototype.drawCircle = function (x,y, radius,color_stroke,	color_fill,	line_width) {
 	this.ctx.beginPath();
 	this.ctx.arc(x, y, radius, 0, 2 * Math.PI, false);
-
 	apply_styles(this.ctx, color_stroke, color_fill, line_width);
 };
 
-MCanvas.prototype.drawRing = function (
-	x,
-	y,
-	radius,
-	color_stroke,
-	color_fill,
-	line_width
-) {
+
+MCanvas.prototype.drawRing = function (	x,	y,	radius,	color_stroke, color_fill, line_width) {
 	this.drawCircle(x, y, radius, color_stroke, color_fill, line_width);
 };
 
