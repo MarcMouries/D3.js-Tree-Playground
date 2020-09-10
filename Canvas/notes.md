@@ -2,16 +2,19 @@
 
 
 TODO
-- node click
+
 - add icons for nodes
-- layout
-  - add graph
 - object inspector
 - expand & collapse
+- context menu
 
 DONE
+- graph data structure
+- radial layout 
 - order of drawing
 - word wrap for address : https://codepen.io/MarcMouries/pen/KKVbLpK
+- node click
+
 
 
 Canvas size and container

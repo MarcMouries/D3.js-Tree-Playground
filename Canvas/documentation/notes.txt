@@ -1,0 +1,14 @@
+treevis.net - A Visual Bibliography of Tree Visualization 2.0 by Hans-Jörg Schulz
+https://treevis.net/
+https://treevis.net/#Huang2020
+
+PLANET: A radial layout algorithm for network visualization
+https://arxiv.org/abs/cs/0606007
+
+
+https://info.sice.indiana.edu/~katy/
+
+http://iv.slis.indiana.edu/sw/index.html#layout
+
+http://iv.slis.indiana.edu/sw/radialtree.html
+
