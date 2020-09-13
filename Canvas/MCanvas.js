@@ -81,7 +81,9 @@ resizeCanvas = function () {
 	drawLine(0, height, width, 0);
 };
 
-function MCanvas({ container }) {
+function MCanvas({
+	container
+}) {
 	var thisCanvas = (this.canvas = document.createElement("canvas"));
 	this.canvas.style.width = "100%";
 	this.canvas.style.height = "100%";
@@ -100,7 +102,12 @@ function MCanvas({ container }) {
 	console.log(container);
 	console.log("MCanvas = " + thisCanvas.width + "x" + thisCanvas.height);
 
-	this.margin = { top: 00, right: 00, bottom: 00, left: 00 };
+	this.margin = {
+		top: 00,
+		right: 00,
+		bottom: 00,
+		left: 00
+	};
 	this.width = this.canvas.width - this.margin.left - this.margin.right;
 	this.height = this.canvas.height - this.margin.top - this.margin.bottom;
 }
@@ -119,7 +126,10 @@ MCanvas.prototype.getWidth = function () {
 MCanvas.prototype.getCenter = function () {
 	var cx = this.getWidth() / 2;
 	var cy = this.getHeight() / 2;
-	return { x: cx, y: cy };
+	return {
+		x: cx,
+		y: cy
+	};
 };
 
 MCanvas.prototype.drawLine = function (
@@ -211,14 +221,14 @@ MCanvas.prototype.drawArc = function (
 	apply_styles(this.ctx, color_stroke, color_fill, line_width);
 };
 
-MCanvas.prototype.drawCircle = function (x,y, radius,color_stroke,	color_fill,	line_width) {
+MCanvas.prototype.drawCircle = function (x, y, radius, color_stroke, color_fill, line_width) {
 	this.ctx.beginPath();
 	this.ctx.arc(x, y, radius, 0, 2 * Math.PI, false);
 	apply_styles(this.ctx, color_stroke, color_fill, line_width);
 };
 
 
-MCanvas.prototype.drawRing = function (	x,	y,	radius,	color_stroke, color_fill, line_width) {
+MCanvas.prototype.drawRing = function (x, y, radius, color_stroke, color_fill, line_width) {
 	this.drawCircle(x, y, radius, color_stroke, color_fill, line_width);
 };
 
