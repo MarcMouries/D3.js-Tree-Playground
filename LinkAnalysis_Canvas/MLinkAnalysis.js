@@ -2,7 +2,7 @@
 // =============================================================
 // LinkAnalysis
 // -------------------------------------------------------------
-// 
+//  author: Marc Mouries
 // =============================================================
 
 
@@ -62,7 +62,6 @@ function Graph() {
 Graph.prototype.addObject = function (object) {
 	var node = new Node(object.id, object);
 	//console.log("added node : " + node.id);
-	//console.log(node);
 	this.addNode(node);
 	return node;
 };
@@ -324,12 +323,13 @@ MRadialLayout.Calculate_Positions = function (graph, starting_vertex, center) {
 
 var LinkAnalysis = (function () {
 
+	var mcanvas = null;
 
 	function LinkAnalysis(chart_container) {
 
 		this.background_color = "#FFFFFF"; //"#F5F5F5";
-		this.color_ring_isActivated = "#3b6978";
-		this.color_ring_isBelowMouse = "#84a9ac";
+		COLOR_NODE_SELECTED = "#3b6978";
+		COLOR_HOVER_NODE = "#84a9ac";
 
 		var NODE_GROUP_CLASS = "nodeXXX";
 		var image_width = 35;
@@ -341,19 +341,15 @@ var LinkAnalysis = (function () {
 		var icon_width = 40;
 		var icon_heigth = 40;
 
-		// COLORS ???
-
 		this.graph = new Graph();
 		this.nodes_at_level = [];
 
 		var linkAnalysis = this;
 
 		// the imgs[] array now holds fully loaded images
-		this.mcanvas = new MCanvas({
-			container: chart_container
-		});
-		this.ctx = this.mcanvas.getContext();
-		//log(this.mcanvas);
+		mcanvas = new MCanvas({container: chart_container});
+		ctx = mcanvas.getContext();
+		//log(mcanvas);
 		//log("MChartView.getWidth = " + this.getWidth());
 		//log("MChartView.getHeight = " + this.getHeight());
 
@@ -362,7 +358,7 @@ var LinkAnalysis = (function () {
 		console.log("getComputedStyle");
 		console.log("----------------");
 
-		const style = document.defaultView.getComputedStyle(this.mcanvas.canvas, null);
+		const style = document.defaultView.getComputedStyle(mcanvas.canvas, null);
 		this.stylePaddingLeft = parseInt(style['paddingLeft'], 10);
 		this.stylePaddingTop = parseInt(style['paddingTop'], 10);
 		this.styleBorderLeft = parseInt(style['borderLeftWidth'], 10);
@@ -377,17 +373,15 @@ var LinkAnalysis = (function () {
 		//////////////
 
 
-
-		function renderLink(link) {
+		var renderLink = function (link) {
 			//log("renderLink " + link.id);
 			var strokeStyle = "grey";
 			var lineWidth = "1";
-			this.mcanvas.drawLine(link.source.x, link.source.y, link.target.x, link.target.y,
+			mcanvas.drawLine(link.source.x, link.source.y, link.target.x, link.target.y,
 				strokeStyle,
 				lineWidth);
 		}
-
-		function renderNode(node) {
+		var renderNode = function (node) {
 			//log(`MChartView.renderNode: ${node.data.name}: ${node.x},${node.y} `);
 
 			if (node.type == "person") {
@@ -398,34 +392,30 @@ var LinkAnalysis = (function () {
 
 			var font = "12px Arial"
 			var text_color = "#333";
-			this.mcanvas.drawPoint(node.x, node.y, node.radius, "A. " + node.data.name);
-			//this.mcanvas.drawTextBG("B. " + node.data.name, node.x, node.y, font, 0, this.background_color);
+			mcanvas.drawPoint(node.x, node.y, node.radius, "A. " + node.data.name);
+			//mcanvas.drawTextBG("B. " + node.data.name, node.x, node.y, font, 0, this.background_color);
 
 			var padding_node_title = 0;
 			var maxLineWidth = 1.5 * (2 * node.radius);
 			// CENTER TEXT
 			var y = node.y + padding_node_title;
-			//this.mcanvas.drawText(node.x, y, "C. " + node.data.name, font, text_color, maxLineWidth, ",");
+			//mcanvas.drawText(node.x, y, "C. " + node.data.name, font, text_color, maxLineWidth, ",");
 
 			if (node.isClicked) {
-				this.mcanvas.drawRing(node.x, node.y, node.radius + 5, this.color_ring_isActivated, "",
-					5);
+				mcanvas.drawRing(node.x, node.y, node.radius + 5, COLOR_NODE_SELECTED, "", 5);
 
 			} else if (node.isBelowMouse) {
-				this.mcanvas.drawRing(node.x, node.y, node.radius + 5, this.color_ring_isBelowMouse,
-					"", 5);
-
+				mcanvas.drawRing(node.x, node.y, node.radius + 5, COLOR_HOVER_NODE,	"", 5);
 			}
 		}
 
-
-		function drawBorder() {
+		var drawBorder = function () {
 			//log("MChartView.drawBorder");
-			//this.mcanvas.drawBorder(this.background_color);
+			//mcanvas.drawBorder(this.background_color);
 		}
 
 
-		function handleMouseDown(event, callback) {
+		var handleMouseDown = function (event, callback) {
 			console.log("handleMouse_Down");
 			//event.preventDefault();
 
@@ -454,8 +444,7 @@ var LinkAnalysis = (function () {
 			}
 			linkAnalysis.render();
 		}
-
-		function handleMouseMove(event) {
+		var handleMouseMove = function (event) {
 			console.log("in handleMouse_Move");
 			//event.stopPropagation();
 			var mouse = linkAnalysis.getMouse(event);
@@ -484,8 +473,7 @@ var LinkAnalysis = (function () {
 			}
 			linkAnalysis.render();
 		}
-
-		function handleMouseUp(event) {
+		var handleMouseUp = function (event) {
 			//console.log(" handleMouse UP");
 			linkAnalysis.dragging = false;
 
@@ -514,9 +502,7 @@ else {
 			handleMouseDown(event, linkAnalysis.nodeClickHandler);
 		});
 
-
-		function render() {
-			//render: function () {
+		LinkAnalysis.prototype.render = function () {
 			//console.log("LinkAnalysis.render");
 			//console.log("==> LinkAnalysis this.graph = ");
 			//console.log(this.graph);
@@ -536,18 +522,18 @@ else {
 				console.log(this.nodes_at_level);
 
 
-				this.center = this.mcanvas.getCenter();
+				this.center = mcanvas.getCenter();
 				MRadialLayout.Calculate_Positions(this.graph, starting_vertex, this.center);
 			}
 
-			this.mcanvas.clear();
-			//this.mcanvas.drawBorder();
+			mcanvas.clear();
+			//mcanvas.drawBorder();
 
 			// LINKS 
 			var links = this.graph.getLinks();
 			for (var i = 0; i < links.length; i++) {
 				var link = links[i];
-				this.renderLink(link);
+				renderLink(link);
 			}
 
 			// NODES
@@ -555,7 +541,7 @@ else {
 			for (var i = 0; i < nodes.length; i++) {
 				var node = nodes[i];
 				//log("LinkAnalysis render node: " + node.id);
-				this.renderNode(node);
+				renderNode(node);
 			}
 		}
 	}
@@ -570,14 +556,14 @@ else {
 		},
 
 		getHeight: function () {
-			return this.mcanvas.getHeight();
+			return mcanvas.getHeight();
 		},
 		getWidth: function () {
-			return this.mcanvas.getWidth();
+			return mcanvas.getWidth();
 		},
 
 		addEventListener: function (type, listener) {
-			this.mcanvas.addEventListener(type, listener);
+			mcanvas.addEventListener(type, listener);
 		},
 
 		addObject: function (object) {
@@ -608,7 +594,7 @@ else {
 		// we have to worry about padding and borders
 
 		getMouse: function (e) {
-			var element = this.mcanvas.canvas,
+			var element = mcanvas.canvas,
 				offsetX = 0,
 				offsetY = 0,
 				mx, my;
